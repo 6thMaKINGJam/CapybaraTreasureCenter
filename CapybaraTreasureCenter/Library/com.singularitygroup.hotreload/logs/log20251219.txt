@@ -1,0 +1,311 @@
+2025-12-19 21:58:35.948 +09:00 [INF] Hot Reload Server is starting. Do not close this window.
+2025-12-19 21:58:35.955 +09:00 [INF] 
+2025-12-19 21:58:36.007 +09:00 [INF] Initialized user with id: 444023229DBD4E8829F6F6E65EF09A628C10AEBA5E2BC69E99C4C00D7567B72F
+2025-12-19 21:58:36.696 +09:00 [INF] Compiling... (the first time might take a minute, depending on project size)
+2025-12-19 21:58:39.638 +09:00 [INF] Finished compiling in 2s
+2025-12-19 21:58:39.640 +09:00 [INF] 
+2025-12-19 21:58:39.640 +09:00 [INF] Hot Reload Server is ready. Edit code to see updates in unity.
+2025-12-19 21:58:39.640 +09:00 [INF] Keep this window open while using Hot Reload (minimizing is OK)
+2025-12-19 22:00:41.921 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:00:53.909 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:00:56.115 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization
+2025-12-19 22:00:56.115 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization
+2025-12-19 22:00:56.115 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/CliUtils.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/CliUtils.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/HotReloadCli.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/LinuxCliController.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/LinuxCliController.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CLI/OsxCliController.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/CompileChecker/DefaultCompileChecker.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Constants.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Constants.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/EditorCodePatcher.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/EditorIndicationState.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/AssemblyOmission.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/AssemblyOmission.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/BuildInfoHelper.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/BuildInfoHelper.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/EditorWindowHelper.cs
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/EditorWindowHelper.cs.meta
+2025-12-19 22:00:56.116 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadSuggestionsHelper.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Helpers/HotReloadTimelineHelper.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/HotReloadOverlay.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/HotReloadOverlay.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/HotReloadPrefs.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/DownloadUtility.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/DownloadUtility.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/ServerDownloader.cs
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/ServerDownloader.cs.meta
+2025-12-19 22:00:56.117 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/UpdateUtility.cs
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Installation/UpdateUtility.cs.meta
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization.meta
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/AboutTranslations.cs
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/AboutTranslations.cs.meta
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/CommonTranslations.cs
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/CommonTranslations.cs.meta
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/DialogTranslations.cs
+2025-12-19 22:00:56.118 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/DialogTranslations.cs.meta
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/ErrorTranslations.cs
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/ErrorTranslations.cs.meta
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/LicenseTranslations.cs
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/LicenseTranslations.cs.meta
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/Localization.cs
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/Localization.cs.meta
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/MenuItemsTranslations.cs
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/MenuItemsTranslations.cs.meta
+2025-12-19 22:00:56.119 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/MiscellaneousTranslations.cs
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/MiscellaneousTranslations.cs.meta
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/OnDeviceTranslations.cs
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/OnDeviceTranslations.cs.meta
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/RegistrationTranslations.cs
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/RegistrationTranslations.cs.meta
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/SettingsTranslations.cs
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/SettingsTranslations.cs.meta
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/SuggestionsTranslations.cs
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/SuggestionsTranslations.cs.meta
+2025-12-19 22:00:56.120 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/TimelineTranslations.cs
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/TimelineTranslations.cs.meta
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/UITranslations.cs
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/UITranslations.cs.meta
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/UtilityTranslations.cs
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Localization/UtilityTranslations.cs.meta
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildModifyAndroidManifest.cs
+2025-12-19 22:00:56.121 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PostbuildModifyAndroidManifest.cs.meta
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PrebuildIncludeResources.cs
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/PlayerBuild/PrebuildIncludeResources.cs.meta
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/ProjectGeneration.cs
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/ProjectGeneration.cs.meta
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/ProjectPart.cs
+2025-12-19 22:00:56.122 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/ProjectGeneration/ProjectPart.cs.meta
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/RequiredSettings/RequiredSettingChecker.cs
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/RequiredSettings/RequiredSettingChecker.cs.meta
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.EditorDependencies.dll
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/SingularityGroup.HotReload.EditorDependencies.dll.meta
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs
+2025-12-19 22:00:56.123 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Versioning/PackageUpdateChecker.cs.meta
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Versioning/SemVer.cs
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Versioning/SemVer.cs.meta
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/AllowAndroidAppToMakeHttpRequestsOption.cs
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/AllowAndroidAppToMakeHttpRequestsOption.cs.meta
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/ExposeServerOption.cs
+2025-12-19 22:00:56.124 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/ExposeServerOption.cs.meta
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/IncludeInBuildOption.cs
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Options/IncludeInBuildOption.cs.meta
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/Helpers/RedeemLicenseHelper.cs
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/Helpers/RedeemLicenseHelper.cs.meta
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadAboutTab.cs
+2025-12-19 22:00:56.125 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadAboutTab.cs.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadOptionsSection.cs
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadOptionsSection.cs.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadRunTab.cs.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/GUI/Tabs/HotReloadSettingsTab.cs.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Editor/Window/HotReloadWindow.cs.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/HotReload.code-workspace
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/HotReload.code-workspace.meta
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/package.json
+2025-12-19 22:00:56.127 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/package.json.meta
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/AppCallbackListener.cs
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/AppCallbackListener.cs.meta
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/BuildInfo.cs
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/BuildInfo.cs.meta
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/BurstChecker.cs
+2025-12-19 22:00:56.128 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/BurstChecker.cs.meta
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/CodePatcher.cs.meta
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBasicDemo.cs.meta
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBurstJobsDemo.cs
+2025-12-19 22:00:56.129 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Demo/Scripts/HotReloadBurstJobsDemo.cs.meta
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsHelper.cs
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsHelper.cs.meta
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsObject.cs
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HotReloadSettingsObject.cs.meta
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HttpClientUtils.cs
+2025-12-19 22:00:56.130 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/HttpClientUtils.cs.meta
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/InstallQRDialog.cs
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/InstallQRDialog.cs.meta
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/IpHelper.cs
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/IpHelper.cs.meta
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/IServerHealthCheck.cs
+2025-12-19 22:00:56.131 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/IServerHealthCheck.cs.meta
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/EditorOnly/SingularityGroup.HotReload.RuntimeDependencies.dll
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/EditorOnly/SingularityGroup.HotReload.RuntimeDependencies.dll.meta
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies.dll
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies.dll.meta
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2019.dll
+2025-12-19 22:00:56.132 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2019.dll.meta
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2020.dll
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2020.dll.meta
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2022.dll
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Libs/OnDevice/SingularityGroup.HotReload.RuntimeDependencies2022.dll.meta
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization.meta
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/CommonTranslations.cs
+2025-12-19 22:00:56.133 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/CommonTranslations.cs.meta
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/DialogTranslations.cs
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/DialogTranslations.cs.meta
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/ErrorTranslations.cs
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/ErrorTranslations.cs.meta
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/LoggingTranslations.cs
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/LoggingTranslations.cs.meta
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/MenuItemTranslations.cs
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/MenuItemTranslations.cs.meta
+2025-12-19 22:00:56.134 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/SettingTranslations.cs
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/SettingTranslations.cs.meta
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/Translations.cs
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/Translations.cs.meta
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/UtilityTranslations.cs
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/Localization/UtilityTranslations.cs.meta
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs
+2025-12-19 22:00:56.135 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodCompatiblity.cs.meta
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodPatchResponsesConverter.cs.meta
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MethodUtils.cs.meta
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/ConnectionDialog.cs
+2025-12-19 22:00:56.136 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/ConnectionDialog.cs.meta
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/Prompts.cs.meta
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/QuestionDialog.cs
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/QuestionDialog.cs.meta
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/RetryDialog.cs
+2025-12-19 22:00:56.137 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoBehaviours/RetryDialog.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoMethod.cs
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/MonoMethod.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/OnHotReloadDispatch.cs
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/OnHotReloadDispatch.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PackageConst.cs
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PackageConst.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PatchServerInfo.cs
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PatchServerInfo.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PersistencePaths.cs
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PersistencePaths.cs.meta
+2025-12-19 22:00:56.138 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PlayerCodePatcher.cs.meta
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/PlayerEntrypoint.cs.meta
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/RequestHelper.cs.meta
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ServerHandshake.cs
+2025-12-19 22:00:56.139 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ServerHandshake.cs.meta
+2025-12-19 22:00:56.140 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ServerHealthCheck.cs
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ServerHealthCheck.cs.meta
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SingularityGroup.HotReload.Runtime.asmdef.meta
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolver.cs.meta
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/SymbolResolvingFailedException.cs.meta
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/TaskExtensions.cs
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/TaskExtensions.cs.meta
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ThreadUtility.cs
+2025-12-19 22:00:56.141 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/ThreadUtility.cs.meta
+2025-12-19 22:00:56.142 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/UnityHelper.cs
+2025-12-19 22:00:56.142 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/Runtime/UnityHelper.cs.meta
+2025-12-19 22:00:56.299 +09:00 [INF] Dropping 204 file changes because it appears that they were not caused by a human, and would potentially cause unnecessary high cpu/memory usage.
+2025-12-19 22:01:15.421 +09:00 [INF] Compiling...
+2025-12-19 22:01:16.224 +09:00 [INF] Finished compiling in 0s
+2025-12-19 22:01:42.803 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:02:11.090 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.dll
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.dll.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.dll.mdb
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.dll.mdb.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.XML
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/DOTween.XML.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.mdb
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll.mdb.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.meta
+2025-12-19 22:02:13.194 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.mdb
+2025-12-19 22:02:13.195 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.dll.mdb.meta
+2025-12-19 22:02:13.195 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.XML
+2025-12-19 22:02:13.195 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Plugins/Demigiant/DOTween/Editor/DOTweenUpgradeManager.XML.meta
+2025-12-19 22:02:31.513 +09:00 [INF] Compiling...
+2025-12-19 22:02:32.421 +09:00 [INF] Finished compiling in 0s
+2025-12-19 22:02:44.983 +09:00 [INF] Compiling...
+2025-12-19 22:02:45.489 +09:00 [INF] Finished compiling in 0s
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/.DS_Store
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/LICENSE
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/README.md
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/.gitignore
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/.gitattributes
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/.DS_Store
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources
+2025-12-19 22:04:37.784 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_L.png
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_I.png.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_I.png
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_T.png.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_T.png
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons/icon_branch_L.png.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources/Icons.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/Texture2DExtensions.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/VisualElementExstensions.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/Texture2DExtensions.cs
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/VisualElementExstensions.cs
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/UIElements.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/HierarchyFolder.cs
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/Hierarchy2.Runtime.asmdef
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/UIElements.cs
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/Hierarchy2.Runtime.asmdef.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime/HierarchyFolder.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor Resources.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Runtime.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/InstantInspector.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyFolderEditor.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyResources.cs.meta
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyResources.cs
+2025-12-19 22:04:37.785 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/SceneRenamePopup.cs.meta
+2025-12-19 22:04:37.792 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/InstantInspector.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Settings.asset
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyEditor.cs.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyEditor.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Resources.asset
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/SelectionsRenamePopup.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/SelectionsRenamePopup.cs.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Hierarchy2.Editor.asmdef.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Settings.asset.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Resources.asset.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchySettings.cs.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/Hierarchy2.Editor.asmdef
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/SceneRenamePopup.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchySettings.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2/Editor/HierarchyFolderEditor.cs
+2025-12-19 22:04:37.793 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets/Hierarchy 2.meta
+2025-12-19 22:04:37.793 +09:00 [INF] Dropping 54 file changes because it appears that they were not caused by a human, and would potentially cause unnecessary high cpu/memory usage.
+2025-12-19 22:04:37.909 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/LICENSE.meta
+2025-12-19 22:04:37.909 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/README.md.meta
+2025-12-19 22:04:37.909 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets.meta
+2025-12-19 22:04:37.909 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master.meta
+2025-12-19 22:04:37.948 +09:00 [INF] Detected Changed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master.meta
+2025-12-19 22:04:37.948 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master.meta
+2025-12-19 22:04:37.948 +09:00 [INF] Detected Changed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets.meta
+2025-12-19 22:04:37.948 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/Assets.meta
+2025-12-19 22:04:37.961 +09:00 [INF] Detected Changed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/LICENSE.meta
+2025-12-19 22:04:37.961 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/LICENSE.meta
+2025-12-19 22:04:37.963 +09:00 [INF] Detected Changed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/README.md.meta
+2025-12-19 22:04:37.963 +09:00 [INF] Detected Created in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/hierarchy-2-master/README.md.meta
+2025-12-19 22:04:41.389 +09:00 [INF] Compiling...
+2025-12-19 22:04:41.870 +09:00 [INF] Finished compiling in 0s
+2025-12-19 22:04:43.345 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:04:47.765 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset
+2025-12-19 22:05:55.494 +09:00 [INF] Detected Renamed in /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Assets/Resources/DOTweenSettings.asset

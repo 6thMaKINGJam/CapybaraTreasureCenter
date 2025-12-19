@@ -13,10 +13,18 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 639017452050000000
-    m_Hash: 3562688362
+      ticks: 639017458940000000
+    m_Hash: 3211374
 m_EmbeddedPackageManifests:
-  m_ManifestsStatus: {}
+  m_ManifestsStatus:
+    /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/package.json:
+      m_FilePath: /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload/package.json
+      m_PathExists: 1
+      m_ContentTrackingEnabled: 1
+      m_ModificationDate:
+        serializedVersion: 2
+        ticks: 639015759030000000
+      m_Hash: 3054597630
 m_LocalPackages:
   m_LocalFileStatus: []
 m_ProjectPath: /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages
@@ -2711,6 +2719,77 @@ m_ResolvedPackages:
     path: 
   unityLifecycle:
     version: 1.0.0
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  fingerprint: 
+- packageId: com.singularitygroup.hotreload@file:/Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload
+  testable: 1
+  isDirectDependency: 1
+  version: 1.13.14
+  source: 3
+  resolvedPath: /Users/z44446in/CapybaraTreasureCenter/CapybaraTreasureCenter/Packages/com.singularitygroup.hotreload
+  assetPath: Packages/com.singularitygroup.hotreload
+  name: com.singularitygroup.hotreload
+  displayName: Hot Reload
+  author:
+    name: 
+    email: 
+    url: 
+  category: Engineering
+  type: 
+  description: Change code and get immediate updates in the Unity Editor or on-device.
+  status: 0
+  errors: []
+  versions:
+    all: []
+    compatible: []
+    recommended: 
+    deprecated: []
+  dependencies:
+  - name: com.unity.ugui
+    version: 1.0.0
+  - name: com.unity.modules.unitywebrequest
+    version: 1.0.0
+  resolvedDependencies:
+  - name: com.unity.ugui
+    version: 1.0.0
+  - name: com.unity.modules.ui
+    version: 1.0.0
+  - name: com.unity.modules.imgui
+    version: 1.0.0
+  - name: com.unity.modules.unitywebrequest
+    version: 1.0.0
+  keywords:
+  - Hot
+  - Reload
+  - patch
+  - code
+  - sg
+  - singularity
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 0
+  documentationUrl: 
+  hasRepository: 0
+  repository:
+    type: 
+    url: 
+    revision: 
+    path: 
+  unityLifecycle:
+    version: 
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
