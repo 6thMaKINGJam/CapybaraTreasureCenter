@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.UI; // Text, Button 기능
 using System; // Action(콜백) 기능
 
-public class BaseConfirmationPop : MonoBehaviour
+public class BaseConfirmationPopup : MonoBehaviour
 {
     [Header("UI 요소 연결")]
-    public TextReader MessageText; // 팝업에 표시될 질문 내용
+    public Text MessageText; // 팝업에 표시될 질문 내용
     public Button YesButton; // Yes 버튼
     public Button NoButton; // No 버튼
 
@@ -36,7 +36,7 @@ public class BaseConfirmationPop : MonoBehaviour
     }
 
     // OnClickNo 정의
-    private void OnclickNo()
+    private void OnClickNo()
     {
         OnNoAction?.Invoke(); // 예약된 No Action 실행
         ClosePopup();
@@ -45,6 +45,6 @@ public class BaseConfirmationPop : MonoBehaviour
     // ClosePopup 정의
     private void ClosePopup()
     {
-        Destroy(GameObject); // 팝업 비활성화
+        Destroy(gameObject); // 팝업 비활성화
     }
 }
