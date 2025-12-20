@@ -13,11 +13,16 @@ public class ProgressData
     public int BestScore; // 2. 최고 기록
     public int TotalGemCount; // 3. 누적 획득한 보석 수
 
+    public bool TutorialCompleted; // 4. 튜토리얼 완료 여부 (추가.효빈)
+
+
+
     // 4. 그리고 진행/기록 데이터 초기화 
     public ProgressData()
     {
         LastClearedLevel = 0;
         BestScore = 0;
         TotalGemCount = 0;
+        TutorialCompleted = false;
     }
 }
