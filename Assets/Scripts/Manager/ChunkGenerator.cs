@@ -122,7 +122,7 @@ public class ChunkGenerator : MonoBehaviour
                 
                 while(gemCount > 0)
                 {
-                    int pieceSize = Random.Range(1, Mathf.Min(4, gemCount + 1)); // 1~3개로 쪼갬
+                    int pieceSize = Random.Range(1, Mathf.Min(6, gemCount + 1)); // 1~5개로 쪼갬
                     
                     GemBundle bundle = new GemBundle();
                     bundle.BundleID = System.Guid.NewGuid().ToString();
