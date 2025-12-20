@@ -1,2 +1,2 @@
-# TreasureCenter
+# CapybaraTreasureCenter
 Team 8
