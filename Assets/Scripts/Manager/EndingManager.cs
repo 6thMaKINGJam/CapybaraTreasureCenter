@@ -233,7 +233,7 @@ public class EndingManager : MonoBehaviour
             NicknameInputDialog nicknameDialog = dialog.GetComponent<NicknameInputDialog>();
             if (nicknameDialog != null)
             {
-                nicknameDialog.Setup(sequence.MessageText, OnNicknameConfirmed);
+                nicknameDialog.Setup( OnNicknameConfirmed);
             }
         }
     }
