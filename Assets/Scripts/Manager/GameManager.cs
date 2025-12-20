@@ -48,6 +48,10 @@ public class GameManager : MonoBehaviour
     private int consecutiveSuccessCount = 0;
     private int lastCountedSecond = -1; // 중복 호출 방지용
   
+  private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs 
+    = new Dictionary<GemBundle, GemBundlePrefab>();
+
+
     
     void Awake()
     {
@@ -193,52 +197,269 @@ public class GameManager : MonoBehaviour
         
         GridManager.RefreshGrid(gameData.CurrentDisplayBundles, OnBundleClicked);
     }
+    // ===== OnBundleClicked() =====
+private void OnBundleClicked(GemBundlePrefab clickedPrefab)
+{
+    GemBundle bundle = clickedPrefab.GetData();
     
-    // ========== 묶음 선택/취소 ==========
-    private void OnBundleClicked(GemBundlePrefab clickedPrefab)
+    // Placeholder 클릭 방지
+    if(bundle == null) return;
+    
+    // 힌트 흔들림 중지
+    GridManager.StopShakingBundle(bundle);
+    
+    // ===== 선택 취소 =====
+    if(gameData.SelectedBundles.Contains(bundle))
     {
-        GemBundle bundle = clickedPrefab.GetData();
+        // 1. SelectedBundles에서 제거
+        gameData.SelectedBundles.Remove(bundle);
         
-        if(gameData.SelectedBundles.Contains(bundle))
+        // 2. 원래 Prefab 위치 가져오기
+        if(!selectedBundleOriginalPrefabs.ContainsKey(bundle))
         {
-            gameData.SelectedBundles.Remove(bundle);
-            clickedPrefab.SetSelected(false);
-
-            // 해제 시 가벼운 진동이나 소리
-            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
-        }
-        else
-        {
-            // 선택 추가
-            gameData.SelectedBundles.Add(bundle);
-            clickedPrefab.SetSelected(true);
-
-            // 선택 시 효과
-            // clickedPrefab.PlaySelectAnimation();
-            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
+            Debug.LogError($"[OnBundleClicked] {bundle.BundleID}의 원래 위치를 찾을 수 없습니다!");
+            return;
         }
         
-        // UI 업데이트
-        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(
-            gameData.CurrentBoxIndex,
-            CalculateSelectedTotal(),
-            GetCurrentBox().RequiredAmount
+        GemBundlePrefab originalPrefab = selectedBundleOriginalPrefabs[bundle];
+        selectedBundleOriginalPrefabs.Remove(bundle);
+        
+        // 3. BundlePool에 다시 추가
+        if(!gameData.BundlePool.Contains(bundle))
+        {
+            gameData.BundlePool.Add(bundle);
+        }
+        
+        // 4. CurrentDisplayBundles에서 현재 그 자리의 번들 찾기
+        int siblingIndex = originalPrefab.transform.GetSiblingIndex();
+        GemBundle currentBundleAtPosition = null;
+        
+        // activeBundles를 순회하며 같은 SiblingIndex 찾기
+        foreach(var prefab in GridManager.GetActiveBundles())
+        {
+            if(prefab.transform.GetSiblingIndex() == siblingIndex && prefab.gameObject.activeSelf)
+            {
+                currentBundleAtPosition = prefab.GetData();
+                break;
+            }
+        }
+        
+        // 5. 현재 그 자리에 있던 번들 처리 (Placeholder가 아닐 경우)
+        if(currentBundleAtPosition != null && currentBundleAtPosition != bundle)
+        {
+            // 새로 생성됐던 번들을 BundlePool로 반환
+            if(!gameData.BundlePool.Contains(currentBundleAtPosition))
+            {
+                gameData.BundlePool.Add(currentBundleAtPosition);
+            }
+            
+            // CurrentDisplayBundles에서 제거
+            gameData.CurrentDisplayBundles.Remove(currentBundleAtPosition);
+        }
+        
+        // 6. CurrentDisplayBundles 갱신
+        int displayIndex = gameData.CurrentDisplayBundles.IndexOf(currentBundleAtPosition);
+        if(displayIndex >= 0)
+        {
+            gameData.CurrentDisplayBundles[displayIndex] = bundle;
+        }
+        else if(currentBundleAtPosition == null)
+        {
+            // Placeholder였던 경우, CurrentDisplayBundles에 추가
+            // SiblingIndex 순서에 맞게 삽입
+            if(siblingIndex < gameData.CurrentDisplayBundles.Count)
+            {
+                gameData.CurrentDisplayBundles[siblingIndex] = bundle;
+            }
+            else
+            {
+                gameData.CurrentDisplayBundles.Add(bundle);
+            }
+        }
+        
+        // 7. Grid에서 애니메이션과 함께 원래 번들로 복원
+        GridManager.ReplaceBundleWithAnimation(
+            originalPrefab,
+            bundle,
+            OnBundleClicked,
+            isRestoring: true
+        );
+        
+        originalPrefab.SetSelected(false);
+    }
+    // ===== 선택 =====
+    else
+    {
+        // 1. SelectedBundles에 추가
+        gameData.SelectedBundles.Add(bundle);
+        clickedPrefab.SetSelected(true);
+        
+        // 2. 원래 위치 저장
+        selectedBundleOriginalPrefabs[bundle] = clickedPrefab;
+        
+        // 3. CurrentDisplayBundles에서 인덱스 찾기
+        int displayIndex = gameData.CurrentDisplayBundles.IndexOf(bundle);
+        
+        // 4. BundlePool에서 제거
+        gameData.BundlePool.Remove(bundle);
+        
+        // 5. 새 번들 결정
+        GemBundle newBundle = GetRandomFromRemainingPool();
+        
+        // 6. CurrentDisplayBundles 갱신
+        if(displayIndex >= 0)
+        {
+            gameData.CurrentDisplayBundles[displayIndex] = newBundle;
+        }
+        
+        // 7. Grid 애니메이션 교체
+        GridManager.ReplaceBundleWithAnimation(
+            clickedPrefab,
+            newBundle,
+            OnBundleClicked,
+            isRestoring: false
         );
     }
     
-    public void CancelSelection()
+    // UI 업데이트
+    UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+    UIManager.UpdateBoxUI(
+        gameData.CurrentBoxIndex,
+        CalculateSelectedTotal(),
+        GetCurrentBox().RequiredAmount
+    );
+}
+
+
+// ===== 남은 Pool에서 랜덤 1개 선택 =====
+// ===== 남은 Pool에서 랜덤 선택 =====
+private GemBundle GetRandomFromRemainingPool()
+{
+    List<GemBundle> availableBundles = new List<GemBundle>(gameData.BundlePool);
+    
+    foreach(var displayedBundle in gameData.CurrentDisplayBundles)
     {
-        gameData.SelectedBundles.Clear();
-        GridManager.ClearAllSelections();
-        
+        if(displayedBundle != null)
+        {
+            availableBundles.Remove(displayedBundle);
+        }
+    }
+    
+    if(availableBundles.Count == 0)
+    {
+        return null;
+    }
+    
+    int randomIndex = UnityEngine.Random.Range(0, availableBundles.Count);
+    return availableBundles[randomIndex];
+}
+public void CancelSelection()
+{
+    if(gameData.SelectedBundles.Count == 0)
+    {
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
         UIManager.UpdateBoxUI(
             gameData.CurrentBoxIndex,
             0,
             GetCurrentBox().RequiredAmount
         );
+        return;
     }
+    
+    // ★ 핵심: 복원 정보를 먼저 수집 (실행 전에 모든 정보 확보)
+    List<BundleRestoreInfo> restoreInfos = new List<BundleRestoreInfo>();
+    
+    foreach(var bundle in gameData.SelectedBundles)
+    {
+        if(!selectedBundleOriginalPrefabs.ContainsKey(bundle))
+        {
+            Debug.LogWarning($"[CancelSelection] {bundle.BundleID}의 원래 위치를 찾을 수 없습니다!");
+            continue;
+        }
+        
+        GemBundlePrefab originalPrefab = selectedBundleOriginalPrefabs[bundle];
+        int siblingIndex = originalPrefab.transform.GetSiblingIndex();
+        
+        // 현재 그 자리에 있는 번들 찾기
+        GemBundle currentBundleAtPosition = null;
+        foreach(var prefab in GridManager.GetActiveBundles())
+        {
+            if(prefab.transform.GetSiblingIndex() == siblingIndex && prefab.gameObject.activeSelf)
+            {
+                currentBundleAtPosition = prefab.GetData();
+                break;
+            }
+        }
+        
+        restoreInfos.Add(new BundleRestoreInfo
+        {
+            OriginalBundle = bundle,
+            OriginalPrefab = originalPrefab,
+            SiblingIndex = siblingIndex,
+            CurrentBundleAtPosition = currentBundleAtPosition
+        });
+    }
+    
+    // ★ SiblingIndex 순서대로 정렬 (작은 인덱스부터 복원)
+    restoreInfos.Sort((a, b) => a.SiblingIndex.CompareTo(b.SiblingIndex));
+    
+    // ★ 복원 실행
+    foreach(var info in restoreInfos)
+    {
+        // 1. BundlePool에 원래 번들 추가
+        if(!gameData.BundlePool.Contains(info.OriginalBundle))
+        {
+            gameData.BundlePool.Add(info.OriginalBundle);
+        }
+        
+        // 2. 현재 그 자리에 있던 번들 처리 (새로 생성됐던 번들)
+        if(info.CurrentBundleAtPosition != null && info.CurrentBundleAtPosition != info.OriginalBundle)
+        {
+            if(!gameData.BundlePool.Contains(info.CurrentBundleAtPosition))
+            {
+                gameData.BundlePool.Add(info.CurrentBundleAtPosition);
+            }
+        }
+        
+        // 3. ★ CurrentDisplayBundles를 SiblingIndex 기준으로 직접 수정
+        gameData.CurrentDisplayBundles[info.SiblingIndex] = info.OriginalBundle;
+        
+        // 4. Grid에서 복원 애니메이션
+        GridManager.ReplaceBundleWithAnimation(
+            info.OriginalPrefab,
+            info.OriginalBundle,
+            OnBundleClicked,
+            isRestoring: true
+        );
+        
+        info.OriginalPrefab.SetSelected(false);
+    }
+    
+    // 5. 선택 상태 전체 초기화
+    gameData.SelectedBundles.Clear();
+    selectedBundleOriginalPrefabs.Clear();
+    
+    // 6. UI 업데이트
+    UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+    UIManager.UpdateBoxUI(
+        gameData.CurrentBoxIndex,
+        0,
+        GetCurrentBox().RequiredAmount
+    );
+    
+    GridManager.ClearAllSelections();
+}
+
+// ★ 복원 정보를 담을 클래스 (GameManager 내부 또는 별도 파일)
+private class BundleRestoreInfo
+{
+    public GemBundle OriginalBundle;
+    public GemBundlePrefab OriginalPrefab;
+    public int SiblingIndex;
+    public GemBundle CurrentBundleAtPosition;
+}
+
+
     
     // ========== 완료 버튼 ==========
    public void OnClickComplete()
@@ -299,65 +520,74 @@ public class GameManager : MonoBehaviour
         return true;
     }
     
-    private void ProcessBoxCompletion()
+   private void ProcessBoxCompletion()
+{
+    foreach(var bundle in gameData.SelectedBundles)
     {
-        // 보석 차감
-        foreach(var bundle in gameData.SelectedBundles)
+        gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
+        
+        // 이미 선택 시 제거했으므로 Contains 체크
+        if(gameData.BundlePool.Contains(bundle))
         {
-            gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
             gameData.BundlePool.Remove(bundle);
+        }
+        
+        if(gameData.CurrentDisplayBundles.Contains(bundle))
+        {
             gameData.CurrentDisplayBundles.Remove(bundle);
         }
-        
-        // 완료 기록
-        CompletedBox completedBox = new CompletedBox();
-        completedBox.BoxIndex = gameData.CurrentBoxIndex;
-        completedBox.UsedBundles = new List<GemBundle>(gameData.SelectedBundles);
-        gameData.CompletedBoxes.Add(completedBox);
-        
-        // 상자 진행
-        gameData.CurrentBoxIndex++;
-        gameData.SelectedBundles.Clear();
-        
-        // ===== [수정됨] CapyDialogue 연결: 상자 완료 =====
-        consecutiveSuccessCount++; // 성공 횟수 증가
-
-        if(CapyDialogue != null && CapyDialogueText != null)
-        {
-            // 3번 이상이면 계속 ConsecutiveSuccess 유지 (리셋 안 함)
-            if(consecutiveSuccessCount >= 3)
-            {
-                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.ConsecutiveSuccess);
-            }
-            else
-            {
-                // 1번, 2번 성공일 때는 그냥 디폴트 루트 
-                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-            }
-        }
-        
-        // 게임오버 체크
-        if(CheckGameOver())
-        {
-            HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
-            return;
-        }
-        
-        // 레벨 클리어 체크
-        if(gameData.CurrentBoxIndex >= gameData.Boxes.Count)
-        {
-            HandleLevelClear();
-            return;
-        }
-        
-        // 저장
-        SaveManager.Save(gameData, "GameData");
-        
-        // 화면 갱신
-        ExtractDisplayBundles();
-        RefreshUI();
     }
     
+    CompletedBox completedBox = new CompletedBox();
+    completedBox.BoxIndex = gameData.CurrentBoxIndex;
+    completedBox.UsedBundles = new List<GemBundle>(gameData.SelectedBundles);
+    gameData.CompletedBoxes.Add(completedBox);
+    
+    gameData.CurrentBoxIndex++;
+    
+    // selectedBundleOriginalPrefabs 정리
+    foreach(var bundle in gameData.SelectedBundles)
+    {
+        if(selectedBundleOriginalPrefabs.ContainsKey(bundle))
+        {
+            selectedBundleOriginalPrefabs.Remove(bundle);
+        }
+    }
+    
+    gameData.SelectedBundles.Clear();
+    
+    consecutiveSuccessCount++;
+
+    if(CapyDialogue != null && CapyDialogueText != null)
+    {
+        if(consecutiveSuccessCount >= 3)
+        {
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.ConsecutiveSuccess);
+        }
+        else
+        {
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+        }
+    }
+    
+    if(CheckGameOver())
+    {
+        HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
+        return;
+    }
+    
+    if(gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+    {
+        HandleLevelClear();
+        return;
+    }
+    
+    SaveManager.Save(gameData, "GameData");
+    
+    // ExtractDisplayBundles() 호출 안 함!
+    RefreshUI();
+}
+
     // ========== 게임오버/클리어 체크 ==========
     private bool CheckGameOver()
     {

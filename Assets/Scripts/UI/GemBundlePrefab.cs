@@ -14,6 +14,7 @@ public class GemBundlePrefab : MonoBehaviour
     
     private GemBundle bundleData;
     private Button button;
+    private CanvasGroup canvasGroup;
     
     public event Action<GemBundlePrefab> OnClickBundle;
     
@@ -29,6 +30,8 @@ public class GemBundlePrefab : MonoBehaviour
         {
             Debug.LogError("[GemBundlePrefab] Button 컴포넌트를 찾을 수 없습니다!");
         }
+
+        canvasGroup = GetComponent<CanvasGroup>();
     }
     
     void OnDestroy()
@@ -37,6 +40,32 @@ public class GemBundlePrefab : MonoBehaviour
         if(button != null)
         {
             button.onClick.RemoveListener(OnClick);
+        }
+    }
+    
+    /// <summary>
+    /// 외부에서 호출 가능한 상태 변경 함수
+    /// true: 투명한 빈 공간(Placeholder) 모드
+    /// false: 정상 모드
+    /// </summary>
+    public void SetPlaceholderState(bool isPlaceholder)
+    {
+        // 만약의 경우를 대비해 null 체크
+        if(canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
+
+        if (isPlaceholder)
+        {
+            // 투명하고 터치 안 되게 (공간은 유지함)
+            canvasGroup.alpha = 0f; 
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.interactable = false;
+        }
+        else
+        {
+            // 다시 보이게 복구
+            canvasGroup.alpha = 1f;
+            canvasGroup.blocksRaycasts = true;
+            canvasGroup.interactable = true;
         }
     }
     
