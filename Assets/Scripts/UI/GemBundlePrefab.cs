@@ -1,34 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GemBundlePrefab : MonoBehaviour
 {
-    public Image GemIcon; //보석 이미지 아이콘
-    //public Text CountText; //각 상자마다 보석 개수
-    public Outline Outline;
-
+    [Header("UI 요소")]
+    public Image GemIcon; // 보석 이미지 아이콘
+    public Outline Outline; // 선택 시 외곽선
+    
+    // 데이터
     private GemBundle bundleData;
-    public event Action<GemBundlePrefab> OnClickBundle; //클릭 이벤트를 외부에 알림
+    
+    // 클릭 이벤트
+    public event Action<GemBundlePrefab> OnClickBundle;
 
-    public void SetData(GemBundle data) { //Gembundle 데이터 바인딩
-        bundleData = data; //데이터 타입
-        //CountText.text = data.GemCount.ToString(); //개수 텍스트
-
-        string spriteName = data.GemType.ToString() + data.GemCount;
-        Sprite loadedSprite = Resources.Load<Sprite>("GemSprites/" + spriteName);
-        GemIcon.sprite = loadedSprite;
+    // ========== 데이터 설정 ==========
+    public void SetData(GemBundle data)
+    {
+        bundleData = data;
+        
+        // 스프라이트 로드 (Resources/GemSprites/{GemType}{Count}.png)
+        string spriteName = $"{data.GemType}{data.GemCount}";
+        Sprite loadedSprite = Resources.Load<Sprite>($"GemSprites/{spriteName}");
+        
+        if(loadedSprite != null)
+        {
+            GemIcon.sprite = loadedSprite;
+        }
+        else
+        {
+            Debug.LogWarning($"[GemBundlePrefab] 스프라이트를 찾을 수 없습니다: {spriteName}");
+        }
     }
 
-    public GemBundle GetData() => bundleData;
-
-    public void SetSelected(bool isSelected) { //선택 시 테투리 변경
-        if (Outline != null) Outline.enabled = isSelected;
+    // ========== 데이터 반환 ==========
+    public GemBundle GetData()
+    {
+        return bundleData;
     }
 
-    public void OnClick() {
+    // ========== 선택 상태 설정 (외곽선 표시) ==========
+    public void SetSelected(bool isSelected)
+    {
+        if(Outline != null)
+        {
+            Outline.enabled = isSelected;
+        }
+    }
+
+    // ========== 클릭 이벤트 ==========
+    public void OnClick()
+    {
         OnClickBundle?.Invoke(this);
     }
 }

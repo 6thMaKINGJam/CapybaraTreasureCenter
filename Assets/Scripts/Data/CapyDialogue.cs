@@ -219,7 +219,24 @@ public class CapyDialogue : MonoBehaviour
         
         return canvasGroup;
     }
-    
+    /// <summary>
+    /// 특정 타입의 대사 중 하나를 랜덤으로 반환합니다 (화면 표시 X)
+    /// </summary>
+    public string GetRandomMessage(DialogueType type)
+    {
+        // 데이터 찾기
+        DialogueData data = DialogueDatas.Find(d => d.Type == type);
+        
+        // 데이터 유효성 검사
+        if (data != null && data.Dialogues != null && data.Dialogues.Length > 0)
+        {
+            // 랜덤으로 하나 뽑아서 리턴
+            return data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
+        }
+        
+        // 데이터가 없으면 빈 문자열 반환
+        return "";
+    }
     // 한 번만 표시하는 코루틴
     private IEnumerator ShowOnceCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
     {

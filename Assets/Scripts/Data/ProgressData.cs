@@ -17,7 +17,7 @@ public class ProgressData
 
     public bool EndingCompleted; //5.엔딩 완료 여부 추가.효빈
 
-    public bool hasSeenLevel4Ending; // 6.레벨4 엔딩 시퀀스 시청 여부 추가.연주
+    public bool isLevel4Completed; // 6.레벨4 완료 유무 
     
 
 
@@ -30,6 +30,6 @@ public class ProgressData
         TotalGemCount = 0;
         TutorialCompleted = false;
         EndingCompleted = false; // 추가
-        hasSeenLevel4Ending = false; // 추가
+        isLevel4Completed = false; // 추가
     }
 }

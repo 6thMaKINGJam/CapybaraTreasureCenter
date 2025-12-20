@@ -127,8 +127,7 @@ public class SaveDataEditorWindow : EditorWindow
         {
             EditorGUILayout.LabelField($"게임 상태: {gameData.GameState}");
             EditorGUILayout.LabelField($"상자 개수: {gameData.Boxes.Count}");
-            EditorGUILayout.LabelField($"청크 개수: {gameData.Chunks.Count}");
-            
+           
             EditorGUILayout.Space();
             
             EditorGUILayout.BeginHorizontal();

@@ -79,12 +79,19 @@ private IEnumerator CheckAndRegister(string nickname)
 
 
     
-    private void OnRegistrationSuccess()
+   private void OnRegistrationSuccess()
 {
     Debug.Log("[NicknameInputDialog] 랭킹 등록 성공!");
     HideLoading();
+    
+    // ===== 내 닉네임 저장 (HallOfFame에서 강조 표시용) =====
+    string nickname = NicknameInputField.text.Trim();
+    PlayerPrefs.SetString("MyNickname", nickname);
+    PlayerPrefs.Save();
+    
     onSuccessCallback?.Invoke();
 }
+
     private void OnRegistrationFailed(string error)
 {
     Debug.LogError($"[NicknameInputDialog] 랭킹 등록 실패: {error}");

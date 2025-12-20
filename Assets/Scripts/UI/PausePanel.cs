@@ -1,35 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine;
 
 public class PausePanel : MonoBehaviour
 {
-    // 이어하기 
-    public void ResumeGame() {
-        Time.timeScale = 1f; // 시간 다시 흐르게 하기
-        gameObject.SetActive(false); // 팝업 끄기
-    }
-
-    // 일시정지 
-    public void PauseGame() {
-        Time.timeScale = 0f; // 시간 정지
-        gameObject.SetActive(true); // 팝업 켜기
-    }
-
-    // 새로시작 
-    public void RestartGame() {
-        Time.timeScale = 1f; //재시작해도 시간은 흐름
-        PlayerPrefs.DeleteKey("GameState"); // 데이터 삭제 로직 추가
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    // 메인 홈으로 이동
-    public void GoToMainHome()
+    [Header("버튼")]
+    public Button ResumeButton;    // 이어하기
+    public Button RestartButton;   // 새로시작
+    public Button MainHomeButton;  // 메인홈으로
+    
+    private void Awake()
     {
-        Time.timeScale = 1f; // 메인으로 갈 때 시간 정상화
-        PlayerPrefs.DeleteKey("GameState"); // 데이터 삭제 로직 추가
-        SceneManager.LoadScene("MainHome"); // 메인 홈 씬 로드
+        SetupButtons();
+    }
+    
+    private void SetupButtons()
+    {
+        ResumeButton.onClick.AddListener(ResumeGame);
+        RestartButton.onClick.AddListener(OnClickRestart);
+        MainHomeButton.onClick.AddListener(OnClickMainHome);
+    }
+    
+    // 이어하기
+    public void ResumeGame()
+    {
+        GameManager.Instance.Resume();
+    }
+    
+    // 새로시작 (확인 팝업)
+    private void OnClickRestart()
+    {
+        // 확인 팝업
+        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
+        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+        popup.Setup(
+            "정말 새로 시작하시겠습니까?\n현재 진행 상황이 사라집니다.",
+            () => {
+                GameManager.Instance.RestartLevel();
+            },
+            null // No 버튼은 그냥 닫기
+        );
+    }
+    
+    // 메인 홈으로
+    private void OnClickMainHome()
+    {
+        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
+        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+        popup.Setup(
+            "메인 홈으로 이동하시겠습니까?\n현재 진행 상황이 저장됩니다.",
+            () => {
+                GameManager.Instance.GoToMainHome();
+            },
+            null
+        );
     }
 }
