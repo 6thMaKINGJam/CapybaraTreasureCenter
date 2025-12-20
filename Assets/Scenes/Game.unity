@@ -3032,8 +3032,8 @@ MonoBehaviour:
   EndingPopupTransfrom: {fileID: 1479997283}
   CapyDialogue: {fileID: 1911645601}
   CapyDialogueText: {fileID: 886912691}
-  HintLoadingUI: {fileID: 1109328245}
   FlashOverlay: {fileID: 1325110955}
+  GemCountStatusPanel: {fileID: 1006858061}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
