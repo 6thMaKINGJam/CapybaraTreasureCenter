@@ -48,7 +48,7 @@ public static class SaveManager
             catch (System.Exception E)
             {
                 // 로드 중 파일이 깨졌거나 에러가 나면 콘솔에 기록
-                Debug.LogError($"[SaveManager] 로드 중 에러 발생 ({FileName}): (E.Message)");
+                Debug.LogError($"[SaveManager] 로드 중 에러 발생 ({FileName}): {E.Message}");
                 // 실패 -> 빈 데이터 return
                 return new T();
             }
