@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 //GemType/GemCount/GemBundle/Box/
@@ -42,7 +45,16 @@ public class Chunk
 [Serializable]
 public class GameData
 {
+    [HeaderEncodingSelector("진행도 데이터")]
+    public int CurrentLevelIndex;
+    public int CurrentBoxIndex;
+    [Header("상태 데이터")]
     public GameState GameState; // 현재 게임 상태
     public List<Box> Boxes = new List<Box>(); // 상자들의 정보
     public List<Chunk> Chunks = new List<Chunk>(); // 보석 묶음들의 정보
+
+    [Header("아이템 사용 정보")]
+    public int UndoCount;
+    public int RefreshCount;
+    public int HintCount;
 }
