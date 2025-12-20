@@ -1,54 +1,46 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class GemBundlePrefab : MonoBehaviour
 {
-    [Header("UI 요소")]
-    public Image GemIcon; // 보석 이미지 아이콘
-    public Outline Outline; // 선택 시 외곽선
+    public Image GemIcon;
+    public Outline Outline;
     
-    // 데이터
+    [Header("보석 스프라이트 매핑")]
+    [Tooltip("Red 1개, Red 2개, Red 3개, Red 4개, Blue 1개, ... 순서")]
+    public Sprite[] GemSprites; // 5종 x 4개 = 20개 스프라이트
+    
     private GemBundle bundleData;
-    
-    // 클릭 이벤트
     public event Action<GemBundlePrefab> OnClickBundle;
-
-    // ========== 데이터 설정 ==========
+    
     public void SetData(GemBundle data)
     {
         bundleData = data;
         
-        // 스프라이트 로드 (Resources/GemSprites/{GemType}{Count}.png)
-        string spriteName = $"{data.GemType}{data.GemCount}";
-        Sprite loadedSprite = Resources.Load<Sprite>($"GemSprites/{spriteName}");
+        // ===== 계산식으로 인덱스 구하기 =====
+        // GemType: Red(0), Blue(1), Green(2), Yellow(3), Purple(4)
+        // Count: 1~4
+        // Index = GemType * 4 + (Count - 1)
+        int index = (int)data.GemType * 4 + (data.GemCount - 1);
         
-        if(loadedSprite != null)
+        if(index >= 0 && index < GemSprites.Length && GemSprites[index] != null)
         {
-            GemIcon.sprite = loadedSprite;
+            GemIcon.sprite = GemSprites[index];
         }
         else
         {
-            Debug.LogWarning($"[GemBundlePrefab] 스프라이트를 찾을 수 없습니다: {spriteName}");
+            Debug.LogError($"[GemBundlePrefab] 스프라이트 인덱스 오류: {data.GemType} x{data.GemCount} (index: {index})");
         }
     }
-
-    // ========== 데이터 반환 ==========
-    public GemBundle GetData()
-    {
-        return bundleData;
-    }
-
-    // ========== 선택 상태 설정 (외곽선 표시) ==========
+    
+    public GemBundle GetData() => bundleData;
+    
     public void SetSelected(bool isSelected)
     {
-        if(Outline != null)
-        {
-            Outline.enabled = isSelected;
-        }
+        if(Outline != null) Outline.enabled = isSelected;
     }
-
-    // ========== 클릭 이벤트 ==========
+    
     public void OnClick()
     {
         OnClickBundle?.Invoke(this);
