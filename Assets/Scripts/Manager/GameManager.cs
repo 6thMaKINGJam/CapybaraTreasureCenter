@@ -823,15 +823,15 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
     public void RestartLevel()
     {
-        Time.timeScale = 1f;
-        SaveManager.DeleteSave("GameData");
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SaveManager.DeleteSave("GameData"); // 새 게임을 위해 기존 데이터 삭제
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    
+
     public void GoToMainHome()
     {
-        Time.timeScale = 1f;
-        SaveManager.DeleteSave("GameData");
+        Time.timeScale = 1f; // 시간 흐름 복구
+        // 필요하다면 여기서 SaveManager.Save(gameData, "GameData"); 호출
         SceneManager.LoadScene("MainHome");
     }
     

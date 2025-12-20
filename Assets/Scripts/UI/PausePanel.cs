@@ -28,9 +28,8 @@ public class PausePanel : MonoBehaviour
     }
     
     // 새로시작 (확인 팝업)
-    private void OnClickRestart()
+    public void OnClickRestart()
     {
-        // 확인 팝업
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
@@ -38,12 +37,11 @@ public class PausePanel : MonoBehaviour
             () => {
                 GameManager.Instance.RestartLevel();
             },
-            null // No 버튼은 그냥 닫기
+            null 
         );
     }
-    
-    // 메인 홈으로
-    private void OnClickMainHome()
+
+    public void OnClickMainHome()
     {
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
