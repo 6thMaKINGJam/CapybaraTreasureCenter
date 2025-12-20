@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         
-        // 선택된 레벨 로드
+        // TODO : SelectedLevelPanel에서 넘겨준 레벨 받아오기
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
         LoadLevelConfig(selectedLevel);
         
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
     
     private void LoadLevelConfig(int levelIndex)
     {
-        CurrentLevelConfig = Resources.Load<LevelConfig>($"Levels/Level_{levelIndex:00}");
+        CurrentLevelConfig = Resources.Load<LevelConfig>($"LevelData/Level_{levelIndex}");
         if(CurrentLevelConfig == null)
         {
             Debug.LogError($"[GameManager] 레벨 {levelIndex} 설정 파일을 찾을 수 없습니다!");
@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviour
     private void SetupNewGame()
     {
         gameData = new GameData();
-        gameData.CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);
+        gameData.CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);  // TODO : SelectedLevelPanel에서 넘겨준 레벨 받아오기
         gameData.CurrentBoxIndex = 0;
         gameData.GameState = GameState.Playing;
         gameData.StartTime = Time.time;
