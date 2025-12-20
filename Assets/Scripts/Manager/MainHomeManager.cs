@@ -1,8 +1,4 @@
 using UnityEngine;
-<<<<<<< Updated upstream
-=======
-using Scripts.UI;
->>>>>>> Stashed changes
 using UnityEngine.SceneManagement;
 using Scripts.UI;
 
