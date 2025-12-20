@@ -97,3 +97,11 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+Assets/Firebase/google-services.json
+
+Assets/Firebase/google-services.json.meta
+
+Assets/Firebase/GoogleService-Info.plist
+
+Assets/Firebase/GoogleService-Info.plist.meta
