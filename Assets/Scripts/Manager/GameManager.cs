@@ -29,13 +29,12 @@ public class GameManager : MonoBehaviour
     [Header("카피바라 대사 시스템")]
     public CapyDialogue CapyDialogue;
     public TextMeshProUGUI CapyDialogueText; // 대사 표시할 UI Text
-
-    [Header("힌트 로딩 UI")]
-public GameObject HintLoadingUI; // Inspector에서 할당
-
     
     [Header("효과")]
     public Image FlashOverlay; // 빨간 화면 깜박임용 Image (전체 화면 크기)
+
+    [Header("UI 매니저 참조")]
+    public GemCountPanelManager GemCountStatusPanel;
     
     // 게임 데이터
     private GameData gameData;
@@ -136,6 +135,20 @@ public GameObject HintLoadingUI; // Inspector에서 할당
         gameData.ElapsedTime = 0f;
         
         chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
+
+        if(GemCountStatusPanel != null)
+        {
+            // 총 남은 보석 데이터를 기반으로 리스트 생성
+            List<GemBundle> initialGems = new List<GemBundle>();
+            foreach(var kvp in chunkData.TotalRemainingGems)
+            {
+                GemBundle gb = new GemBundle();
+                gb.GemType = kvp.Key;
+                gb.GemCount = kvp.Value;
+                initialGems.Add(gb);
+            }
+            GemCountStatusPanel.InitLevelGemStatus(initialGems);
+        }
         
         gameData.Boxes = new List<Box>(chunkData.AllBoxes);
         gameData.BundlePool = new List<GemBundle>(chunkData.MergedBundlePool);
@@ -161,31 +174,37 @@ public GameObject HintLoadingUI; // Inspector에서 할당
     
     // ========== 묶음 선택/취소 ==========
     private void OnBundleClicked(GemBundlePrefab clickedPrefab)
-{
-    GemBundle bundle = clickedPrefab.GetData();
-    
-    // ===== 추가: 힌트 흔들림 중지 =====
-    GridManager.StopShakingBundle(bundle);
-    
-    if(gameData.SelectedBundles.Contains(bundle))
     {
-        gameData.SelectedBundles.Remove(bundle);
-        clickedPrefab.SetSelected(false);
-    }
-    else
-    {
-        gameData.SelectedBundles.Add(bundle);
-        clickedPrefab.SetSelected(true);
+        GemBundle bundle = clickedPrefab.GetData();
+        
+        if(gameData.SelectedBundles.Contains(bundle))
+        {
+            gameData.SelectedBundles.Remove(bundle);
+            clickedPrefab.SetSelected(false);
+
+            // 해제 시 가벼운 진동이나 소리
+            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
+        }
+        else
+        {
+            // 선택 추가
+            gameData.SelectedBundles.Add(bundle);
+            clickedPrefab.SetSelected(true);
+
+            // 선택 시 효과
+            // clickedPrefab.PlaySelectAnimation();
+            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
+        }
+        
+        // UI 업데이트
+        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+        UIManager.UpdateBoxUI(
+            gameData.CurrentBoxIndex,
+            CalculateSelectedTotal(),
+            GetCurrentBox().RequiredAmount
+        );
     }
     
-    // UI 업데이트
-    UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-    UIManager.UpdateBoxUI(
-        gameData.CurrentBoxIndex,
-        CalculateSelectedTotal(),
-        GetCurrentBox().RequiredAmount
-    );
-}
     public void CancelSelection()
     {
         gameData.SelectedBundles.Clear();
@@ -674,110 +693,29 @@ public GameObject HintLoadingUI; // Inspector에서 할당
         ShowTopNotification("카드가 재배열되었습니다카피!");
     }
     
-   public void ProcessHint()
+    public void ProcessHint()
 {
     string today = System.DateTime.Now.ToString("yyyy-MM-dd");
     string lastHintDate = PlayerPrefs.GetString("LastHintDate", "");
     
     if(lastHintDate == today)
     {
-        AdManager.Instance.ShowRewardedAd((success) =>
+        // [수정됨] 확인 팝업 먼저 표시
+        ShowAdConfirmationPopup(() =>
         {
-            if(success) StartCoroutine(ExecuteHintCoroutine()); // ← 코루틴으로 변경
-        });
+            AdManager.Instance.ShowRewardedAd((success) =>
+            {
+                if(success) ExecuteHint();
+                // ✅ 날짜는 광고 성공 시에만 갱신 (아래에서 처리)
+            });
+        },
+        null);
     }
     else
     {
-        StartCoroutine(ExecuteHintCoroutine()); // ← 코루틴으로 변경
-        PlayerPrefs.SetString("LastHintDate", today);
+        ExecuteHint();
+        PlayerPrefs.SetString("LastHintDate", today); // 무료 사용 시 날짜 갱신
     }
-}
-
-
-
-// ========== 힌트 실행 (코루틴으로 변경) ==========
-private IEnumerator ExecuteHintCoroutine()
-{
-    Box currentBox = GetCurrentBox();
-    
-    // 1. 로딩 UI 활성화
-    if(HintLoadingUI != null)
-    {
-        HintLoadingUI.SetActive(true);
-    }
-    
-    // 2. 첫 프레임 대기 (UI 표시 보장)
-    yield return null;
-    
-    // 3. 조합 찾기 (최대 10회 시도)
-    int maxAttempts = 10;
-    int attempts = 0;
-    List<GemBundle> hintBundles = null;
-    
-    while(hintBundles == null && attempts < maxAttempts)
-    {
-        hintBundles = FindHintCombination(currentBox);
-        
-        if(hintBundles == null)
-        {
-            attempts++;
-            Debug.Log($"[ExecuteHint] 조합 없음. 자동 새로고침 {attempts}회 시도");
-            
-            // 무료 새로고침 (RefreshCount 차감 X)
-            ExecuteRefreshForHint();
-            
-            // 새로고침 후 한 프레임 대기 (시각적 피드백)
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-    
-    // 4. 로딩 UI 비활성화
-    if(HintLoadingUI != null)
-    {
-        HintLoadingUI.SetActive(false);
-    }
-    
-    // 5. 최종 결과 처리
-    RefreshUI(); // UI 한 번만 갱신
-    
-    if(hintBundles != null && hintBundles.Count > 0)
-    {
-        if(attempts > 0)
-        {
-            ShowTopNotification($"{attempts}번의 재배열 끝에 조합을 찾았습니다카피!");
-        }
-        
-        GridManager.ShakeBundles(hintBundles);
-        
-        Debug.Log($"[ExecuteHint] {attempts}번 만에 조합 발견! 총 {hintBundles.Count}개 번들");
-    }
-    else
-    {
-        Debug.LogWarning($"[ExecuteHint] {maxAttempts}회 시도 후에도 조합을 찾지 못함");
-        ShowWarning("지금 남은 경우의 수를 다 계산해봐도 글렀다 카피.. 게임을 다시시작하거나 뒤로 돌리기를 추천카피!");
-    }
-}
-
-// ========== 힌트 전용 새로고침 (무료) ==========
-private void ExecuteRefreshForHint()
-{
-    // 현재 화면의 번들들을 풀에 다시 넣기
-    foreach(var bundle in gameData.CurrentDisplayBundles)
-    {
-        if(!gameData.BundlePool.Contains(bundle))
-        {
-            gameData.BundlePool.Add(bundle);
-        }
-    }
-    
-    // 풀 셔플
-    System.Random rng = new System.Random();
-    gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
-    
-    // 새로운 12개 추출
-    ExtractDisplayBundles();
-    
-    // 참고: RefreshUI()는 ExecuteHintCoroutine에서 마지막에 한 번만 호출
 }
 
 private void ShowAdConfirmationPopup(Action onYes, Action onNo)
@@ -811,20 +749,20 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     );
 }
     
-    // ExecuteHint 수정
-private void ExecuteHint()
-{
-    Box currentBox = GetCurrentBox();
-    List<GemBundle> hintBundles = FindHintCombination(currentBox);
-    
-    if(hintBundles == null || hintBundles.Count == 0)
+    private void ExecuteHint()
     {
-        ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침이 필요카피");
-        return;
+        Box currentBox = GetCurrentBox();
+        List<GemBundle> hintBundles = FindHintCombination(currentBox);
+        
+        if(hintBundles == null || hintBundles.Count == 0)
+        {
+            ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침이 필요카피");
+            return;
+        }
+        UpdateAllItemUI();
+        
     }
-    
-    GridManager.ShakeBundles(hintBundles); // ← 변경!
-}
+
     private void UpdateAllItemUI()
 {
     UIManager.UpdateItemUI(
@@ -834,64 +772,45 @@ private void ExecuteHint()
     );
 }
     
-   // ========== FindHintCombination 수정 (이전에 수정한 버전) ==========
-private List<GemBundle> FindHintCombination(Box targetBox)
-{
-    List<GemBundle> result = new List<GemBundle>();
-    Dictionary<GemType, int> needed = new Dictionary<GemType, int>();
-    
-    // 각 종류별로 1개씩 필요
-    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    private List<GemBundle> FindHintCombination(Box targetBox)
     {
-        needed[(GemType)i] = 1;
-    }
-    
-    int totalNeeded = targetBox.RequiredAmount;
-    int totalGathered = 0;
-    
-    // 1단계: 각 종류 1개씩 (가장 작은 번들 우선)
-    foreach(var bundle in gameData.CurrentDisplayBundles.OrderBy(b => b.GemCount))
-    {
-        if(needed[bundle.GemType] > 0)
-        {
-            result.Add(bundle);
-            totalGathered += bundle.GemCount;
-            needed[bundle.GemType] = 0;
-            
-            if(totalGathered >= totalNeeded)
-            {
-                // 이미 초과했으면 실패 (정확히 맞아야 함)
-                if(totalGathered > totalNeeded)
-                {
-                    return null;
-                }
-                return result;
-            }
-        }
-    }
-    
-    // 2단계: 남은 개수 채우기 (작은 번들부터)
-    foreach(var bundle in gameData.CurrentDisplayBundles.OrderBy(b => b.GemCount))
-    {
-        if(result.Contains(bundle)) continue;
+        List<GemBundle> result = new List<GemBundle>();
+        Dictionary<GemType, int> needed = new Dictionary<GemType, int>();
         
-        if(totalGathered + bundle.GemCount <= totalNeeded)
+        for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
         {
-            result.Add(bundle);
-            totalGathered += bundle.GemCount;
-            
-            if(totalGathered == totalNeeded)
+            needed[(GemType)i] = 1;
+        }
+        
+        int totalNeeded = targetBox.RequiredAmount;
+        int totalGathered = CurrentLevelConfig.GemTypeCount;
+        
+        // 1단계: 각 종류 1개씩
+        foreach(var bundle in gameData.CurrentDisplayBundles)
+        {
+            if(needed[bundle.GemType] > 0)
             {
-                return result; // 정확히 맞음!
+                result.Add(bundle);
+                needed[bundle.GemType] = 0;
             }
         }
+        
+        // 2단계: 남은 개수 채우기
+        foreach(var bundle in gameData.CurrentDisplayBundles)
+        {
+            if(result.Contains(bundle)) continue;
+            
+            if(totalGathered + bundle.GemCount <= totalNeeded)
+            {
+                result.Add(bundle);
+                totalGathered += bundle.GemCount;
+                
+                if(totalGathered == totalNeeded) break;
+            }
+        }
+        
+        return result;
     }
-    
-    // 정확히 맞지 않으면 null 반환
-    Debug.LogWarning($"[FindHintCombination] 정확한 조합 없음. 필요: {totalNeeded}, 모은 것: {totalGathered}");
-    return null;
-}
-
     
     // ========== 일시정지 ==========
     public void TogglePause()
