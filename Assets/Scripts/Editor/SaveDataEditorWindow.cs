@@ -215,7 +215,7 @@ public class SaveDataEditorWindow : EditorWindow
     
     private void LoadProgressData()
     {
-        if(SaveManager.IsSaveExist("ProgressData"))
+        if(SaveManager.HasSaveData("ProgressData"))
         {
             progressData = SaveManager.LoadData<ProgressData>("ProgressData");
             Debug.Log("[SaveDataEditor] ProgressData 로드 완료");
@@ -230,7 +230,7 @@ public class SaveDataEditorWindow : EditorWindow
     
     private void LoadGameData()
     {
-        if(SaveManager.IsSaveExist("GameData"))
+        if(SaveManager.HasSaveData("GameData"))
         {
             gameData = SaveManager.LoadData<GameData>("GameData");
             Debug.Log("[SaveDataEditor] GameData 로드 완료");
