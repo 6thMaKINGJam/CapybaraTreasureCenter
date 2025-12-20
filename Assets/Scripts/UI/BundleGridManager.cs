@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using DG.Tweening; // ← 추가!
 
 public class BundleGridManager : MonoBehaviour
 {
     [Header("프리팹")]
-    public GameObject BundlePrefab; // GemBundlePrefab
+    public GameObject BundlePrefab;
     
     [Header("그리드 부모")]
-    public Transform GridParent; // Grid Layout Group
+    public Transform GridParent;
     
     // 오브젝트 풀
     private List<GemBundlePrefab> pool = new List<GemBundlePrefab>();
@@ -22,15 +23,21 @@ public class BundleGridManager : MonoBehaviour
     
     // 콜백
     private Action<GemBundlePrefab> onBundleClickCallback;
+    
+    // ===== 힌트 흔들림 관련 =====
+    private Dictionary<string, Tweener> shakingTweens = new Dictionary<string, Tweener>(); // BundleID -> Tween
 
     // ========== 그리드 갱신 (12개 묶음 표시) ==========
     public void RefreshGrid(List<GemBundle> newBundles, Action<GemBundlePrefab> clickCallback)
     {
+        // 새로고침 시 흔들림 중지
+        StopAllShaking();
+        
         // 기존 활성화된 묶음 전부 비활성화
         foreach(var bundlePrefab in activeBundles)
         {
             bundlePrefab.gameObject.SetActive(false);
-            bundlePrefab.OnClickBundle -= onBundleClickCallback; // 이벤트 해제
+            bundlePrefab.OnClickBundle -= onBundleClickCallback;
         }
         activeBundles.Clear();
         
@@ -45,22 +52,20 @@ public class BundleGridManager : MonoBehaviour
             prefab.transform.SetParent(GridParent);
             prefab.SetData(bundleData);
             prefab.OnClickBundle += onBundleClickCallback;
-            prefab.SetSelected(false); // 초기 선택 해제
+            prefab.SetSelected(false);
             prefab.gameObject.SetActive(true);
             
             activeBundles.Add(prefab);
         }
     }
 
-    // ========== 단일 묶음 교체 (사용된 묶음 제거 후 새 묶음 추가) ==========
+    // ========== 단일 묶음 교체 ==========
     public void ReplaceBundle(GemBundlePrefab targetPrefab, GemBundle newData, Action<GemBundlePrefab> clickCallback)
     {
-        // 타겟 객체 이벤트 해제 및 비활성화
         targetPrefab.OnClickBundle -= clickCallback;
         targetPrefab.gameObject.SetActive(false);
         activeBundles.Remove(targetPrefab);
         
-        // 새 데이터가 있으면 추가
         if(newData != null)
         {
             GemBundlePrefab newPrefab = GetFromPool();
@@ -82,43 +87,74 @@ public class BundleGridManager : MonoBehaviour
         }
     }
 
-    // ========== 힌트: 특정 묶음들 강조 ==========
-    public void HighlightBundles(List<GemBundle> bundlesToHighlight, float duration)
+    // ========== 힌트: 특정 묶음들 흔들기 (제자리 회전) ==========
+    public void ShakeBundles(List<GemBundle> bundlesToShake)
     {
-        StartCoroutine(HighlightCoroutine(bundlesToHighlight, duration));
-    }
-
-    private IEnumerator HighlightCoroutine(List<GemBundle> bundlesToHighlight, float duration)
-    {
-        List<GemBundlePrefab> highlightedPrefabs = new List<GemBundlePrefab>();
+        // 기존 흔들림 전부 정지
+        StopAllShaking();
         
-        // 강조 표시
-        foreach(var bundleData in bundlesToHighlight)
+        foreach(var bundleData in bundlesToShake)
         {
             GemBundlePrefab prefab = FindPrefabByData(bundleData);
             if(prefab != null)
             {
-                prefab.transform.localScale *= 1.2f; // 크기 확대
-                highlightedPrefabs.Add(prefab);
+                // DOTween으로 Z축 회전 (-5° ~ +5° 왕복)
+                Tweener shakeTween = prefab.transform
+                    .DORotate(new Vector3(0, 0, 5f), 0.1f) // 5도 회전, 0.1초
+                    .SetLoops(-1, LoopType.Yoyo) // 무한 왕복
+                    .SetEase(Ease.InOutSine); // 부드러운 곡선
+                
+                shakingTweens[bundleData.BundleID] = shakeTween;
+            }
+        }
+    }
+
+    // ========== 흔들림 중지 (터치한 번들만) ==========
+    public void StopShakingBundle(GemBundle bundleData)
+    {
+        if(!shakingTweens.ContainsKey(bundleData.BundleID)) return;
+        
+        // Tween 중지
+        Tweener tween = shakingTweens[bundleData.BundleID];
+        if(tween != null && tween.IsActive())
+        {
+            tween.Kill();
+        }
+        
+        // 원래 각도로 복귀
+        GemBundlePrefab prefab = FindPrefabByData(bundleData);
+        if(prefab != null)
+        {
+            prefab.transform.rotation = Quaternion.identity;
+        }
+        
+        shakingTweens.Remove(bundleData.BundleID);
+    }
+
+    // ========== 모든 흔들림 중지 ==========
+    private void StopAllShaking()
+    {
+        foreach(var kvp in shakingTweens)
+        {
+            if(kvp.Value != null && kvp.Value.IsActive())
+            {
+                kvp.Value.Kill();
             }
         }
         
-        // 지속 시간 대기
-        yield return new WaitForSeconds(duration);
-        
-        // 원래대로 복구
-        foreach(var prefab in highlightedPrefabs)
+        // 모든 번들 각도 초기화
+        foreach(var prefab in activeBundles)
         {
-            prefab.transform.localScale /= 1.2f;
+            prefab.transform.rotation = Quaternion.identity;
         }
+        
+        shakingTweens.Clear();
     }
 
     // ========== 유틸리티 ==========
     
-    // 풀에서 사용 가능한 객체 가져오기
     private GemBundlePrefab GetFromPool()
     {
-        // 비활성화된 객체 찾기
         foreach(var prefab in pool)
         {
             if(!prefab.gameObject.activeSelf)
@@ -127,7 +163,6 @@ public class BundleGridManager : MonoBehaviour
             }
         }
         
-        // 없으면 새로 생성
         GameObject obj = Instantiate(BundlePrefab);
         GemBundlePrefab script = obj.GetComponent<GemBundlePrefab>();
         pool.Add(script);
@@ -135,7 +170,6 @@ public class BundleGridManager : MonoBehaviour
         return script;
     }
 
-    // 데이터로 Prefab 찾기 (BundleID 기준)
     private GemBundlePrefab FindPrefabByData(GemBundle bundleData)
     {
         foreach(var prefab in activeBundles)
