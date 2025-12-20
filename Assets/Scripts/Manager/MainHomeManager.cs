@@ -1,5 +1,4 @@
 using UnityEngine;
-using Scripts.Manager; // NetworkManager 접근을 위해 추가
 using UnityEngine.SceneManagement;
 using Scripts.UI;
 
@@ -10,6 +9,8 @@ public class MainHomeManager : MonoBehaviour
     [SerializeField] private LevelSelectPanel levelSelectUI;
     [SerializeField] private HowToPlayPanel howToPlayUI;
     [SerializeField] private HallOfFamePanel hallOfFameUI;
+
+    [SerializeField] private CanvasGroup mainCanvasGroup;
 
     private ProgressData currentProgress;
     private const string SaveKey = "ProgressData";
@@ -46,21 +47,24 @@ public class MainHomeManager : MonoBehaviour
     private void CheckAndRunEndingSequence()
     {
         // 조건: 레벨 4를 클리어했으나 아직 엔딩 시퀀스를 보지 않은 경우
-        // ProgressData의 변수명은 제공해주신 1-C 정의를 따릅니다.
         if (currentProgress.LastClearedLevel >= 4 && !currentProgress.hasSeenLevel4Ending)
         {
             // 네트워크 상태 확인
             if (NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())
             {
-                Debug.Log("엔딩 시퀀스로 진입합니다.");
-                // 엔딩 시퀀스(7-D) 프리팹을 열거나 엔딩 씬으로 이동
+                // 입력 잠금 설정 (선택 사항 구현)
+                if (mainCanvasGroup != null) mainCanvasGroup.interactable = false;
+                
+                Debug.Log("엔딩 시퀀스로 진입합니다. 버튼 입력이 잠깁니다.");
+                
+                // 씬 전환 또는 엔딩 프리팹 활성화
                 SceneManager.LoadScene("EndingScene"); 
             }
             else
             {
-                // 네트워크 없으면 경고 팝업 표시 후 메인 홈 유지
-                Debug.LogWarning("네트워크 연결이 없어 엔딩을 재생할 수 없습니다.");
-                // TODO: BaseWarningPopup.Instance.Show("네트워크 연결이 필요합니다.");
+                // 네트워크 없으면 경고 메시지 출력
+                Debug.LogWarning("네트워크 연결 후 재접속 시 엔딩을 감상할 수 있습니다.");
+                // TODO: BaseWarningPopup.Instance.Show("네트워크 연결 후 재접속하여 엔딩을 확인하세요.");
             }
         }
     }
