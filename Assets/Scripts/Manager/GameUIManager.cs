@@ -56,14 +56,14 @@ public class GameUIManager : MonoBehaviour
     }
     //상자 진행도 표시 업데이트
     public void UpdateBoxUI (int boxNum, int currentBox, int totalBoxes) {
-        BoxIndexText.text = "상자 #" + boxNum;
-        BoxProgressText.text = $"currentBox / totalBoxes";
+        BoxIndexText.text = "상자 #" + (boxNum + 1);
+        BoxProgressText.text = $"{currentCapacity} / {targetCapacity}";
 
-        //totalBoxes = currentBox일 때 완료 버튼 활성화
-        CompleteButton.interactable = (currentBox == totalBoxes);
+        //totalBoxes = currentBox일 때 (용량 맞을 때) 완료 버튼 활성화
+        CompleteButton.interactable = (currentCapacity == targetCapacity);
     }
 
-    //일시정지 버튼을 눌렀을 때 팝업
+    // 일시정지 버튼을 눌렀을 때 팝업
     public void OpenPausePopup() {
         if (PausePopupPanel != null) {
             PausePopupPanel.SetActive(true); // 팝업 켜기
