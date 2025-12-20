@@ -1,6 +1,6 @@
 using UnityEngine;
 using Scripts.UI;
-using Scripts.Managers; // NetworkManager 접근을 위해 추가
+using Scripts.Manager; // NetworkManager 접근을 위해 추가
 using UnityEngine.SceneManagement;
 
 public class MainHomeManager : MonoBehaviour
