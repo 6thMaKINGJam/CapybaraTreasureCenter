@@ -68,6 +68,8 @@ public class GameManager : MonoBehaviour
         LevelStartTime = Time.time;
         CurrentState = GameState.Playing;
         StartCoroutine(CheckTimeOverLimit());
+
+        GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
     }
 
     private void SetupNewGame()
@@ -98,6 +100,8 @@ public class GameManager : MonoBehaviour
     {
         SelectedInCurrentBox.Clear();
         CurrentCapacity = 0;
+        // UI 업데이트
+        GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
         Debug.Log($"선택 취소. 상자를 비움.");
     }
 
@@ -120,6 +124,8 @@ public class GameManager : MonoBehaviour
 
         SelectedInCurrentBox.Clear();
         CurrentBoxIndex++;
+        CurrentCapacity = 0;
+        GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
 
         // ! SaveManager.Save("GameState", this);
         Debug.Log($"{CurrentBoxIndex}번째 상자 완료.");
@@ -239,6 +245,8 @@ public class GameManager : MonoBehaviour
             if(CurrentState == GameState.Playing)
             {
                 RemainingTime -= Time.deltaTime;
+                // 타이머 슬라이더 업데이트
+                GameUIManager.Instance.TimerSlider.Value = RemainingTime / CurrentLevelLimitTime;
             }
 
             if(RemainingTime <= 0)
