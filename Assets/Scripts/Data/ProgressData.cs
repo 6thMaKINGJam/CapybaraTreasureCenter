@@ -16,6 +16,8 @@ public class ProgressData
     public bool TutorialCompleted; // 4. 튜토리얼 완료 여부 (추가.효빈)
 
     public bool EndingCompleted; //5.엔딩 완료 여부 추가.효빈
+
+    public bool hasSeenLevel4Ending; // 6.레벨4 엔딩 시퀀스 시청 여부 추가.연주
     
 
 

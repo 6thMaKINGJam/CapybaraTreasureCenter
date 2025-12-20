@@ -1,52 +1,72 @@
 using UnityEngine;
+using Firebase; // Firebase 의존성 확인을 위해 필요
+using Firebase.Extensions;
 
-namespace Scripts.Managers
+
+public class NetworkManager : MonoBehaviour
 {
-    public class NetworkManager : MonoBehaviour
-    {
-        public static NetworkManager Instance { get; private set; }
+    public static NetworkManager Instance { get; private set; }
 
-        private void Awake()
+    // Firebase 초기화 상태 확인용 변수
+    public bool IsFirebaseReady { get; private set; } = false;
+
+    private void Awake()
+    {
+        if (Instance == null)
         {
-            if (Instance == null)
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeFirebase(); // 시작 시 Firebase 상태 확인
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 인터넷 연결 가용성을 확인하는 메서드 (기획안 명칭 준수)
+    /// </summary>
+    public bool IsNetworkAvailable()
+    {
+        // NotReachable이면 false, 그 외(WIFI/데이터) true
+        return Application.internetReachability != NetworkReachability.NotReachable;
+    }
+
+    /// <summary>
+    /// Firebase 의존성 및 초기화 완료 여부 확인 (선택 사항 구현)
+    /// </summary>
+    private void InitializeFirebase()
+    {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == DependencyStatus.Available)
             {
-                Instance = this;
-                DontDestroyOnLoad(gameObject); // 씬이 바뀌어도 유지
+                IsFirebaseReady = true;
+                Debug.Log("Firebase가 정상적으로 초기화되었습니다.");
             }
             else
             {
-                Destroy(gameObject);
+                IsFirebaseReady = false;
+                Debug.LogError($"Firebase 의존성을 해결할 수 없습니다: {dependencyStatus}");
             }
-        }
+        });
+    }
 
-        /// <summary>
-        /// 인터넷 연결 상태를 확인하는 메서드
-        /// </summary>
-        /// <returns>연결되어 있으면 true, 아니면 false</returns>
-        public bool IsConnected()
+    // 기존 상세 상태 확인 메서드 유지
+    public void CheckNetworkStatus()
+    {
+        switch (Application.internetReachability)
         {
-            // Application.internetReachability는 기기의 네트워크 상태를 반환합니다.
-            // NotReachable이 아니라면 WIFI나 데이터 통신 중임을 의미합니다.
-            return Application.internetReachability != NetworkReachability.NotReachable;
-        }
-
-        /// <summary>
-        /// 현재 연결된 네트워크의 상세 종류 확인 (참고용)
-        /// </summary>
-        public void CheckNetworkStatus()
-        {
-            switch (Application.internetReachability)
-            {
-                case NetworkReachability.NotReachable:
-                    Debug.Log("네트워크에 연결되어 있지 않습니다.");
-                    break;
-                case NetworkReachability.ReachableViaCarrierDataNetwork:
-                    Debug.Log("모바일 데이터로 연결되었습니다.");
-                    break;
-                case NetworkReachability.ReachableViaLocalAreaNetwork:
-                    Debug.Log("WIFI 혹은 LAN으로 연결되었습니다.");
-                    break;
-            }
+            case NetworkReachability.NotReachable:
+                Debug.Log("네트워크에 연결되어 있지 않습니다.");
+                break;
+            case NetworkReachability.ReachableViaCarrierDataNetwork:
+                Debug.Log("모바일 데이터로 연결되었습니다.");
+                break;
+            case NetworkReachability.ReachableViaLocalAreaNetwork:
+                Debug.Log("WIFI 혹은 LAN으로 연결되었습니다.");
+                break;
         }
     }
 }

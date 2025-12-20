@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Scripts.UI
 {
-    public class MainHomeUI : MonoBehaviour
+    public class MainHomePanel : MonoBehaviour
     {
         [Header("Panels")]
         [SerializeField] private GameObject mainPanel;
