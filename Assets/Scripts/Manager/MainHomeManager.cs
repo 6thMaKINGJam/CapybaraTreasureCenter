@@ -6,6 +6,7 @@ public class MainHomeManager : MonoBehaviour
     [SerializeField] private MainHomeUI mainHomeUI;
     [SerializeField] private LevelSelectUI levelSelectUI;
     [SerializeField] private HowToPlayUI howToPlayUI;
+    [SerializeField] private HallOfFameUI hallOfFameUI;
 
     private ProgressData currentProgress;
 
@@ -51,4 +52,7 @@ public class MainHomeManager : MonoBehaviour
         mainHomeUI.OpenPanel(mainHomeUI.HallOfFamePanel);
         // hallOfFameUI.SetupRecords(currentProgress.level4ClearTimes);
     }
+
+    // TODO: 엔딩씬 봤는지 확인하고 보지 않았다면 엔딩씬으로 이동하는 코드 필요
+
 }

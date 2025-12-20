@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 namespace Scripts.UI
@@ -21,7 +22,7 @@ namespace Scripts.UI
             for (int i = 0; i < clearTimes.Count; i++)
             {
                 GameObject item = Instantiate(recordPrefab, contentParent);
-                // 여기서 item 내의 Text 컴포넌트에 시간을 입력하는 로직을 수행합니다.
+                // TODO: item 내의 Text 컴포넌트에 시간을 입력하는 로직
                 // 예: item.GetComponent<RecordItem>().SetData(i + 1, clearTimes[i]);
             }
         }
