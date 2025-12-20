@@ -62,11 +62,9 @@ public class EndingManager : MonoBehaviour
     
     private bool CheckNetworkConnection()
     {
-        // TODO: NetworkManager 구현 후 실제 네트워크 체크
-        // return NetworkManager.Instance.IsConnected();
+        return NetworkManager.Instance.IsNetworkAvailable();
         
-        // 임시: 항상 연결된 것으로 처리 (테스트용)
-        return Application.internetReachability != NetworkReachability.NotReachable;
+        
     }
     
     private void ShowNetworkWarning()
@@ -228,13 +226,17 @@ public class EndingManager : MonoBehaviour
                 );
             }
         }
-        else if (sequence.DialogType == EndingDialogType.NicknameInput)
+       else if (sequence.DialogType == EndingDialogType.NicknameInput)
+    {
+        NicknameInputDialog nicknameDialog = dialog.GetComponent<NicknameInputDialog>();
+        
+        if (nicknameDialog != null)
         {
-            NicknameInputDialog nicknameDialog = dialog.GetComponent<NicknameInputDialog>();
-            if (nicknameDialog != null)
-            {
-                nicknameDialog.Setup( OnNicknameConfirmed);
-            }
+            nicknameDialog.Setup(
+                successCallback: () => CompleteEnding(),
+                failureCallback: () => { /* 실패 시 처리 없음 */ }
+            );
+        }
         }
     }
     

@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Scripts.UI;
+using UnityEngine.SceneManagement;
 
 
 public class LevelSelectPanel : MonoBehaviour

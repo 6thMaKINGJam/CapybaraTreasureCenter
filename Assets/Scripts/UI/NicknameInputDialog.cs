@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class NicknameInputDialog : MonoBehaviour
 {
@@ -14,80 +15,105 @@ public class NicknameInputDialog : MonoBehaviour
     private int retryCount = 0;
     private const int MAX_RETRY = 3;
     
-    public void Setup( Action<string> confirmCallback)
+   private Action onSuccessCallback;
+private Action onFailureCallback;
+
+public void Setup(Action successCallback, Action failureCallback)
+{
+    onSuccessCallback = successCallback;
+    onFailureCallback = failureCallback;
+    
+    LoadingPanel.SetActive(false);
+    
+    ConfirmButton.onClick.RemoveAllListeners();
+    ConfirmButton.onClick.AddListener(OnClickConfirm);
+    
+    NicknameInputField.ActivateInputField();
+}
+
+    private void OnClickConfirm()
+{
+    string nickname = NicknameInputField.text.Trim();
+    
+    if (string.IsNullOrWhiteSpace(nickname))
     {
-       
-        onConfirmCallback = confirmCallback;
-        
-        LoadingPanel.SetActive(false);
-        
-        ConfirmButton.onClick.RemoveAllListeners();
-        ConfirmButton.onClick.AddListener(OnClickConfirm);
-        
-        // InputField 포커스
-        NicknameInputField.ActivateInputField();
+        ShowWarning("닉네임을 입력해주세요.");
+        return;
     }
     
-    private void OnClickConfirm()
+    ShowLoading();
+    
+    // 중복 체크
+    StartCoroutine(CheckAndRegister(nickname));
+}
+
+private IEnumerator CheckAndRegister(string nickname)
+{
+    var checkTask = RankingManager.Instance.IsNicknameExists(nickname);
+    yield return new WaitUntil(() => checkTask.IsCompleted);
+    
+    if (checkTask.Result)
     {
-        string nickname = NicknameInputField.text.Trim();
-        
-        // 공백 체크
-        if (string.IsNullOrWhiteSpace(nickname))
-        {
-            ShowWarning("닉네임을 입력해주세요.");
-            return;
-        }
-        
-        // TODO: RankingManager 구현 후 중복 체크
-        // if (RankingManager.Instance.IsNicknameExists(nickname))
-        // {
-        //     ShowWarning("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.");
-        //     return;
-        // }
-        
-        // 로딩 표시
-        ShowLoading();
-        
-        // 랭킹 등록 시도
-        RegisterToRanking(nickname);
+        HideLoading();
+        ShowWarning("이미 사용 중인 닉네임입니다.\n다른 닉네임을 입력해주세요.");
+        yield break;
     }
+    
+    RegisterToRanking(nickname);
+}
+
     
     private void RegisterToRanking(string nickname)
-    {
-        // TODO: RankingManager 구현 후 Firebase 등록
-        // RankingManager.Instance.RegisterRanking(nickname, score, OnRegistrationSuccess, OnRegistrationFailed);
-        
-        // 임시: 2초 후 성공으로 처리 (테스트용)
-        Invoke(nameof(OnRegistrationSuccess), 2f);
-    }
+{
+    // ProgressData에서 BestTime 로드
+    ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+    long bestTime = progressData.BestTime;
+    
+    RankingManager.Instance.RegisterRanking(
+        nickname, 
+        bestTime, 
+        OnRegistrationSuccess, 
+        OnRegistrationFailed
+    );
+}
+
+
     
     private void OnRegistrationSuccess()
-    {
-        Debug.Log("[NicknameInputDialog] 랭킹 등록 성공!");
-        HideLoading();
-        onConfirmCallback?.Invoke(NicknameInputField.text.Trim());
-    }
-    
+{
+    Debug.Log("[NicknameInputDialog] 랭킹 등록 성공!");
+    HideLoading();
+    onSuccessCallback?.Invoke();
+}
     private void OnRegistrationFailed(string error)
-    {
-        Debug.LogError($"[NicknameInputDialog] 랭킹 등록 실패: {error}");
-        HideLoading();
-        
-        retryCount++;
-        
-        if (retryCount >= MAX_RETRY)
-        {
-            // 3회 재시도 실패
-            ShowFinalWarning();
-        }
-        else
-        {
-            // 재시도 안내
-            ShowWarning($"랭킹 등록에 실패했습니다.\n다시 시도해주세요. ({retryCount}/{MAX_RETRY})");
-        }
-    }
+{
+    Debug.LogError($"[NicknameInputDialog] 랭킹 등록 실패: {error}");
+    HideLoading();
     
+    retryCount++;
+    
+    if (retryCount >= MAX_RETRY)
+    {
+        ShowFinalWarning();
+    }
+    else
+    {
+        ShowRetryWarning();
+    }
+}
+
+private void ShowRetryWarning()
+{
+    GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"), transform.parent);
+    BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
+    popup.Setup("네트워크 등 문제로 랭킹 등록에 실패하였습니다.\n다시 한 번 확인 후 재시도 해주세요.", () => {
+        // 재시도
+        string nickname = NicknameInputField.text.Trim();
+        ShowLoading();
+        RegisterToRanking(nickname);
+    });
+}
+
     private void ShowLoading()
     {
         LoadingPanel.SetActive(true);

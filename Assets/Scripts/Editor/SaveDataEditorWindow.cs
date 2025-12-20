@@ -56,9 +56,9 @@ public class SaveDataEditorWindow : EditorWindow
             
             // 마지막 클리어 레벨
             int lastClearedLevel = EditorGUILayout.IntField("마지막 클리어 레벨", progressData.LastClearedLevel);
-            
-            // 최고 점수
-            int bestScore = EditorGUILayout.IntField("최고 점수", progressData.BestScore);
+
+            // 최고 시간 기록
+            int bestTime = EditorGUILayout.IntField("최고 시간 기록", progressData.BestTime);
             
             // 총 보석 개수
             int totalGemCount = EditorGUILayout.IntField("총 보석 개수", progressData.TotalGemCount);
@@ -67,7 +67,7 @@ public class SaveDataEditorWindow : EditorWindow
             {
                 progressData.TutorialCompleted = tutorialCompleted;
                 progressData.LastClearedLevel = lastClearedLevel;
-                progressData.BestScore = bestScore;
+                progressData.BestTime = bestTime;
                 progressData.TotalGemCount = totalGemCount;
             }
             

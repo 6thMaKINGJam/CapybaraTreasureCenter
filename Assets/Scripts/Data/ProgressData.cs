@@ -10,7 +10,7 @@ using System;
 public class ProgressData
 {
     public int LastClearedLevel; // 1. 마지막으로 클리어했던 레벨
-    public int BestScore; // 2. 최고 기록
+    public int BestTime; // 2. 최고 시간 기록 (수정.효빈 bestScore -> bestTime)
     public int TotalGemCount; // 3. 누적 획득한 보석 수
 
     public bool TutorialCompleted; // 4. 튜토리얼 완료 여부 (추가.효빈)
@@ -26,9 +26,10 @@ public class ProgressData
     public ProgressData()
     {
         LastClearedLevel = 0;
-        BestScore = 0;
+        BestTime = 0;
         TotalGemCount = 0;
         TutorialCompleted = false;
         EndingCompleted = false; // 추가
+        hasSeenLevel4Ending = false; // 추가
     }
 }
