@@ -7,9 +7,9 @@ public class GemBundlePrefab : MonoBehaviour
     public Image GemIcon;
     public Outline Outline;
     
-    [Header("보석 스프라이트 매핑")]
-    [Tooltip("Red 1개, Red 2개, Red 3개, Red 4개, Blue 1개, ... 순서")]
-    public Sprite[] GemSprites; // 5종 x 4개 = 20개 스프라이트
+    [Header("스프라이트 데이터베이스")]
+    [Tooltip("Resources/GemSpriteDatabase를 할당하세요")]
+    public GemSpriteDatabase SpriteDatabase;
     
     private GemBundle bundleData;
     public event Action<GemBundlePrefab> OnClickBundle;
@@ -18,19 +18,16 @@ public class GemBundlePrefab : MonoBehaviour
     {
         bundleData = data;
         
-        // ===== 계산식으로 인덱스 구하기 =====
-        // GemType: Red(0), Blue(1), Green(2), Yellow(3), Purple(4)
-        // Count: 1~4
-        // Index = GemType * 4 + (Count - 1)
-        int index = (int)data.GemType * 4 + (data.GemCount - 1);
-        
-        if(index >= 0 && index < GemSprites.Length && GemSprites[index] != null)
+        if(SpriteDatabase == null)
         {
-            GemIcon.sprite = GemSprites[index];
+            Debug.LogError("[GemBundlePrefab] SpriteDatabase가 할당되지 않았습니다!");
+            return;
         }
-        else
+        
+        Sprite sprite = SpriteDatabase.GetSprite(data.GemType, data.GemCount);
+        if(sprite != null)
         {
-            Debug.LogError($"[GemBundlePrefab] 스프라이트 인덱스 오류: {data.GemType} x{data.GemCount} (index: {index})");
+            GemIcon.sprite = sprite;
         }
     }
     
