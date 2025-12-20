@@ -4,9 +4,6 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
-// 게임 상태 정의
-public enum GameState { Ready, Playing, Win, GameOver, TimeOver }
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
