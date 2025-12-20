@@ -60,14 +60,6 @@ public class GameManager : MonoBehaviour
     public void InitGame()
     {
         Time.timeScale = 1f;
-<<<<<<< Updated upstream
-        CurrentState = GameState.Ready;
-        Debug.Log($"게임 준비.");
-
-        CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);
-
-        if (SaveManager.HasSaveData("GameState"))
-=======
         
         // 선택된 레벨 로드
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
@@ -75,7 +67,6 @@ public class GameManager : MonoBehaviour
         
         // 이어하기 확인
         if(SaveManager.HasSaveData("GameData"))
->>>>>>> Stashed changes
         {
             LoadGameData();
         }
@@ -83,16 +74,6 @@ public class GameManager : MonoBehaviour
         {
             SetupNewGame();
         }
-<<<<<<< Updated upstream
-
-        LevelStartTime = Time.time;
-        CurrentState = GameState.Playing;
-        StartCoroutine(CheckTimeOverLimit());
-
-        // 안전하게 UI 업데이트
-        if(GameUIManager.Instance != null)
-           GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
-=======
         
         // 시간 체크 시작
         levelStartTime = Time.time;
@@ -106,7 +87,6 @@ public class GameManager : MonoBehaviour
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
         }
->>>>>>> Stashed changes
     }
     
     private void LoadLevelConfig(int levelIndex)
@@ -509,11 +489,6 @@ public class GameManager : MonoBehaviour
         {
             if(gameData.GameState == GameState.Playing)
             {
-<<<<<<< Updated upstream
-                RemainingTime -= Time.deltaTime;
-                // 타이머 슬라이더 업데이트
-                GameUIManager.Instance.TimerSlider.value = RemainingTime / CurrentLevelLimitTime;
-=======
                 float elapsed = Time.time - levelStartTime + gameData.ElapsedTime;
                 float remaining = timeLimit - elapsed;
                 
@@ -534,7 +509,6 @@ public class GameManager : MonoBehaviour
                     HandleTimeOver();
                     yield break;
                 }
->>>>>>> Stashed changes
             }
             
             yield return null;
