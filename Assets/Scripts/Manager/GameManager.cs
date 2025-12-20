@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;
-using System.Diagnostics;
 
 public class GameManager : MonoBehaviour
 {
@@ -221,7 +220,7 @@ public class GameManager : MonoBehaviour
 
         else if(CurrentState == GameState.Paused)
         {
-            CurrentState = LoadGameState.Playing;
+            CurrentState = GameState.Playing;
             Time.timeScale = 1f; // 게임 재개
             Debug.Log($"게임 재개");
         }
