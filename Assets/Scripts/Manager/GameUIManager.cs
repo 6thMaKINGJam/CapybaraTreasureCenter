@@ -57,6 +57,8 @@ public class GameUIManager : MonoBehaviour
         if(ResumeButton != null)
         {
             ResumeButton.onClick.AddListener(() => GameManager.Instance.Resume());
+        }else{
+            Debug.LogError("<color=red>[UI]</color> ResumeButton이 인스펙터에 할당되지 않았습니다카피!");
         }
         HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
         CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());

@@ -70,7 +70,7 @@ public class LevelSelectPanel : MonoBehaviour
                 // 해제된 레벨: PlayerPrefs 저장 후 이동
                 PlayerPrefs.SetInt(SelectedLevelKey, levelNum);
                 PlayerPrefs.Save();
-                SceneManager.LoadScene("GameScene");
+                SceneManager.LoadScene("Game");
             }
             else
             {

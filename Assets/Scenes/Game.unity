@@ -1304,7 +1304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6.185089, y: 43.26416}
+  m_AnchoredPosition: {x: -6.1850586, y: 43.26416}
   m_SizeDelta: {x: -281.1799, y: -1762.4492}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &302145876
@@ -2110,11 +2110,12 @@ MonoBehaviour:
   BoxIndexText: {fileID: 868503436}
   BoxProgressText: {fileID: 1724088621}
   PauseButton: {fileID: 592469689}
+  ResumeButton: {fileID: 13634995}
   HintButton: {fileID: 823656929}
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
-  RefreshButton: {fileID: 0}
+  RefreshButton: {fileID: 1768813380}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
 --- !u!114 &637300472

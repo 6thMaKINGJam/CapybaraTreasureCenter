@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine.UI;
+using Scripts.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -159,6 +161,8 @@ public class GameManager : MonoBehaviour
             gameData.SelectedBundles.Remove(bundle);
             clickedPrefab.SetSelected(false);
 
+            // 해제 시 가벼운 진동이나 소리
+            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
         }
         else
         {
@@ -166,6 +170,9 @@ public class GameManager : MonoBehaviour
             gameData.SelectedBundles.Add(bundle);
             clickedPrefab.SetSelected(true);
 
+            // 선택 시 효과
+            // clickedPrefab.PlaySelectAnimation();
+            // VibrationManager.Instance.Vibrate(VibrationPattern.Light);
         }
         
         // UI 업데이트
@@ -488,34 +495,37 @@ public class GameManager : MonoBehaviour
     {
         float timeLimit = CurrentLevelConfig.TimeLimit;
         bool lowTimeWarningShown = false;
-        
+
+        // gameData.ElapsedTime을 0으로 시작하거나 유지
         while(true)
         {
             if(gameData.GameState == GameState.Playing)
             {
-                float elapsed = Time.time - levelStartTime + gameData.ElapsedTime;
-                float remaining = timeLimit - elapsed;
+                // 매 프레임 흐른 시간을 누적 (timeScale이 0이면 0이 더해짐)
+                gameData.ElapsedTime += Time.deltaTime; 
                 
-                UIManager.TimerSlider.value = remaining / timeLimit;
+                float remaining = timeLimit - gameData.ElapsedTime;
                 
-                // ===== CapyDialogue 연결: 시간 부족 경고 =====
+                // UI 업데이트
+                if (UIManager.TimerSlider != null)
+                    UIManager.TimerSlider.value = Mathf.Clamp01(remaining / timeLimit);
+
+                // 경고 로직
                 if(!lowTimeWarningShown && remaining <= 30f && remaining > 0f)
                 {
                     if(CapyDialogue != null && CapyDialogueText != null)
-                    {
                         CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.TimeLowWarning);
-                    }
                     lowTimeWarningShown = true;
                 }
-                
+
+                // 타임오버
                 if(remaining <= 0)
                 {
                     HandleTimeOver();
                     yield break;
                 }
             }
-            
-            yield return null;
+            yield return null; // 다음 프레임까지 대기
         }
     }
     
@@ -526,7 +536,12 @@ public class GameManager : MonoBehaviour
         
         string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
         
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
+        GameObject popupObj = Resources.Load<GameObject>("Prefab/BaseConfirmationPopup");
+        if (popupObj == null)
+        {
+            Debug.LogError("프리팹을 찾을 수 없습니다카피! 경로와 폴더 이름을 확인하세요.");
+            return;
+        }
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
             randomMsg,
@@ -699,18 +714,23 @@ public class GameManager : MonoBehaviour
         if(gameData.GameState == GameState.Playing)
         {
             gameData.GameState = GameState.Paused;
-            gameData.ElapsedTime += Time.time - levelStartTime;
+            // levelStartTime 누적 코드 삭제
             Time.timeScale = 0f;
             UIManager.PausePopupPanel.SetActive(true);
         }
     }
-    
+
     public void Resume()
     {
         gameData.GameState = GameState.Playing;
-        levelStartTime = Time.time;
+        // levelStartTime = Time.time; <- 이 줄 삭제
         Time.timeScale = 1f;
-        UIManager.PausePopupPanel.SetActive(false);
+        
+        if (UIManager.PausePopupPanel != null)
+        {
+            UIManager.PausePopupPanel.transform.DOKill();
+            UIManager.PausePopupPanel.SetActive(false);
+        }
     }
     
     public void RestartLevel()
