@@ -15,6 +15,9 @@ public class ProgressData
 
     public bool TutorialCompleted; // 4. 튜토리얼 완료 여부 (추가.효빈)
 
+    public bool EndingCompleted; //5.엔딩 완료 여부 추가.효빈
+    
+
 
 
     // 4. 그리고 진행/기록 데이터 초기화 
@@ -24,5 +27,6 @@ public class ProgressData
         BestScore = 0;
         TotalGemCount = 0;
         TutorialCompleted = false;
+        EndingCompleted = false; // 추가
     }
 }

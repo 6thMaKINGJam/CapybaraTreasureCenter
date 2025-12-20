@@ -3,43 +3,41 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-public class TutorialEditorWindow : EditorWindow
+public class EndingEditorWindow : EditorWindow
 {
-    private TutorialManager tutorialManager;
+    private EndingManager endingManager;
     private Vector2 scrollPosition;
     private int selectedSequenceIndex = -1;
     
-    [MenuItem("Window/Tutorial Editor")]
+    [MenuItem("Window/Ending Editor")]
     public static void ShowWindow()
     {
-        GetWindow<TutorialEditorWindow>("Tutorial Editor");
+        GetWindow<EndingEditorWindow>("Ending Editor");
     }
     
     private void OnEnable()
     {
-        // Scene에서 TutorialManager 찾기
-        FindTutorialManager();
+        FindEndingManager();
     }
     
     private void OnGUI()
     {
-        EditorGUILayout.LabelField("튜토리얼 에디터", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("엔딩 에디터", EditorStyles.boldLabel);
         EditorGUILayout.Space();
         
-        // TutorialManager 선택
-        tutorialManager = (TutorialManager)EditorGUILayout.ObjectField(
-            "Tutorial Manager",
-            tutorialManager,
-            typeof(TutorialManager),
+        endingManager = (EndingManager)EditorGUILayout.ObjectField(
+            "Ending Manager",
+            endingManager,
+            typeof(EndingManager),
             true
         );
         
-        if(tutorialManager == null)
+        if(endingManager == null)
         {
-            EditorGUILayout.HelpBox("Scene에 TutorialManager를 배치하거나 위 필드에 할당하세요.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Scene에 EndingManager를 배치하거나 위 필드에 할당하세요.", MessageType.Warning);
             if(GUILayout.Button("Scene에서 찾기"))
             {
-                FindTutorialManager();
+                FindEndingManager();
             }
             return;
         }
@@ -60,10 +58,9 @@ public class TutorialEditorWindow : EditorWindow
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space();
         
-        // 시퀀스 리스트
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         
-        for(int i = 0; i < tutorialManager.Sequences.Count; i++)
+        for(int i = 0; i < endingManager.Sequences.Count; i++)
         {
             DrawSequence(i);
         }
@@ -73,7 +70,7 @@ public class TutorialEditorWindow : EditorWindow
     
     private void DrawSequence(int index)
     {
-        TutorialSequence sequence = tutorialManager.Sequences[index];
+        EndingSequence sequence = endingManager.Sequences[index];
         
         EditorGUILayout.BeginVertical("box");
         
@@ -90,20 +87,20 @@ public class TutorialEditorWindow : EditorWindow
         
         EditorGUILayout.LabelField(foldoutText, EditorStyles.boldLabel);
         
-        // 위로/아래로 이동 버튼
+        // 위로/아래로 이동
         GUI.enabled = index > 0;
         if(GUILayout.Button("↑", GUILayout.Width(30)))
         {
             MoveSequence(index, -1);
         }
-        GUI.enabled = index < tutorialManager.Sequences.Count - 1;
+        GUI.enabled = index < endingManager.Sequences.Count - 1;
         if(GUILayout.Button("↓", GUILayout.Width(30)))
         {
             MoveSequence(index, 1);
         }
         GUI.enabled = true;
         
-        // 삭제 버튼
+        // 삭제
         GUI.backgroundColor = Color.red;
         if(GUILayout.Button("X", GUILayout.Width(30)))
         {
@@ -117,7 +114,7 @@ public class TutorialEditorWindow : EditorWindow
         
         EditorGUILayout.EndHorizontal();
         
-        // 상세 정보 (Foldout)
+        // 상세 정보
         if(isFoldout)
         {
             EditorGUILayout.Space();
@@ -143,113 +140,112 @@ public class TutorialEditorWindow : EditorWindow
             EditorGUILayout.Space();
             
             // 창 타입
-            sequence.DialogType = (DialogType)EditorGUILayout.EnumPopup("창 타입", sequence.DialogType);
+            sequence.DialogType = (EndingDialogType)EditorGUILayout.EnumPopup("창 타입", sequence.DialogType);
             
             // 메시지 텍스트
             EditorGUILayout.LabelField("메시지 텍스트");
             sequence.MessageText = EditorGUILayout.TextArea(sequence.MessageText, GUILayout.Height(60));
             
             // 선택창일 경우 버튼 텍스트
-            if(sequence.DialogType == DialogType.Choice)
+            if(sequence.DialogType == EndingDialogType.Choice)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("버튼 텍스트", EditorStyles.boldLabel);
                 sequence.YesButton1Text = EditorGUILayout.TextField("첫 번째 버튼", sequence.YesButton1Text);
                 sequence.YesButton2Text = EditorGUILayout.TextField("두 번째 버튼", sequence.YesButton2Text);
             }
-
-            EditorGUILayout.Space();
-        
-        // ========== 진동 설정 추가 ==========
-        EditorGUILayout.LabelField("진동 설정", EditorStyles.boldLabel);
-        sequence.UseVibration = EditorGUILayout.Toggle("진동 사용", sequence.UseVibration);
-        
-        if(sequence.UseVibration)
-        {
-            EditorGUI.indentLevel++;
-            sequence.VibrationPattern = (VibrationPattern)EditorGUILayout.EnumPopup("진동 패턴", sequence.VibrationPattern);
-            sequence.VibrationDelay = EditorGUILayout.FloatField("진동 딜레이 (초)", sequence.VibrationDelay);
             
-            if(sequence.VibrationPattern == VibrationPattern.Custom)
+            EditorGUILayout.Space();
+            
+            // 진동 설정
+            EditorGUILayout.LabelField("진동 설정", EditorStyles.boldLabel);
+            sequence.UseVibration = EditorGUILayout.Toggle("진동 사용", sequence.UseVibration);
+            
+            if(sequence.UseVibration)
             {
-                EditorGUILayout.LabelField("커스텀 패턴 (밀리초)", EditorStyles.miniLabel);
+                EditorGUI.indentLevel++;
+                sequence.VibrationPattern = (VibrationPattern)EditorGUILayout.EnumPopup("진동 패턴", sequence.VibrationPattern);
+                sequence.VibrationDelay = EditorGUILayout.FloatField("진동 딜레이 (초)", sequence.VibrationDelay);
                 
-                int newSize = EditorGUILayout.IntField("배열 크기", sequence.CustomVibrationPattern != null ? sequence.CustomVibrationPattern.Length : 0);
-                if(newSize != (sequence.CustomVibrationPattern != null ? sequence.CustomVibrationPattern.Length : 0))
+                if(sequence.VibrationPattern == VibrationPattern.Custom)
                 {
-                    System.Array.Resize(ref sequence.CustomVibrationPattern, newSize);
-                }
-                
-                if(sequence.CustomVibrationPattern != null)
-                {
-                    for(int i = 0; i < sequence.CustomVibrationPattern.Length; i++)
+                    EditorGUILayout.LabelField("커스텀 패턴 (밀리초)", EditorStyles.miniLabel);
+                    
+                    int newSize = EditorGUILayout.IntField("배열 크기", sequence.CustomVibrationPattern != null ? sequence.CustomVibrationPattern.Length : 0);
+                    if(newSize != (sequence.CustomVibrationPattern != null ? sequence.CustomVibrationPattern.Length : 0))
                     {
-                        sequence.CustomVibrationPattern[i] = EditorGUILayout.LongField($"[{i}]", sequence.CustomVibrationPattern[i]);
+                        System.Array.Resize(ref sequence.CustomVibrationPattern, newSize);
+                    }
+                    
+                    if(sequence.CustomVibrationPattern != null)
+                    {
+                        for(int i = 0; i < sequence.CustomVibrationPattern.Length; i++)
+                        {
+                            sequence.CustomVibrationPattern[i] = EditorGUILayout.LongField($"[{i}]", sequence.CustomVibrationPattern[i]);
+                        }
                     }
                 }
+                
+                EditorGUI.indentLevel--;
             }
-            
-            EditorGUI.indentLevel--;
-        }
-        
         }
         
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space();
     }
     
-    private void FindTutorialManager()
+    private void FindEndingManager()
     {
-        tutorialManager = FindObjectOfType<TutorialManager>();
-        if(tutorialManager != null)
+        endingManager = FindObjectOfType<EndingManager>();
+        if(endingManager != null)
         {
-            Debug.Log("[TutorialEditor] TutorialManager를 찾았습니다.");
+            Debug.Log("[EndingEditor] EndingManager를 찾았습니다.");
         }
     }
     
     private void AddSequence()
     {
-        Undo.RecordObject(tutorialManager, "Add Tutorial Sequence");
-        tutorialManager.Sequences.Add(new TutorialSequence());
-        EditorUtility.SetDirty(tutorialManager);
+        Undo.RecordObject(endingManager, "Add Ending Sequence");
+        endingManager.Sequences.Add(new EndingSequence());
+        EditorUtility.SetDirty(endingManager);
     }
     
     private void RemoveSequence(int index)
     {
-        Undo.RecordObject(tutorialManager, "Remove Tutorial Sequence");
-        tutorialManager.Sequences.RemoveAt(index);
+        Undo.RecordObject(endingManager, "Remove Ending Sequence");
+        endingManager.Sequences.RemoveAt(index);
         if(selectedSequenceIndex == index)
         {
             selectedSequenceIndex = -1;
         }
-        EditorUtility.SetDirty(tutorialManager);
+        EditorUtility.SetDirty(endingManager);
     }
     
     private void MoveSequence(int index, int direction)
     {
         int newIndex = index + direction;
-        if(newIndex < 0 || newIndex >= tutorialManager.Sequences.Count)
+        if(newIndex < 0 || newIndex >= endingManager.Sequences.Count)
             return;
         
-        Undo.RecordObject(tutorialManager, "Move Tutorial Sequence");
-        TutorialSequence temp = tutorialManager.Sequences[index];
-        tutorialManager.Sequences[index] = tutorialManager.Sequences[newIndex];
-        tutorialManager.Sequences[newIndex] = temp;
+        Undo.RecordObject(endingManager, "Move Ending Sequence");
+        EndingSequence temp = endingManager.Sequences[index];
+        endingManager.Sequences[index] = endingManager.Sequences[newIndex];
+        endingManager.Sequences[newIndex] = temp;
         
         if(selectedSequenceIndex == index)
         {
             selectedSequenceIndex = newIndex;
         }
         
-        EditorUtility.SetDirty(tutorialManager);
+        EditorUtility.SetDirty(endingManager);
     }
 
     public override void SaveChanges()
     {
-        EditorUtility.SetDirty(tutorialManager);
-        EditorSceneManager.MarkSceneDirty(tutorialManager.gameObject.scene);
+        EditorUtility.SetDirty(endingManager);
+        EditorSceneManager.MarkSceneDirty(endingManager.gameObject.scene);
         AssetDatabase.SaveAssets();
-        Debug.Log("[TutorialEditor] 변경사항이 저장되었습니다.");
+        Debug.Log("[EndingEditor] 변경사항이 저장되었습니다.");
     }
 }
 #endif

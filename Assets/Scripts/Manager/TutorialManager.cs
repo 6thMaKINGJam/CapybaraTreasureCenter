@@ -58,39 +58,47 @@ public class TutorialManager : MonoBehaviour
     }
     
     // 특정 시퀀스 표시
-    private void ShowSequence(int index, bool fadeBackground = true)
+   private void ShowSequence(int index, bool fadeBackground = true)
+{
+    if(isTransitioning) return;
+    
+    if(index >= Sequences.Count)
     {
-        if(isTransitioning) return; // 전환 중이면 무시
-        
-        if(index >= Sequences.Count)
-        {
-            // 튜토리얼 완료
-            CompleteTutorial();
-            return;
-        }
-        
-        currentSequenceIndex = index;
-        TutorialSequence sequence = Sequences[index];
-        
-        // 배경 이미지 전환 확인
-        bool needsBackgroundTransition = fadeBackground && 
-                                         sequence.BackgroundImage != null && 
-                                         previousBackgroundSprite != sequence.BackgroundImage;
-        
-        if(needsBackgroundTransition)
-        {
-            // 배경 전환 필요
-            StartCoroutine(TransitionSequence(sequence));
-        }
-        else
-        {
-            // 배경 전환 불필요 - 바로 창만 표시
-            SetupBackgroundImmediate(sequence);
-            ShowDialog(sequence);
-        }
-        
-        previousBackgroundSprite = sequence.BackgroundImage;
+        CompleteTutorial();
+        return;
     }
+    
+    currentSequenceIndex = index;
+    TutorialSequence sequence = Sequences[index];
+    
+    // ========== 진동 실행 (추가) ==========
+    if (sequence.UseVibration)
+    {
+        VibrationManager.Instance.Vibrate(
+            sequence.VibrationPattern, 
+            sequence.VibrationDelay, 
+            sequence.CustomVibrationPattern
+        );
+    }
+    // ====================================
+    
+    bool needsBackgroundTransition = fadeBackground && 
+                                     sequence.BackgroundImage != null && 
+                                     previousBackgroundSprite != sequence.BackgroundImage;
+    
+    if(needsBackgroundTransition)
+    {
+        StartCoroutine(TransitionSequence(sequence));
+    }
+    else
+    {
+        SetupBackgroundImmediate(sequence);
+        ShowDialog(sequence);
+    }
+    
+    previousBackgroundSprite = sequence.BackgroundImage;
+}
+
     
     // 배경 전환이 필요한 경우
     private IEnumerator TransitionSequence(TutorialSequence sequence)
