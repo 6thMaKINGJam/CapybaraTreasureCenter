@@ -2301,9 +2301,9 @@ MonoBehaviour:
   RefreshButton: {fileID: 1768813380}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
-  HintCountText: {fileID: 0}
-  RefreshCountText: {fileID: 0}
-  UndoCountText: {fileID: 0}
+  HintCountText: {fileID: 181118262}
+  RefreshCountText: {fileID: 1183863307}
+  UndoCountText: {fileID: 145250752}
   CountdownText: {fileID: 1899612949}
 --- !u!114 &637300472
 MonoBehaviour:
@@ -3035,7 +3035,7 @@ MonoBehaviour:
   CapyDialogue: {fileID: 1911645601}
   CapyDialogueText: {fileID: 886912691}
   FlashOverlay: {fileID: 1325110955}
-  GemCountStatusPanel: {fileID: 1006858061}
+  GemCountStatusPanel: {fileID: 0}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0

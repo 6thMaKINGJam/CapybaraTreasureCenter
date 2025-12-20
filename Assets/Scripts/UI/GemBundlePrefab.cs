@@ -1,4 +1,3 @@
-// GemBundlePrefab.cs 수정
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -30,7 +29,7 @@ public class GemBundlePrefab : MonoBehaviour
         {
             Debug.LogError("[GemBundlePrefab] Button 컴포넌트를 찾을 수 없습니다!");
         }
-
+        
         canvasGroup = GetComponent<CanvasGroup>();
     }
     
@@ -43,36 +42,23 @@ public class GemBundlePrefab : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// 외부에서 호출 가능한 상태 변경 함수
-    /// true: 투명한 빈 공간(Placeholder) 모드
-    /// false: 정상 모드
-    /// </summary>
-    public void SetPlaceholderState(bool isPlaceholder)
-    {
-        // 만약의 경우를 대비해 null 체크
-        if(canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
-
-        if (isPlaceholder)
-        {
-            // 투명하고 터치 안 되게 (공간은 유지함)
-            canvasGroup.alpha = 0f; 
-            canvasGroup.blocksRaycasts = false;
-            canvasGroup.interactable = false;
-        }
-        else
-        {
-            // 다시 보이게 복구
-            canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
-            canvasGroup.interactable = true;
-        }
-    }
-    
+    // ★ 수정: null 체크 추가
     public void SetData(GemBundle data)
     {
         bundleData = data;
         
+        // ★ Placeholder인 경우 (data == null)
+        if(data == null)
+        {
+            // 아이콘 숨기기 또는 투명하게
+            if(GemIcon != null)
+            {
+                GemIcon.enabled = false; // 또는 sprite = null
+            }
+            return;
+        }
+        
+        // ★ 일반 번들인 경우
         if(SpriteDatabase == null)
         {
             Debug.LogError("[GemBundlePrefab] SpriteDatabase가 할당되지 않았습니다!");
@@ -80,9 +66,11 @@ public class GemBundlePrefab : MonoBehaviour
         }
         
         Sprite sprite = SpriteDatabase.GetSprite(data.GemType, data.GemCount);
-        if(sprite != null)
+        
+        if(sprite != null && GemIcon != null)
         {
             GemIcon.sprite = sprite;
+            GemIcon.enabled = true; // 다시 활성화
         }
     }
     
@@ -96,6 +84,9 @@ public class GemBundlePrefab : MonoBehaviour
     // Button onClick에서 호출됨
     private void OnClick()
     {
+        // ★ 추가: Placeholder 클릭 방지
+        if(bundleData == null) return;
+        
         OnClickBundle?.Invoke(this);
     }
 }
