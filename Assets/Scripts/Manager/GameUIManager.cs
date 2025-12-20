@@ -53,6 +53,7 @@ public class GameUIManager : MonoBehaviour
     private void SetupButtons()
     {
         PauseButton.onClick.AddListener(() => GameManager.Instance.TogglePause());
+        ResumeButton.onClick.AddListener(() => GameManager.Instance.Resume());
         HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
         CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
         UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
