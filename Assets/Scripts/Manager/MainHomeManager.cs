@@ -1,4 +1,5 @@
 using UnityEngine;
+using Scripts.Manager; // NetworkManager 접근을 위해 추가
 using UnityEngine.SceneManagement;
 using Scripts.UI;
 

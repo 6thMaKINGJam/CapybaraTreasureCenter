@@ -45,7 +45,7 @@ public class Chunk
 [Serializable]
 public class GameData
 {
-    [HeaderEncodingSelector("진행도 데이터")]
+    [Header("진행도 데이터")]
     public int CurrentLevelIndex;
     public int CurrentBoxIndex;
     [Header("상태 데이터")]
