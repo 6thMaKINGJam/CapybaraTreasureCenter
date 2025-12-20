@@ -21,7 +21,7 @@ public class PausePanel : MonoBehaviour
     // 새로시작 
     public void RestartGame() {
         Time.timeScale = 1f; //재시작해도 시간은 흐름
-        // TODO: 데이터 삭제 로직 추가 필요 (5-D)
+        PlayerPrefs.DeleteKey("GameState"); // 데이터 삭제 로직 추가
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -29,7 +29,7 @@ public class PausePanel : MonoBehaviour
     public void GoToMainHome()
     {
         Time.timeScale = 1f; // 메인으로 갈 때 시간 정상화
-        //게임 현황 삭제?
+        PlayerPrefs.DeleteKey("GameState"); // 데이터 삭제 로직 추가
         SceneManager.LoadScene("MainHome"); // 메인 홈 씬 로드
     }
 }
