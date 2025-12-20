@@ -104,7 +104,7 @@ public class RankingManager : MonoBehaviour
             {
                 // 업로드 성공 시 ProgressData 업데이트
                 var data = SaveManager.LoadData<ProgressData>("ProgressData");
-                data.hasSeenLevel4Ending = true; // endingCompleted 대응
+                data.EndingCompleted = true; // endingCompleted 대응
                 SaveManager.Save(data, "ProgressData");
                 
                 onSuccess?.Invoke();
