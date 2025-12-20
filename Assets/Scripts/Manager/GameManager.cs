@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     // 1. A: GameManager 초기화
     public void InitGame()
     {
+        Time.timeScale = 1f;
         CurrentState = GameState.Ready;
         Debug.Log($"게임 준비.");
 
@@ -69,7 +70,9 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.Playing;
         StartCoroutine(CheckTimeOverLimit());
 
-        GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
+        // 안전하게 UI 업데이트
+        if(GameUIManager.Instance != null)
+           GameUIManager.Instance.UpdateBoxUI(CurrentBoxIndex, CurrentCapacity, TargetCapacity);
     }
 
     private void SetupNewGame()
@@ -246,7 +249,7 @@ public class GameManager : MonoBehaviour
             {
                 RemainingTime -= Time.deltaTime;
                 // 타이머 슬라이더 업데이트
-                GameUIManager.Instance.TimerSlider.Value = RemainingTime / CurrentLevelLimitTime;
+                GameUIManager.Instance.TimerSlider.value = RemainingTime / CurrentLevelLimitTime;
             }
 
             if(RemainingTime <= 0)
