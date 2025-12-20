@@ -57,40 +57,6 @@ public class CapyDialogue : MonoBehaviour
     private Dictionary<TextMeshProUGUI, Coroutine> activeDialogues = new Dictionary<TextMeshProUGUI, Coroutine>();
     private Dictionary<TextMeshProUGUI, CanvasGroup> canvasGroups = new Dictionary<TextMeshProUGUI, CanvasGroup>();
     
-    // 싱글톤 인스턴스
-    private static CapyDialogue instance;
-    public static CapyDialogue Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                // 씬에서 찾기
-                instance = FindObjectOfType<CapyDialogue>();
-                
-                // 없으면 에러
-                if (instance == null)
-                {
-                    Debug.LogError("[CapyDialogue] 씬에 CapyDialogue가 없습니다!");
-                }
-            }
-            return instance;
-        }
-    }
-    
-    private void Awake()
-    {
-        // 싱글톤 설정
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
     
     /// <summary>
     /// 특정 상황의 대사를 표시합니다 (배열에서 랜덤 선택)
