@@ -111,7 +111,7 @@ private IEnumerator CheckAndRegister(string nickname)
 
 private void ShowRetryWarning()
 {
-    GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"), transform.parent);
+    GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/BaseWarningPopup"), transform.parent);
     BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
     popup.Setup("네트워크 등 문제로 랭킹 등록에 실패하였습니다.\n다시 한 번 확인 후 재시도 해주세요.", () => {
         // 재시도
@@ -139,7 +139,7 @@ private void ShowRetryWarning()
     private void ShowWarning(string message)
     {
         // BaseWarningPopup 생성
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"), transform.parent);
+        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/BaseWarningPopup"), transform.parent);
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup(message, () => {
             // 확인 버튼 누르면 팝업 닫힘 (Destroy는 BaseWarningPopup에서 처리)
@@ -148,7 +148,7 @@ private void ShowRetryWarning()
     
     private void ShowFinalWarning()
     {
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"), transform.parent);
+        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/BaseWarningPopup"), transform.parent);
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup("네트워크를 확인하고\n앱을 재실행해주세요.", () => {
             Application.Quit();

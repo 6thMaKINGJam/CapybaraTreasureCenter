@@ -7,6 +7,7 @@ public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance { get; private set; }
 
+
     [Header("세부 매니저 연결")]
     public BundleGridManager GridManager; // 하단 12개 그리드 관리
     public SelectedBundlesUIPanel SelectionPanel; // 선택된 묶음 패널 관리
@@ -33,6 +34,8 @@ public class GameUIManager : MonoBehaviour
     [Header("타이머 바")]
     public Slider TimerSlider;
 
+
+
     void Awake()
     {
         if(Instance == null)
@@ -49,6 +52,9 @@ public class GameUIManager : MonoBehaviour
     {
         SetupButtons();
     }
+
+// 팝업 생성 헬퍼 함수
+    
 
     // ========== 버튼 연결 ==========
     private void SetupButtons()

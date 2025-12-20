@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI; // Text, Button 기능
 using System; // Action(콜백) 기능
+using TMPro; // TextMeshPro 기능
 
 public class BaseConfirmationPopup : MonoBehaviour
 {
     [Header("UI 요소 연결")]
-    public Text MessageText; // 팝업에 표시될 질문 내용
+    public TextMeshProUGUI MessageText; // 팝업에 표시될 질문 내용
     public Button YesButton; // Yes 버튼
     public Button NoButton; // No 버튼
 

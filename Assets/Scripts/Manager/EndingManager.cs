@@ -69,7 +69,7 @@ public class EndingManager : MonoBehaviour
     
     private void ShowNetworkWarning()
     {
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"), transform);
+        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/BaseWarningPopup"), transform);
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup("네트워크 연결 후\n재접속해주세요.", () => {
             Application.Quit();

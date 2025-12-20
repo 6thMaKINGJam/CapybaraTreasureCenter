@@ -92,7 +92,7 @@ public class MainHomeManager : MonoBehaviour
         {
             Debug.LogWarning("명예의 전당은 온라인 상태에서만 확인 가능합니다.");
             
-            GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"));
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
             BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
             popup.Setup("네트워크 연결이 필요합니다카피!", null);
         }

@@ -277,9 +277,8 @@ public class AdManager : MonoBehaviour
     private void ShowNetworkWarningPopup()
     {
         // Resources/Prefabs/UI/BaseWarningPopup 프리팹이 존재해야 함
-        GameObject popupObj = Instantiate(
-            Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup")
-        );
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+      
 
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         Transform loadingPanel = popupObj.transform.Find("LoadingPanel");
@@ -328,9 +327,8 @@ public class AdManager : MonoBehaviour
 
     private void ShowAdNotReadyPopup()
     {
-        GameObject popupObj = Instantiate(
-            Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup")
-        );
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+       
 
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup("광고를 불러오는 중입니다.\n잠시 후 다시 시도해주세요.", () => {
@@ -342,9 +340,8 @@ public class AdManager : MonoBehaviour
 
     private void ShowAdIncompletePopup()
     {
-        GameObject popupObj = Instantiate(
-            Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup")
-        );
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+    
 
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup("광고 시청이 제대로 완료되지\n않았습니다. 다시 시도해주세요.", () => {
@@ -358,9 +355,8 @@ public class AdManager : MonoBehaviour
 
     private void ShowAdFailedPopup()
     {
-        GameObject popupObj = Instantiate(
-            Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup")
-        );
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+        
 
         BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         popup.Setup("광고를 불러오는 데 실패했습니다.\n다시 시도해주세요.", () => {

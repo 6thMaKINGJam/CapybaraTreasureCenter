@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     
     [Header("엔딩 프리팹")]
     public GameObject EndingPrefab;
+    public Transform EndingPopupTransfrom;
+
     
     [Header("카피바라 대사 시스템")]
     public CapyDialogue CapyDialogue;
@@ -38,6 +40,7 @@ public class GameManager : MonoBehaviour
     
     // 연속 성공 카운트
     private int consecutiveSuccessCount = 0;
+  
     
     void Awake()
     {
@@ -344,7 +347,7 @@ public class GameManager : MonoBehaviour
         }
         
         // 2. 게임오버 팝업 생성
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/GameOverPopup"));
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/UI/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         
         if(popup != null)
@@ -411,7 +414,7 @@ public class GameManager : MonoBehaviour
         else
         {
             // 레벨 1~3 클리어
-           GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/LevelClearPopup"));
+           GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/UI/LevelClearPopup");
         LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
         
         if (popup != null)
@@ -468,7 +471,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         
-        GameObject endingObj = Instantiate(EndingPrefab);
+        GameObject endingObj = Instantiate(EndingPrefab, EndingPopupTransfrom);
         EndingManager endingManager = endingObj.GetComponent<EndingManager>();
         
         if(endingManager != null)
@@ -520,20 +523,57 @@ public class GameManager : MonoBehaviour
     }
     
     private void HandleTimeOver()
+{
+    Debug.Log("[HandleTimeOver] 1. 시작");
+    
+    gameData.GameState = GameState.TimeOver;
+    Debug.Log("[HandleTimeOver] 2. GameState 변경 완료");
+    
+    if(CapyDialogue == null)
     {
-        gameData.GameState = GameState.TimeOver;
-        
-        
-        string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
-        
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
-        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
-        popup.Setup(
-            randomMsg,
-            () => RestartLevel(),
-            () => GoToMainHome()
-        );
+        Debug.LogError("[HandleTimeOver] CapyDialogue가 null입니다!");
+        return;
     }
+    Debug.Log("[HandleTimeOver] 3. CapyDialogue 확인 완료");
+    
+    string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+    Debug.Log($"[HandleTimeOver] 4. 메시지 받음: {randomMsg}");
+    
+    // PopupParentSetHelper 사용하는 경우
+    if(PopupParentSetHelper.Instance == null)
+    {
+        Debug.LogError("[HandleTimeOver] PopupParentSetHelper.Instance가 null입니다!");
+        Debug.LogError("씬에 PopupParentSetHelper 오브젝트가 있는지 확인하세요!");
+        return;
+    }
+    Debug.Log("[HandleTimeOver] 5. PopupParentSetHelper 확인 완료");
+    
+    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+    
+    if(popupObj == null)
+    {
+        Debug.LogError("[HandleTimeOver] popupObj 생성 실패!");
+        return;
+    }
+    Debug.Log("[HandleTimeOver] 6. Popup 생성 완료");
+    
+    BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+    
+    if(popup == null)
+    {
+        Debug.LogError("[HandleTimeOver] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
+        return;
+    }
+    Debug.Log("[HandleTimeOver] 7. BaseConfirmationPopup 컴포넌트 확인 완료");
+    
+    popup.Setup(
+        randomMsg,
+        () => RestartLevel(),
+        () => GoToMainHome()
+    );
+    
+    Debug.Log("[HandleTimeOver] 8. Setup 완료");
+}
     
     // ========== Undo/Refresh/Hint ==========
     public void ProcessUndo()

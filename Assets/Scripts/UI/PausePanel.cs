@@ -31,7 +31,7 @@ public class PausePanel : MonoBehaviour
     private void OnClickRestart()
     {
         // 확인 팝업
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
             "정말 새로 시작하시겠습니까?\n현재 진행 상황이 사라집니다.",
@@ -45,7 +45,7 @@ public class PausePanel : MonoBehaviour
     // 메인 홈으로
     private void OnClickMainHome()
     {
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseConfirmationPopup"));
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
             "메인 홈으로 이동하시겠습니까?\n현재 진행 상황이 저장됩니다.",

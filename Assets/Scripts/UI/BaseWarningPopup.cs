@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 
 // Yes(확인) 클릭 시 호출자에게 콜백 전달
@@ -8,7 +9,7 @@ using System;
 public class BaseWarningPopup : MonoBehaviour
 {
     [Header("UI 요소 연결")]
-    public Text MessageText;
+    public TextMeshProUGUI MessageText;
     public Button ConfirmButton; // 확인 버튼
 
     private Action OnConfirmAction;

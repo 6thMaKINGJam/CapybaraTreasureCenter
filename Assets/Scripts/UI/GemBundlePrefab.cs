@@ -1,3 +1,4 @@
+// GemBundlePrefab.cs 수정
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -12,7 +13,32 @@ public class GemBundlePrefab : MonoBehaviour
     public GemSpriteDatabase SpriteDatabase;
     
     private GemBundle bundleData;
+    private Button button;
+    
     public event Action<GemBundlePrefab> OnClickBundle;
+    
+    // ========== 초기화 ==========
+    void Awake()
+    {
+        button = GetComponent<Button>();
+        if(button != null)
+        {
+            button.onClick.AddListener(OnClick);
+        }
+        else
+        {
+            Debug.LogError("[GemBundlePrefab] Button 컴포넌트를 찾을 수 없습니다!");
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // 메모리 누수 방지
+        if(button != null)
+        {
+            button.onClick.RemoveListener(OnClick);
+        }
+    }
     
     public void SetData(GemBundle data)
     {
@@ -38,7 +64,8 @@ public class GemBundlePrefab : MonoBehaviour
         if(Outline != null) Outline.enabled = isSelected;
     }
     
-    public void OnClick()
+    // Button onClick에서 호출됨
+    private void OnClick()
     {
         OnClickBundle?.Invoke(this);
     }
