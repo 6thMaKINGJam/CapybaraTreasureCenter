@@ -44,8 +44,10 @@ public class RankingManager : MonoBehaviour
         else
         {
             playerId = PlayerPrefs.GetString(PlayerIdKey);
+            
         }
     }
+
 
     #region 기능 1 & 2: 랭킹 등록 및 갱신
     

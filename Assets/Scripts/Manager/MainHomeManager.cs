@@ -1,4 +1,8 @@
 using UnityEngine;
+<<<<<<< Updated upstream
+=======
+using Scripts.UI;
+>>>>>>> Stashed changes
 using UnityEngine.SceneManagement;
 using Scripts.UI;
 
@@ -49,7 +53,7 @@ public class MainHomeManager : MonoBehaviour
         if (currentProgress.LastClearedLevel >= 4 && !currentProgress.hasSeenLevel4Ending)
         {
             // 네트워크 상태 확인
-            if (NetworkManager.Instance != null && NetworkManager.Instance.IsConnected())
+            if (NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())
             {
                 Debug.Log("엔딩 시퀀스로 진입합니다.");
                 // 엔딩 시퀀스(7-D) 프리팹을 열거나 엔딩 씬으로 이동
@@ -80,7 +84,7 @@ public class MainHomeManager : MonoBehaviour
     public void OnClickHallOfFame()
     {
         // 명예의 전당 진입 전 네트워크 체크 (권장)
-        if (NetworkManager.Instance != null && NetworkManager.Instance.IsConnected())
+        if (NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())
         {
             mainHomeUI.OpenPanel(mainHomeUI.HallOfFamePanel);
             // hallOfFameUI.SetupRecords(currentProgress.level4ClearTimes);

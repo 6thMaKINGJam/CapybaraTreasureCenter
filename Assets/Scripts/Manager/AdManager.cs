@@ -164,7 +164,7 @@ public class AdManager : MonoBehaviour
         isRewardGranted = false;
 
         // 1. 네트워크 체크
-        if (!NetworkManager.Instance.IsConnected())
+        if (!NetworkManager.Instance.IsNetworkAvailable())
         {
             ShowNetworkWarningPopup();
             return;
@@ -314,7 +314,7 @@ public class AdManager : MonoBehaviour
             loadingPanel.gameObject.SetActive(false);
         }
 
-        if (NetworkManager.Instance.IsConnected())
+        if (NetworkManager.Instance.IsNetworkAvailable())
         {
             Destroy(popupObj);
             // 네트워크 연결 확인 후 다시 광고 시청 시도
