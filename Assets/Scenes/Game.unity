@@ -2170,6 +2170,7 @@ MonoBehaviour:
   BoxIndexText: {fileID: 868503436}
   BoxProgressText: {fileID: 1724088621}
   PauseButton: {fileID: 592469689}
+  ResumeButton: {fileID: 13634995}
   HintButton: {fileID: 823656929}
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
