@@ -136,6 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GemIcon: {fileID: 4825592740998369051}
   Outline: {fileID: 1352844452340699386}
+  SpriteDatabase: {fileID: 11400000, guid: 383b110ef0be59247b645b2218c51e12, type: 2}
 --- !u!114 &1352844452340699386
 MonoBehaviour:
   m_ObjectHideFlags: 0
