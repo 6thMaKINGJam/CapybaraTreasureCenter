@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using Scripts.UI;
 using DG.Tweening;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -575,27 +576,36 @@ public class GameManager : MonoBehaviour
     
     // ========== Undo/Refresh/Hint ==========
     public void ProcessUndo()
+{
+    if(gameData.CompletedBoxes.Count == 0)
     {
-        if(gameData.CompletedBoxes.Count == 0)
+        ShowWarning("되돌릴 상자가 없습니다카피!");
+        return;
+    }
+    
+    gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
+    
+    if(gameData.UndoCount > 2)
+    {
+        // [수정됨] 확인 팝업 먼저 표시
+        ShowAdConfirmationPopup(() =>
         {
-            ShowWarning("되돌릴 상자가 없습니다카피!");
-            return;
-        }
-        
-        gameData.UndoCount++;
-        
-        if(gameData.UndoCount > 2)
-        {
+            // Yes 클릭 시에만 광고 호출
             AdManager.Instance.ShowRewardedAd((success) =>
             {
                 if(success) ExecuteUndo();
+                // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
             });
-        }
-        else
-        {
-            ExecuteUndo();
-        }
+        }, 
+        null); // ✅ No 버튼도 Count 원복 안 함
     }
+    else
+    {
+        ExecuteUndo();
+    }
+}
+
+
     
     private void ExecuteUndo()
     {
@@ -624,21 +634,27 @@ public class GameManager : MonoBehaviour
     }
     
     public void ProcessRefresh()
+{
+    gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
+    
+    if(gameData.RefreshCount > 2)
     {
-        gameData.RefreshCount++;
-        
-        if(gameData.RefreshCount > 2)
+        ShowAdConfirmationPopup(() =>
         {
             AdManager.Instance.ShowRewardedAd((success) =>
             {
                 if(success) ExecuteRefresh();
+                // ✅ Count 원복 없음
             });
-        }
-        else
-        {
-            ExecuteRefresh();
-        }
+        },
+        null); // ✅ Count 원복 없음
     }
+    else
+    {
+        ExecuteRefresh();
+    }
+}
+
     
     private void ExecuteRefresh()
     {
@@ -661,23 +677,60 @@ public class GameManager : MonoBehaviour
     }
     
     public void ProcessHint()
+{
+    string today = System.DateTime.Now.ToString("yyyy-MM-dd");
+    string lastHintDate = PlayerPrefs.GetString("LastHintDate", "");
+    
+    if(lastHintDate == today)
     {
-        string today = System.DateTime.Now.ToString("yyyy-MM-dd");
-        string lastHintDate = PlayerPrefs.GetString("LastHintDate", "");
-        
-        if(lastHintDate == today)
+        // [수정됨] 확인 팝업 먼저 표시
+        ShowAdConfirmationPopup(() =>
         {
             AdManager.Instance.ShowRewardedAd((success) =>
             {
                 if(success) ExecuteHint();
+                // ✅ 날짜는 광고 성공 시에만 갱신 (아래에서 처리)
             });
-        }
-        else
-        {
-            ExecuteHint();
-            PlayerPrefs.SetString("LastHintDate", today);
-        }
+        },
+        null);
     }
+    else
+    {
+        ExecuteHint();
+        PlayerPrefs.SetString("LastHintDate", today); // 무료 사용 시 날짜 갱신
+    }
+}
+
+private void ShowAdConfirmationPopup(Action onYes, Action onNo)
+{
+    if(PopupParentSetHelper.Instance == null)
+    {
+        Debug.LogError("[GameManager] PopupParentSetHelper가 없습니다!");
+        return;
+    }
+    
+    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+    
+    if(popupObj == null)
+    {
+        Debug.LogError("[GameManager] BaseConfirmationPopup 생성 실패!");
+        return;
+    }
+    
+    BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+    
+    if(popup == null)
+    {
+        Debug.LogError("[GameManager] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
+        return;
+    }
+    
+    popup.Setup(
+        "사용량을 초과하였습니다. 광고를 시청하시겠습니까?\n(광고 시청 시 기능을 한 번 사용할 수 있습니다)",
+        onYes,
+        onNo
+    );
+}
     
     private void ExecuteHint()
     {

@@ -193,20 +193,49 @@ public class AdManager : MonoBehaviour
 
     // [추가됨] 가짜 광고 처리 코루틴
     private IEnumerator MockAdProcess()
+{
+    isShowingAd = true;
+    
+    Debug.Log("[AdManager-Mock] Mock 광고 팝업 표시");
+    
+    // BaseWarningPopup으로 간단하게 표시
+    if(PopupParentSetHelper.Instance != null)
     {
-        isShowingAd = true;
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
         
-        // 광고 보는 척 1초 대기 (테스트 시간 단축)
-        Debug.Log("[AdManager-Mock] 광고 시청 중... (1초 대기)");
-        yield return new WaitForSeconds(1.0f); 
+        bool adCompleted = false;
         
-        Debug.Log("[AdManager-Mock] 광고 시청 완료 처리");
-        isShowingAd = false;
+        popup.Setup(
+            "🎬 [테스트] 광고 시청 중...\n\n실제 빌드에서는 진짜 광고가 재생됩니다.\n\n(3초 후 자동 완료)", 
+            () => {
+                adCompleted = true;
+                isShowingAd = false;
+                currentAdCallback?.Invoke(true);
+                currentAdCallback = null;
+            }
+        );
         
-        // 무조건 성공으로 처리
-        currentAdCallback?.Invoke(true);
-        currentAdCallback = null;
+        // 3초 후 자동으로 버튼 클릭
+        yield return new WaitForSeconds(3f);
+        
+        if(!adCompleted) // 사용자가 수동으로 안 닫았다면
+        {
+            Destroy(popupObj); // 팝업 강제 종료
+            isShowingAd = false;
+            currentAdCallback?.Invoke(true);
+            currentAdCallback = null;
+        }
+        
+        yield break;
     }
+    
+    // Fallback
+    yield return new WaitForSeconds(1.0f); 
+    isShowingAd = false;
+    currentAdCallback?.Invoke(true);
+    currentAdCallback = null;
+}
 
 
     // ====================================================
