@@ -7,6 +7,7 @@ namespace Scripts.UI
     {
         [SerializeField] private Button[] levelButtons;
         [SerializeField] private GameObject[] lockVisuals;
+        public Button closeButton; // X 버튼
 
         // 패널이 열릴 때 호출하여 해금 상태 동기화
         public void RefreshLevelNodes(int lastClearedLevel)

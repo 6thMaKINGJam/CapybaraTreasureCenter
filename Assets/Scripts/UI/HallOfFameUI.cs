@@ -5,6 +5,7 @@ namespace Scripts.UI
 {
     public class HallOfFameUI : MonoBehaviour
     {
+        public Button closeButton; // X 버튼 추가
         [SerializeField] private Transform contentParent; // ScrollView의 Content
         [SerializeField] private GameObject recordPrefab; // 기록 한 줄을 나타낼 프리팹
 

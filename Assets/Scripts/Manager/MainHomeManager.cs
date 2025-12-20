@@ -23,10 +23,15 @@ public class MainHomeManager : MonoBehaviour
 
     private void SetupButtons()
     {
-        // UI 클래스가 들고 있는 버튼에 매니저의 함수를 연결합니다.
+        // 1. 메인 패널 버튼들
         mainHomeUI.startButton.onClick.AddListener(OnClickGameStart);
         mainHomeUI.howToPlayButton.onClick.AddListener(OnClickHowToPlay);
         mainHomeUI.hallOfFameButton.onClick.AddListener(OnClickHallOfFame);
+
+        // 2. 각 패널의 X(닫기) 버튼들 연결 -> 공통적으로 메인 화면을 보여줌
+        levelSelectUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
+        howToPlayUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
+        hallOfFameUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
     }
 
     public void OnClickGameStart()

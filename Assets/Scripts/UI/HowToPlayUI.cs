@@ -7,6 +7,7 @@ public class HowToPlayUI : MonoBehaviour
     [SerializeField] private Sprite[] tutorialSprites;
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
+    public Button closeButton;  // X 버튼
     private int currentTutorialIndex = 0;
 
     public void Init() // 패널이 열릴 때 초기화
