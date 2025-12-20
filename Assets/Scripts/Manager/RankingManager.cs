@@ -17,20 +17,26 @@ public class RankingManager : MonoBehaviour
     private string playerId;
 
     private void Awake()
+{
+    if (Instance == null)
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializePlayerId();
-            dbRef = FirebaseDatabase.DefaultInstance.RootReference;
-            Debug.Log("firebase database initialized");
-        }
-        else
-        {
-            Destroy(gameObject);
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        InitializePlayerId();
+
+        // [핵심] JSON 파일 대신 코드로 URL을 직접 박아넣습니다.
+        string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
+        
+        try {
+            // GetInstance에 URL을 직접 전달하여 예외를 방지합니다.
+            dbRef = FirebaseDatabase.GetInstance(firebaseUrl).RootReference;
+            Debug.Log("<color=green>Firebase 연결 성공!</color>");
+        } catch (System.Exception e) {
+            Debug.LogError($"Firebase 연결 실패: {e.Message}");
         }
     }
+    else { Destroy(gameObject); }
+}
 
     // playerId 관리: 최초 1회 GUID 생성 및 저장
     private void InitializePlayerId()
@@ -104,7 +110,7 @@ public class RankingManager : MonoBehaviour
             {
                 // 업로드 성공 시 ProgressData 업데이트
                 var data = SaveManager.LoadData<ProgressData>("ProgressData");
-                data.hasSeenLevel4Ending = true; // endingCompleted 대응
+                data.EndingCompleted = true; // endingCompleted 대응
                 SaveManager.Save(data, "ProgressData");
                 
                 onSuccess?.Invoke();
@@ -136,26 +142,41 @@ public class RankingManager : MonoBehaviour
 
     /// 시간 기준 상위 5명 반환
 
-    public void GetTopRankings(Action<List<Dictionary<string, object>>> onSuccess, Action<string> onFailure)
+    public void GetTopAndMyRanking(Action<List<Dictionary<string, object>>, Dictionary<string, object>, int> onComplete, Action<string> onFailure)
     {
-        dbRef.Child("rankings")
-            .OrderByChild("timeMilliseconds")
-            .LimitToFirst(5) //
-            .GetValueAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    onFailure?.Invoke("랭킹 조회 실패");
-                    return;
-                }
+        string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
+        var reference = FirebaseDatabase.GetInstance(firebaseUrl).GetReference("rankings");
 
-                List<Dictionary<string, object>> rankingList = new List<Dictionary<string, object>>();
-                foreach (var child in task.Result.Children)
+        // 1. 전체 데이터를 시간순으로 가져와서 순위를 계산합니다.
+        reference.OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted) { onFailure?.Invoke("서버 연결 실패카피!"); return; }
+
+            List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
+            Dictionary<string, object> myData = null;
+            int myRank = 0;
+            int count = 0;
+            
+            string myId = PlayerPrefs.GetString("playerId", "");
+
+            foreach (var child in task.Result.Children)
+            {
+                count++;
+                var data = child.Value as Dictionary<string, object>;
+                data["id"] = child.Key;
+
+                // 상위 5명 리스트에 추가
+                if (count <= 5) top5List.Add(data);
+
+                // 내 데이터 찾기 및 순위 저장
+                if (child.Key == myId)
                 {
-                    rankingList.Add(child.Value as Dictionary<string, object>);
+                    myData = data;
+                    myRank = count;
                 }
-                onSuccess?.Invoke(rankingList);
-            });
+            }
+            onComplete?.Invoke(top5List, myData, myRank);
+        });
     }
     #endregion
 }

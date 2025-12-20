@@ -6,95 +6,54 @@ public class HallOfFamePanel : MonoBehaviour
 {
     public Button closeButton;
     
-    [SerializeField] private Transform contentParent;
-    [SerializeField] private GameObject recordPrefab;
-    [SerializeField] private GameObject emptyText;
-    [SerializeField] private GameObject loadingUI;
-    
-    [Header("CapyDialogue 연결")]
-    public CapyDialogue CapyDialogue;
-    public TMPro.TextMeshProUGUI CapyDialogueText;
+    [Header("Ranking Areas")]
+    [SerializeField] private Transform topRankContent; // 상위 5명 부모
+    [SerializeField] private Transform myRankContent;  // 내 등수 부모
 
-    private string myPlayerId;
+    [SerializeField] private GameObject recordPrefab;
+    [SerializeField] private GameObject loadingUI;
+    [SerializeField] private GameObject emptyText;
 
     public void Open()
     {
-        // 1. 네트워크 체크
-        if(!NetworkManager.Instance.IsNetworkAvailable())
-        {
-            Debug.LogWarning("네트워크 연결 필요 팝업 출력");
-            
-            GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"));
-            BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
-            popup.Setup("네트워크 연결이 필요합니다카피!", null);
-            
-            return;
-        }
-
-        // 2. 초기화 및 로딩 표시
         gameObject.SetActive(true);
         loadingUI?.SetActive(true);
         emptyText?.SetActive(false);
-        myPlayerId = PlayerPrefs.GetString("playerId", "");
-        
-        // ===== CapyDialogue 연결 =====
-        if(CapyDialogue != null && CapyDialogueText != null)
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.HallOfFame);
-        }
 
-        // 3. 데이터 로드
-        RankingManager.Instance.GetTopRankings(OnLoadSuccess, OnLoadFailed);
+        RankingManager.Instance.GetTopAndMyRanking((top5, myData, myRank) => {
+            loadingUI?.SetActive(false);
+            UpdateUI(top5, myData, myRank);
+        }, (error) => {
+            loadingUI?.SetActive(false);
+            Debug.LogError(error);
+        });
     }
 
-    private void OnLoadSuccess(List<Dictionary<string, object>> rankingList)
+    private void UpdateUI(List<Dictionary<string, object>> top5, Dictionary<string, object> myData, int myRank)
     {
-        loadingUI?.SetActive(false);
+        // 기존 리스트 청소
+        foreach (Transform child in topRankContent) Destroy(child.gameObject);
+        foreach (Transform child in myRankContent) Destroy(child.gameObject);
 
-        // 기존 리스트 삭제
-        foreach(Transform child in contentParent) Destroy(child.gameObject);
+        if (top5.Count == 0) { emptyText?.SetActive(true); return; }
 
-        if(rankingList.Count == 0)
+        // 1. 상위 5명 생성
+        for (int i = 0; i < top5.Count; i++)
         {
-            emptyText?.SetActive(true);
-            return;
+            CreateItem(topRankContent, i + 1, top5[i], top5[i]["id"].ToString() == PlayerPrefs.GetString("playerId"));
         }
 
-        // 4. 순위 계산 및 생성 (공동 순위 로직)
-        long lastTime = -1;
-        int currentRank = 0;
-
-        for(int i = 0; i < rankingList.Count; i++)
+        // 2. 내 랭킹 하단 고정 생성 (상위에 내가 있더라도 또 생성)
+        if (myData != null)
         {
-            var data = rankingList[i];
-            long time = (long)data["timeMilliseconds"];
-            string nickname = data["nickname"].ToString();
-            
-            // 동일 시간이면 동일 순위
-            if(time != lastTime)
-            {
-                currentRank = i + 1;
-            }
-            lastTime = time;
-
-            // 아이템 생성
-            GameObject itemObj = Instantiate(recordPrefab, contentParent);
-            RecordItem item = itemObj.GetComponent<RecordItem>();
-
-            // 내 기록 확인 (닉네임으로 비교 - RankingManager에서 playerId 포함하도록 수정 필요)
-            bool isMine = (nickname == PlayerPrefs.GetString("MyNickname", ""));
-
-            item.SetData(currentRank, nickname, time, isMine);
+            CreateItem(myRankContent, myRank, myData, true);
         }
     }
 
-    private void OnLoadFailed(string error)
+    private void CreateItem(Transform parent, int rank, Dictionary<string, object> data, bool isMine)
     {
-        loadingUI?.SetActive(false);
-        Debug.LogError($"랭킹 로드 실패: {error}");
-        
-        GameObject popupObj = Instantiate(Resources.Load<GameObject>("Prefabs/UI/BaseWarningPopup"));
-        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
-        popup.Setup("랭킹을 불러오는데 실패했습니다카피!", null);
+        var item = Instantiate(recordPrefab, parent).GetComponent<RecordItem>();
+        item.SetData(rank, data["nickname"].ToString(), (long)data["timeMilliseconds"], isMine);
     }
 }
+
