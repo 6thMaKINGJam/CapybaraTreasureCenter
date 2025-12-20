@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
-using System.Xml.Linq;
+using UnityEngine.SceneManagement;
+using System.Diagnostics; // 씬 전환용
 
 
 // A. 선택 레벨 로드/이어하기/새로시작/
@@ -18,7 +19,12 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("게임 상태")]
-    public GameState CurrentState;
+    // 현재 게임 상태
+    public GameState CurrentState; 
+    // 시간 체크
+    private float LevelStartTime; 
+    // 제한 시간 (아래 시간은 수정 가능)
+    private float CurrentLevelLimitTime = 300f;  
 
     [Header("레벨 세팅")]
     public int CurrentLevelIndex = 0; // 현재 레벨 인덱스
@@ -29,6 +35,7 @@ public class GameManager : MonoBehaviour
     [Header("참조")]
     public ChunkGenerator chunkGenerator;
     public GameObject EndingPrefab;
+    // ! public GameUIManager gameUIManager;
     // ! public SaveManager saveManager;
 
     [Header("데이터 리스트")]
@@ -43,9 +50,13 @@ public class GameManager : MonoBehaviour
     private Stack<List<GameObject>> CompletedBoxesHistory = new Stack<List<GameObject>>();
 
     [Header("아이템 카운트")]
-    public int UnodoCount = 0;
+    public int UndoCount = 0;
     public int RefreshCount = 0;
     public int HintCount = 0;
+
+    [Header("팝업 프리팹")]
+    public GameObject ConfirmationPopupPrefab;
+    public GameObject WarningPopupPrefab;
 
     public void Awake()
     {
@@ -65,19 +76,33 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.Ready;
         Debug.Log($"게임 준비.");
 
-        // 세이브 데이터 로드 및 이어하기 / 새로시작 판단
-        var data = SaveManager.LoadData<GameData>("SaveFile");
-        CurrentLevelIndex = data.CurrentLevelIndex;
+        // PlayerPrefs로 선택 레벨 로드
+        CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);
 
-        // 맵 생성 호출
-        if(chunkGenerator != null)
+        // 이어하기 체크
+        if (SaveManager.HasSaveData("GameState"))
         {
-            // 필요한 레벨 인덱스 전달
-            chunkGenerator.GenerateChunk(null, 0);
+            LoadGameState(); // 이어하기 로직
         }
-        
-        // 게임 상태를 playing으로 전환
+        else
+        {
+            SetupNewGame(); // 새로하기 로직
+        }
+
+        LevelStartTime = Time.time; // 시간 체크 시작
         CurrentState = GameState.Playing;
+
+        // 타임 오버를 감시하는 코루틴 시작
+        StartCoroutine(CheckTimeOverLimit());
+    }
+
+    private void SetupNewGame()
+    {
+        CurrentBoxIndex = 0;
+        // 새로 시작 시 청크 생성 호출
+        if(chunkGenerator != null)
+            chunkGenerator.GenerateChunk(null, CurrentLevelIndex);
+
         SetupLevelData();
     }
 
@@ -88,7 +113,10 @@ public class GameManager : MonoBehaviour
         RemainingGems = GameObject.FindGameObjectsWithTag("Gem").ToList();
         Debug.Log($"청크 로드 완료. 보석 {RemainingGems.Count}개 감지.");
         
-        ExtractNextBundles(); // UI에 보여줄 첫 12개 묶음 추출
+        ExtractNextBundles(); // UI에 보여줄 첫 12개 묶음 추
+
+        // UI 업데이트
+        // ! gameUIManager.UpdateAllUI();
     }
 
     public void ExtractNextBundles()
@@ -109,6 +137,7 @@ public class GameManager : MonoBehaviour
         // 현재 상자 용량을 0으로 리셋
         CurrentCapacity = 0;
 
+        // ! BundleGridManager 재구성 및 UI 업데이트 
         Debug.Log($"선택 취소. 상자를 비우고 이전 상태로 복구함.");
     }
 
@@ -118,10 +147,10 @@ public class GameManager : MonoBehaviour
         Debug.Log($"유저가 완료 버튼을 누름. 상자 검증 시작.");
 
         // 오버 체크 (상자의 한도를 초과했는지 여부)
-        if(CurrentCapacity > TargetCapacity)
+        if(CurrentCapacity != TargetCapacity)
         {
             Debug.LogWarning("실패: 상자 용량 초과.");
-            HandleGameOver(); // 게임 오버 로직으로 이동
+            HandleFailureFeedback(); // 게임 오버 로직으로 이동
             return; // 게임 오버 = 이후 로직 없이 종료
         }
 
@@ -130,9 +159,9 @@ public class GameManager : MonoBehaviour
 
         // 차감
         // 검증 통과 -> 현재 상자에 담았던 보석들을 게임 전체 리스트에서 제거
-        foreach (var Gem in SelectedInCurrentBox)
+        foreach (var gem in SelectedInCurrentBox)
         {
-            RemainingGems.Remove(Gem);
+            RemainingGems.Remove(gem);
         }
 
         // CompletedBox 추가 (데이터 관리)
@@ -144,11 +173,18 @@ public class GameManager : MonoBehaviour
 
         // 중간 저장
         // 상자 하나 완료될 때 데이터 저장 -> 강제 종료해도 이어하기 가능
-        // ! SaveManager.Instance.Save(CurrentLevelIndex, CurrentBoxIndex);
+        // ! SaveManager.Save("GameState", this);
         Debug.Log($"{CurrentBoxIndex}번째 상자 완료 및 데이터 저장.");
 
         // 청크/레벨 완료 체크 = 레벨 클리어인지 다음 상자를 줄지 여부
         CheckLevelProgress();
+    }
+
+    private void HandleFailureFeedback()
+    {
+        //‘capydialogue’ 타입 Warning 나오고 + 빨간색 반투명 화면 전부 덮는 크기로 반짝 한번 
+        // + vibrationmanager.cs로 진동 한 번 
+        // ! VibrationManager.Instance.Vibrate();
     }
 
     public void CheckLevelProgress()
@@ -169,38 +205,35 @@ public class GameManager : MonoBehaviour
     }
 
     // 5. 레벨 완료 / 게임 오버 / 타임오버 처리
-    public GameObject ConfirmationPopupPrefab; // Yes/No 팝업 프리팹
-    public GameObject WarningPopupPrefab; // 확인전용 프리팹
 
     // 레벨 완료 (성공 판정)
     public void HandleLevelClear()
     {
         CurrentState = GameState.Win;
+        float timeSpent = Time.time - LevelStartTime;
         Debug.Log("레벨 클리어.");
 
-        if(CurrentLevelIndex >= 4)
+        if(CurrentLevelIndex == 4)
         {
+            // ! ProgressData.Update(timeSpent);
             TriggerEnding();
         }
         else
         {
-            // 프리팹 생성
-            GameObject go = Instantiate(WarningPopupPrefab);
+            GameObject go = Instatiate(WarningPopupPrefab);
             BaseWarningPopup popup = go.GetComponent<BaseWarningPopup>();
-
-            popup.Setup("레벨 클리어! 다음 레벨로 가시겠습니까?", () => {
-                // 클리어했으므로 기존 이어하기용 임시 저장파일 삭제
-                SaveManager.DeleteSave("SaveFile");
-                Debug.Log($"기존의 임시 세이브 파일을 삭제합니다.");
-
-                // 다음 레벨 인덱스 증가
+            popup.Setup($"클리어! 소요시간: {timeSpent:F1}초", () =>
+            {
+                SaveManager.DeleteSave("GameState");
                 CurrentLevelIndex++;
-
-                // 다음 레벨 초기화
+                PlayersPrefs.SetInt("SelectedLevel", CurrentLevelIndex);
                 InitGame();
             });
         }
-    }
+        
+        }
+    
+
 
     // 엔딩
     private void TriggerEnding()
@@ -242,6 +275,7 @@ public class GameManager : MonoBehaviour
     public void HandleTimeOver()
     {
         // 게임 오버 -> 다시하기/메인으로 중 선택
+        CurrentState = GameState.TimeOVer;
         GameObject go = Instantiate(ConfirmationPopupPrefab);
         BaseConfirmationPopup popup = go.GetComponent<BaseConfirmationPopup>();
 
@@ -251,11 +285,26 @@ public class GameManager : MonoBehaviour
         );
     }
 
+     // 타임 오버 감시 코루틴
+    private IEnumerator CheckTimeOverLimit()
+    {
+        while (CurrentState == GameState.Playing)
+        {
+            if(Time.time - LevelStartTime >= CurrentLevelLimitTime)
+            {
+                HandleTimeOver();
+                yield break;
+            }
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
     // 보조 함수들
     private void RestartLevel()
     {
         // 레벨 처음부터 다시 시작
         Debug.Log($"레벨 다시 시작");
+        SaveManager.DeleteSave("GameState");
         InitGame();
     }
 
@@ -263,7 +312,8 @@ public class GameManager : MonoBehaviour
     {
         // 메인 로비 씬으로 이동
         Debug.Log($"메인 메뉴로 이동");
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
+        SaveManager.DeleteSave("GameState");
+        SceneManager.LoadScene("MainHome");
     }
 
     // 되돌리기 (Undo)
@@ -275,6 +325,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        
         // 광고 체크
         if( UnodoCount >= 2)
         {
@@ -284,16 +335,13 @@ public class GameManager : MonoBehaviour
 
         // 복구 로직
         List<GameObject> LastBoxGems = CompletedBoxesHistory.Pop();
-
         // 보석들을 다시 남은 보석 리스트 맨 앞에 삽입
         RemainingGems.InsertRange(0, LastBoxGems);
-
         // 상자 인덱스 감소 및 현재 상태 리셋
         CurrentBoxIndex--;
         CurrentCapacity = 0;
-
-        // UI 갱신
-        UnodoCount++;
+        // UI 업데이트
+        UndoCount++;
         ExtractNextBundles();
         Debug.Log($"Undo 완료. 보석 복구 및 인덱스 감소.");
     }
@@ -352,7 +400,7 @@ public class GameManager : MonoBehaviour
         HintCount++;
     }
 
-    private System.Collections.IEnumerator HighlightGems(List<GameObject> gems)
+    private IEnumerator HighlightGems(List<GameObject> gems)
     {
         // 강조 시작 (크기 키우기)
         foreach(var g in gems)
@@ -367,5 +415,11 @@ public class GameManager : MonoBehaviour
         {
             if(g != null) g.transform.localScale /= 1.2f;
         }
+    }
+
+    private void LoadGameState()
+    {
+        // SaveManager 로드 로직 구현 위치
+        Debug.Log($"이어하기 데이터 로드 완료.");
     }
 }
