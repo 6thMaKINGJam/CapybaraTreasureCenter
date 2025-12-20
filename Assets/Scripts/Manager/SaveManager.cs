@@ -37,7 +37,7 @@ public static class SaveManager
     {
         string Path = GetSavePath(FileName);
 
-        if(IsSaveExist(FileName))
+        if(HasSaveData(FileName))
         {
             try
             {
@@ -60,7 +60,7 @@ public static class SaveManager
     }
 
     // 4. 저장된 파일이 존재하는지(IsSaveExist) 여부 확인
-    public static bool IsSaveExist(string FileName)
+    public static bool HasSaveData(string FileName)
     {
         return File.Exists(GetSavePath(FileName));
     }
@@ -68,7 +68,7 @@ public static class SaveManager
     // 5. 데이터 삭제 = 특정 저장 파일을 영구 삭제 (초기화용)
     public static void DeleteSave(string FileName)
     {
-        if(IsSaveExist(FileName))
+        if(HasSaveData(FileName))
         {
             File.Delete(GetSavePath(FileName));
             Debug.Log($"[SaveManager] 데이터 삭제 완료: {FileName}");

@@ -10,7 +10,7 @@ using UnityEngine;
 //Chunk/CompletedBox/GameState 직렬화 데이터 구조
 
 // 1. 게임 상태(GameState) 정의
-public enum GameState { Ready, Playing, Paused, GameOver, Win }
+public enum GameState { Ready, Playing, Paused, GameOver, Win, TimeOver }
 // 2. 보석 종류(GemType) 정의
 public enum GemType { Red, Blue, Green, Yellow, Purple }
 
@@ -45,7 +45,7 @@ public class Chunk
 [Serializable]
 public class GameData
 {
-    [HeaderEncodingSelector("진행도 데이터")]
+    [Header("진행도 데이터")]
     public int CurrentLevelIndex;
     public int CurrentBoxIndex;
     [Header("상태 데이터")]

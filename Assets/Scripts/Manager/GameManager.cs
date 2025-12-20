@@ -4,9 +4,6 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
-// 게임 상태 정의
-public enum GameState { Ready, Playing, Win, GameOver, TimeOver }
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -210,16 +207,47 @@ public class GameManager : MonoBehaviour
             () => GoToMain());
     }
 
+    // 일시 정지 함수
+    public void TogglePause()
+    {
+        if(CurrentState == GameState.Playing)
+        {
+            CurrentState = GameState.Paused;
+            // DeltaTime 기반 로직 정지
+            Time.timeScale = 0f;
+            Debug.Log($"게임 일시정지");
+        }
+
+        else if(CurrentState == GameState.Paused)
+        {
+            CurrentState = GameState.Playing;
+            Time.timeScale = 1f; // 게임 재개
+            Debug.Log($"게임 재개");
+        }
+    }
+
+    // 일시정지 시 시간 멈추도록 하는 코루틴
+    private float RemainingTime;
+    
     private IEnumerator CheckTimeOverLimit()
     {
-        while (CurrentState == GameState.Playing)
+        RemainingTime = CurrentLevelLimitTime;
+
+        while(RemainingTime > 0)
         {
-            if(Time.time - LevelStartTime >= CurrentLevelLimitTime)
+            // Playing 상태일 때만 시간이 흐르게 함
+            if(CurrentState == GameState.Playing)
+            {
+                RemainingTime -= Time.deltaTime;
+            }
+
+            if(RemainingTime <= 0)
             {
                 HandleTimeOver();
                 yield break;
             }
-            yield return new WaitForSeconds(1f);
+
+            yield return null;
         }
     }
 
