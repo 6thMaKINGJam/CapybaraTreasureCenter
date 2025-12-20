@@ -6,19 +6,17 @@ using System;
 public class NicknameInputDialog : MonoBehaviour
 {
     [Header("UI 요소")]
-    public TextMeshProUGUI MessageText;
     public TMP_InputField NicknameInputField;
     public Button ConfirmButton;
     public GameObject LoadingPanel; // "등록 중..." 로딩 UI
-    public TextMeshProUGUI LoadingText;
-    
+   
     private Action<string> onConfirmCallback;
     private int retryCount = 0;
     private const int MAX_RETRY = 3;
     
-    public void Setup(string message, Action<string> confirmCallback)
+    public void Setup( Action<string> confirmCallback)
     {
-        MessageText.text = message;
+       
         onConfirmCallback = confirmCallback;
         
         LoadingPanel.SetActive(false);
@@ -93,7 +91,7 @@ public class NicknameInputDialog : MonoBehaviour
     private void ShowLoading()
     {
         LoadingPanel.SetActive(true);
-        LoadingText.text = "명예의 전당에 등록 중...";
+    
         ConfirmButton.interactable = false;
         NicknameInputField.interactable = false;
     }
