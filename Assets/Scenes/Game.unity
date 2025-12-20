@@ -1163,7 +1163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775ab9829794e4458900664a7b97a45c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PopupParentTrasnform: {fileID: 2085232422}
+  PopupParentTransform: {fileID: 2085232422}
 --- !u!4 &261365896
 Transform:
   m_ObjectHideFlags: 0
@@ -2178,6 +2178,9 @@ MonoBehaviour:
   RefreshButton: {fileID: 1768813380}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
+  HintCountText: {fileID: 181118262}
+  RefreshCountText: {fileID: 1183863307}
+  UndoCountText: {fileID: 145250752}
 --- !u!114 &637300472
 MonoBehaviour:
   m_ObjectHideFlags: 0

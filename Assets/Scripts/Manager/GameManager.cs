@@ -610,6 +610,7 @@ public class GameManager : MonoBehaviour
         
         gameData.CurrentBoxIndex--;
         gameData.SelectedBundles.Clear();
+        UpdateAllItemUI();
         
         // 연속 성공 카운트 리셋
         consecutiveSuccessCount = 0;
@@ -651,6 +652,7 @@ public class GameManager : MonoBehaviour
         
         System.Random rng = new System.Random();
         gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
+        UpdateAllItemUI();
         
         ExtractDisplayBundles();
         RefreshUI();
@@ -687,9 +689,19 @@ public class GameManager : MonoBehaviour
             ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침이 필요카피");
             return;
         }
+        UpdateAllItemUI();
         
         GridManager.HighlightBundles(hintBundles, 3f);
     }
+
+    private void UpdateAllItemUI()
+{
+    UIManager.UpdateItemUI(
+        PlayerPrefs.GetInt("HintUsedToday", 0),
+        gameData.RefreshCount,
+        gameData.UndoCount
+    );
+}
     
     private List<GemBundle> FindHintCombination(Box targetBox)
     {
@@ -793,6 +805,13 @@ public class GameManager : MonoBehaviour
             gameData.CurrentBoxIndex,
             CalculateSelectedTotal(),
             GetCurrentBox().RequiredAmount
+        );
+
+        // 아이템 남은 횟수 UI 업데이트
+        UIManager.UpdateItemCounts(
+            PlayerPrefs.GetInt("HintUsedToday", 0), 
+            gameData.RefreshCount,
+            gameData.UndoCount
         );
     }
     

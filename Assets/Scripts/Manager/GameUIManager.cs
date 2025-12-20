@@ -34,6 +34,11 @@ public class GameUIManager : MonoBehaviour
     [Header("타이머 바")]
     public Slider TimerSlider;
 
+    [Header("아이템 남은 횟수 텍스트")]
+    public TextMeshProUGUI HintCountText;
+    public TextMeshProUGUI RefreshCountText; // 이미지의 RetryButton이 새로고침 역할이라면
+    public TextMeshProUGUI UndoCountText;
+
 
 
     void Awake()
@@ -71,6 +76,42 @@ public class GameUIManager : MonoBehaviour
         UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
         CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
         RefreshButton.onClick.AddListener(() => GameManager.Instance.ProcessRefresh());
+    }
+
+    // 횟수 UI를 한 번에 업데이트하는 함수
+    public void UpdateItemCounts(int hintUsed, int refreshUsed, int undoUsed)
+    {   
+        if (HintCountText != null)
+            HintCountText.text = Mathf.Max(0, 1 - hintUsed).ToString();
+
+        if (RefreshCountText != null)
+            RefreshCountText.text = Mathf.Max(0, 3 - refreshUsed).ToString();
+
+        if (UndoCountText != null)
+            UndoCountText.text = Mathf.Max(0, 3 - undoUsed).ToString();
+    }
+
+    public void UpdateItemUI(int hintUsed, int refreshUsed, int undoUsed, int maxCount = 3)
+    {
+        // 1. 남은 횟수 계산
+        int hintLeft = Mathf.Max(0, maxCount - hintUsed);
+        int refreshLeft = Mathf.Max(0, maxCount - refreshUsed);
+        int undoLeft = Mathf.Max(0, maxCount - undoUsed);
+
+        // 2. 텍스트 업데이트
+        if (HintCountText != null) HintCountText.text = hintLeft.ToString();
+        if (RefreshCountText != null) RefreshCountText.text = refreshLeft.ToString();
+        if (UndoCountText != null) UndoCountText.text = undoLeft.ToString();
+
+        // 3. 버튼 활성화/비활성화 제어 (0이면 클릭 불가)
+        // 만약 광고를 보고 계속 쓸 수 있게 하려면 이 부분을 수정해야 하지만,
+        // 지금은 "누르지 못하게" 하는 것이 목적이므로 false로 설정합니다.
+        if (HintButton != null) HintButton.interactable = (hintLeft > 0);
+        if (RefreshButton != null) RefreshButton.interactable = (refreshLeft > 0);
+        if (UndoButton != null) UndoButton.interactable = (undoLeft > 0);
+        
+        // (팁) 비활성화된 버튼의 색상을 어둡게 하고 싶다면 
+        // Button 컴포넌트의 Transition -> Disabled Color를 조절하면 됩니다.
     }
 
     // ========== 보석별 총량 표시 업데이트 ==========
