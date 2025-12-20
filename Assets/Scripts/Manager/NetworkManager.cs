@@ -27,7 +27,7 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// 인터넷 연결 가용성을 확인하는 메서드 (기획안 명칭 준수)
     /// </summary>
-    public bool IsNetworkAvailable()
+    public bool IsConnected()
     {
         // NotReachable이면 false, 그 외(WIFI/데이터) true
         return Application.internetReachability != NetworkReachability.NotReachable;

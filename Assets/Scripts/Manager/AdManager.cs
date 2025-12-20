@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Unity.Services.LevelPlay;
-using Scripts.Managers; // NetworkManager가 포함된 네임스페이스
 
 public class AdManager : MonoBehaviour
 {
