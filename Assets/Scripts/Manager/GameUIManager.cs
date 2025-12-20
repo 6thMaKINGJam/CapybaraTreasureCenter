@@ -20,6 +20,7 @@ public class GameUIManager : MonoBehaviour
 
     [Header("상단/하단 버튼들")]
     public Button PauseButton;
+    public Button ResumeButton;
     public Button HintButton;
     public Button CancelSelectButton;
     public Button UndoButton;
@@ -53,6 +54,10 @@ public class GameUIManager : MonoBehaviour
     private void SetupButtons()
     {
         PauseButton.onClick.AddListener(() => GameManager.Instance.TogglePause());
+        if(ResumeButton != null)
+        {
+            ResumeButton.onClick.AddListener(() => GameManager.Instance.Resume());
+        }
         HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
         CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
         UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());

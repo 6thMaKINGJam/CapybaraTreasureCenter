@@ -158,13 +158,22 @@ public class GameManager : MonoBehaviour
         {
             gameData.SelectedBundles.Remove(bundle);
             clickedPrefab.SetSelected(false);
+
+            // 해제 시 가벼운 진동이나 소리
+            VibrationManager.Instance.Vibrate(VibrationPattern.Light);
         }
         else
         {
+            // 선택 추가
             gameData.SelectedBundles.Add(bundle);
             clickedPrefab.SetSelected(true);
+
+            // 선택 시 효과
+            clickedPrefab.PlaySelectAnimation();
+            VibrationManager.Instance.Vibrate(VibrationPattern.Light);
         }
         
+        // UI 업데이트
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
         UIManager.UpdateBoxUI(
             gameData.CurrentBoxIndex,
