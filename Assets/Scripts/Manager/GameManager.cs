@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
     
     // 연속 성공 카운트
     private int consecutiveSuccessCount = 0;
+    private int lastCountedSecond = -1; // 중복 호출 방지용
   
     
     void Awake()
@@ -64,7 +65,28 @@ public class GameManager : MonoBehaviour
     {
         InitGame();
     }
-    
+
+    void Update()
+    {
+        // gameData가 생성된 상태이고 게임 상태가 Playing일 때만 작동
+        if (gameData != null && gameData.GameState == GameState.Playing)
+        {
+            // 현재 남은 시간 계산 (제한시간 - 경과시간)
+            float remainingTime = CurrentLevelConfig.TimeLimit - gameData.ElapsedTime;
+
+            // 5.5초 이하일 때 카운트다운 시작
+            if (remainingTime <= 5.5f && remainingTime > 0)
+            {
+                int currentSecond = Mathf.CeilToInt(remainingTime);
+
+                if (currentSecond != lastCountedSecond)
+                {
+                    lastCountedSecond = currentSecond;
+                    GameUIManager.Instance.StartCountdownEffect(currentSecond);
+                }
+            }
+        }
+    }
     // ========== 초기화 ==========
     public void InitGame()
     {

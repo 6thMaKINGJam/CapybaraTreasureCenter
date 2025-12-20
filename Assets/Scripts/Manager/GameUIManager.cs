@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance { get; private set; }
@@ -39,6 +40,10 @@ public class GameUIManager : MonoBehaviour
     public TextMeshProUGUI RefreshCountText; // 이미지의 RetryButton이 새로고침 역할이라면
     public TextMeshProUGUI UndoCountText;
 
+    [Header("카운트다운 연출")]
+    public TextMeshProUGUI CountdownText;
+    private CanvasGroup countdownCanvasGroup;
+
 
 
     void Awake()
@@ -51,6 +56,8 @@ public class GameUIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        if (CountdownText != null)
+            countdownCanvasGroup = CountdownText.GetComponent<CanvasGroup>();
     }
 
     void Start()
@@ -157,5 +164,42 @@ public class GameUIManager : MonoBehaviour
             PausePopupPanel.SetActive(false);
             Time.timeScale = 1f;
         }
+    }
+    public void StartCountdownEffect(int number)
+    {
+        StopAllCoroutines(); // 겹침 방지
+        StartCoroutine(CountdownRoutine(number));
+    }
+
+    private System.Collections.IEnumerator CountdownRoutine(int number)
+    {
+        CountdownText.gameObject.SetActive(true);
+        CountdownText.text = number.ToString();
+
+        // 연출 시작: 투명도 0에서 1로, 크기 작게에서 크게
+        float duration = 0.8f; // 1초보다 약간 짧게 (다음 숫자와의 간격)
+        float elapsed = 0f;
+
+        Vector3 startScale = Vector3.one * 0.5f;
+        Vector3 endScale = Vector3.one * 1.5f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+
+            // 투명도 조절 (나타났다가 서서히 사라짐)
+            if (progress < 0.2f) // 처음 20% 동안 나타남
+                countdownCanvasGroup.alpha = progress / 0.2f;
+            else // 나머지 동안 서서히 사라짐
+                countdownCanvasGroup.alpha = 1f - (progress - 0.2f) / 0.8f;
+
+            // 크기 조절
+            CountdownText.transform.localScale = Vector3.Lerp(startScale, endScale, progress);
+
+            yield return null;
+        }
+
+        CountdownText.gameObject.SetActive(false);
     }
 }
