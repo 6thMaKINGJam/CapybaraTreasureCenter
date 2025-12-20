@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "342935988102",
+    "project_id": "capybaratreasurecenter",
+    "storage_bucket": "capybaratreasurecenter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342935988102:android:5d04b52f0fb8daf2ed2e07",
+        "android_client_info": {
+          "package_name": "com.Coffebara.CapybaraTreasureCenter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBac6ozHJTMSgHWnHrH9_pKMqLgcBl8MwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
