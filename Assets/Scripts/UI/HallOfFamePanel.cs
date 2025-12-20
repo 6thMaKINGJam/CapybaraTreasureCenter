@@ -15,7 +15,7 @@ public class HallOfFamePanel : MonoBehaviour
     public void Open()
     {
         // 1. 네트워크 체크
-        if (!NetworkManager.Instance.IsConnected())
+        if (!NetworkManager.Instance.IsNetworkAvailable())
         {
             Debug.LogWarning("네트워크 연결 필요 팝업 출력");
             // BaseWarningPopup.Instance.Show("네트워크 연결이 필요합니다.");

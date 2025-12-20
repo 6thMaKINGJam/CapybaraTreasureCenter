@@ -55,7 +55,7 @@ public class RankingManager : MonoBehaviour
 
     public void RegisterRanking(string nickname, long score, Action onSuccess, Action<string> onFailure)
     {
-        if (!NetworkManager.Instance.IsConnected())
+        if (!NetworkManager.Instance.IsNetworkAvailable())
         {
             onFailure?.Invoke("네트워크 연결이 없어 자동 반영 대기 모드로 전환됩니다.");
             return;
