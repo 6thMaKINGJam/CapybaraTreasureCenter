@@ -125,7 +125,6 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         if(CapyDialogue != null && CapyDialogueText != null)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-            SoundManager.Instance.PlayFX(SoundType.Capybara);
         }
     }
     
@@ -471,7 +470,6 @@ private class BundleRestoreInfo
         // 경고 메시지를 띄우지만, 내부적으로 연속 성공은 깨짐
         ShowWarning(null); 
         FlashRedScreen();
-        SoundManager.Instance.PlayFX(SoundType.OneBoxFailue);
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
         
     }
@@ -610,7 +608,7 @@ private class BundleRestoreInfo
         // 2. 게임오버 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
-        SoundManager.Instance.PlayFX(SoundType.GameOver);
+        
         if(popup != null)
         {
             // 3. 팝업에도 위에서 결정한 finalMessage를 전달
