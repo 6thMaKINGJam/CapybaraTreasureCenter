@@ -643,6 +643,27 @@ private class BundleRestoreInfo
                 return;
           
         }
+
+        if(gameData.CurrentLevelIndex == 4)
+        {
+            int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
+
+            // 최초 클리어인지 확인 (아직 false)
+            if(!progressData.isLevel4Completed)
+            {
+                // 최초 클리어 처리
+                progressData.isLevel4Completed = true;
+                progressData.BestTime = clearTimeMs; // 첫 기록 저장
+
+                SaveManager.Save(progressData, "ProgressData");
+                SaveManager.DeleteSave("GameData"); // 게임 데이터 초기화
+
+                // 엔딩 트리거 (최초 1회만 실행)
+                TriggerEnding();
+                return;
+            }
+        }
+
         else
         {
             // 레벨 1~3 클리어
