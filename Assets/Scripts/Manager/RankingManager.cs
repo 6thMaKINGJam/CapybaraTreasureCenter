@@ -141,42 +141,66 @@ public class RankingManager : MonoBehaviour
     #region 기능 3: 랭킹 조회
 
     /// 시간 기준 상위 5명 반환
-
+    
     public void GetTopAndMyRanking(Action<List<Dictionary<string, object>>, Dictionary<string, object>, int> onComplete, Action<string> onFailure)
+{
+    Debug.Log("<color=yellow>1. 서버에 랭킹 데이터를 요청합니다...</color>");
+
+    // dbRef가 없거나 초기화가 필요할 때를 대비해 reference 직접 생성
+    string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
+    var reference = FirebaseDatabase.GetInstance(firebaseUrl).GetReference("rankings");
+
+    reference.OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
     {
-        string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
-        var reference = FirebaseDatabase.GetInstance(firebaseUrl).GetReference("rankings");
-
-        // 1. 전체 데이터를 시간순으로 가져와서 순위를 계산합니다.
-        reference.OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
+        if (task.IsFaulted || task.IsCanceled)
         {
-            if (task.IsFaulted) { onFailure?.Invoke("서버 연결 실패카피!"); return; }
+            Debug.LogError("서버 응답 실패: " + task.Exception);
+            onFailure?.Invoke("서버 연결 실패카피!");
+            return;
+        }
 
-            List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
-            Dictionary<string, object> myData = null;
-            int myRank = 0;
-            int count = 0;
+        Debug.Log($"<color=green>2. 데이터 수신 성공! 자식 개수: {task.Result.ChildrenCount}</color>");
+
+        List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
+        Dictionary<string, object> myData = null;
+        int myRank = 0;
+        int count = 0;
+        
+        // PlayerIdKey 상수를 사용하거나 직접 "playerId" 입력
+        string myId = PlayerPrefs.GetString("playerId", "");
+
+        foreach (var child in task.Result.Children)
+        {
+            count++;
+
+            // [핵심 수정] 'as Dictionary'는 에러 위험이 큼. 수동 매핑으로 변경.
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["id"] = child.Key;
             
-            string myId = PlayerPrefs.GetString("playerId", "");
+            // nickname 가져오기
+            data["nickname"] = child.Child("nickname").Value?.ToString() ?? "익명카피";
+            
+            // timeMilliseconds 가져오기 (숫자 변환 에러 방지)
+            object rawTime = child.Child("timeMilliseconds").Value;
+            data["timeMilliseconds"] = (rawTime != null) ? Convert.ToInt64(rawTime) : 0L;
 
-            foreach (var child in task.Result.Children)
+            // 상위 5명 리스트 추가
+            if (count <= 5) top5List.Add(data);
+
+            // 내 데이터 확인
+            if (child.Key == myId)
             {
-                count++;
-                var data = child.Value as Dictionary<string, object>;
-                data["id"] = child.Key;
-
-                // 상위 5명 리스트에 추가
-                if (count <= 5) top5List.Add(data);
-
-                // 내 데이터 찾기 및 순위 저장
-                if (child.Key == myId)
-                {
-                    myData = data;
-                    myRank = count;
-                }
+                myData = data;
+                myRank = count;
+                Debug.Log($"내 데이터 찾음! 순위: {myRank}");
             }
-            onComplete?.Invoke(top5List, myData, myRank);
-        });
-    }
+        }
+
+        Debug.Log($"<color=cyan>3. 가공 완료: Top5 {top5List.Count}명 / 내 순위 {myRank}</color>");
+        
+        // [중요] 루프가 다 끝난 뒤에만 콜백 호출
+        onComplete?.Invoke(top5List, myData, myRank);
+    });
+}
     #endregion
 }
