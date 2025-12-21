@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Scripts.UI;
 using DG.Tweening;
 using System;
+using System.Diagnostics;
 
 public class GameManager : MonoBehaviour
 {
@@ -201,6 +202,8 @@ Debug.Log(GemCountStatusPanel);
    // ===== OnBundleClicked() - 완전 재작성 =====
 private void OnBundleClicked(GemBundlePrefab clickedPrefab)
 {
+    Debug.Log($"[클릭 로그] {clickedPrefab.name} 클릭됨! 시간: {Time.time}");
+
     GemBundle bundle = clickedPrefab.GetData();
     
     // Placeholder 클릭 방지
@@ -216,6 +219,8 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     if(gameData.SelectedBundles.Contains(bundle))
     {
         gameData.SelectedBundles.Remove(bundle);
+        // 취소해서 다시 돌려주기
+        gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
         
         // 원래 인덱스 가져오기
         if(!selectedBundleOriginalIndices.ContainsKey(bundle))
