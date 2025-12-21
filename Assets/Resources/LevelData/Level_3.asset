@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_3
   m_EditorClassIdentifier: 
   LevelID: 3
-  BoxCount: 5
-  MaxRequiredPerBox: 15
-  GemTypeCount: 3
-  TimeLimit: 500
+  BoxCount: 50
+  MaxRequiredPerBox: 25
+  GemTypeCount: 4
+  TimeLimit: 180

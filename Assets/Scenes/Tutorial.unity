@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sequences:
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 6623262f3e70c4091b86b9c081cf795e, type: 3}
     DialogType: 0
     MessageText: "\uD574\uC801\uB4E4\uC774 \uCC3E\uB294, \uBAA8\uD5D8\uAC00\uB4E4\uC774
       \uB3C4\uC804\uD558\uB294, \uC5B4\uB9B0\uC544\uC774\uB4E4\uC774 \uAFC8\uAFB8\uB294.."
@@ -366,7 +366,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: 92c33f7d5974c4498b6b25e788d4477d, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 6623262f3e70c4091b86b9c081cf795e, type: 3}
     DialogType: 0
     MessageText: "\uADF8\uB7F0 \uBCF4\uBB3C\uC740 \uB3C4\uB300\uCCB4 \uB204\uAC00
       \uC228\uACA8\uB193\uB294\uAC78\uAE4C?"
@@ -376,7 +376,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 58873e124308c42b197d96d7c60f949d, type: 3}
     DialogType: 1
     MessageText: "\uADF8\uAC74 \uBC14\uB85C \uCE74\uD53C\uBC14\uB77C"
     YesButton1Text: Yes
@@ -385,7 +385,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: 92c33f7d5974c4498b6b25e788d4477d, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: a7ccf252d6147462087cd267859d5b0d, type: 3}
     DialogType: 0
     MessageText: "\uC9C4\uD759\uD0D5\uC744 \uB530\uB77C\uAC00\uBA74 \uB098\uC624\uB294
       \uADF8\uB4E4\uB9CC\uC758 \uBE44\uBC00\uC138\uACC4\uAC00 \uC788\uB2E4."
@@ -395,7 +395,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 1fe0b8ec2e0e54333ae927c8959afca8, type: 3}
     DialogType: 0
     MessageText: "\uADF8 \uBE44\uBC00\uC138\uACC4\uC5D0\uC11C \uCE74\uD53C\uBC14\uB77C\uB4E4\uC740
       \uBCF4\uBB3C\uC744 \uBC30\uBD84\uD558\uACE0"
@@ -405,7 +405,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: 92c33f7d5974c4498b6b25e788d4477d, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: cdc0868d6e33c4788aa5cf1d0893bdab, type: 3}
     DialogType: 0
     MessageText: "\uC804\uC138\uACC4 \uAC01\uC9C0\uB85C \uC720\uC720\uD788 \uBCF4\uBB3C\uC744
       \uC6B4\uBC18\uD55C\uB2E4"
@@ -415,7 +415,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 0
     MessageText: "\uADF8\uB7F0\uB370 \uCE58\uBA85\uC801 \uACB0\uD568!!"
     YesButton1Text: Yes
@@ -424,7 +424,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 0
     MessageText: "\uCE74\uD53C\uBC14\uB77C\uB294\u2026"
     YesButton1Text: Yes
@@ -433,7 +433,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 0
     MessageText: "...\uB290\uB9AC\uB2E4!!"
     YesButton1Text: Yes
@@ -442,7 +442,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: 92c33f7d5974c4498b6b25e788d4477d, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 0
     MessageText: "\uADF8\uB798\uC11C \uC778\uAC04\uC744 \uD55C \uBA85\uC529 \uB370\uB824\uC640
       \uBCF4\uBB3C \uBC30\uBD84 \uC791\uC5C5\uC744 \uBD80\uD0C1\uD55C\uB2E4."
@@ -452,7 +452,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f3211c73ae352436d9420a1c93b5d2d2, type: 3}
     DialogType: 0
     MessageText: "\uC774\uBC88\uC5D0 \uC120\uD0DD\uBC1B\uC740 \uC0AC\uB78C\uC740
       \uBC14\uB85C \uB108!!! \n"
@@ -462,7 +462,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f3211c73ae352436d9420a1c93b5d2d2, type: 3}
     DialogType: 1
     MessageText: "..\uC798\uBD80\uD0C1\uCE74\uD53C \u314E"
     YesButton1Text: Yes
@@ -471,7 +471,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 233e1508fdcef4a8e88f77e0dbf21ad3, type: 3}
     DialogType: 1
     MessageText: "4\uB2E8\uACC4 \uC791\uC5C5\uAE4C\uC9C0 \uC644\uB8CC\uD558\uACE0
       \uB098\uBA74 \uCE74\uD53C\uBC14\uB77C \uC138\uACC4\uC758 \uCE74\uD53C\uBC14\uB77C\uB178\uBCA8\uC0C1
@@ -483,7 +483,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: 233e1508fdcef4a8e88f77e0dbf21ad3, type: 3}
     DialogType: 1
     MessageText: "\uC81C\uC548\uC744 \uC218\uB77D\uD558\uCE74\uD53C? \n"
     YesButton1Text: Yes
@@ -492,7 +492,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 2
     MessageText: "\uC81C\uC548\uC744 \uC218\uB77D\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
     YesButton1Text: "\uB124"
@@ -501,7 +501,7 @@ MonoBehaviour:
     VibrationPattern: 0
     VibrationDelay: 0
     CustomVibrationPattern: 
-  - BackgroundImage: {fileID: 21300000, guid: fc315da7c13db42bba44423be4ef8859, type: 3}
+  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
     DialogType: 1
     MessageText: "\uACE0\uB9D9\uB2E4 \uCE74\uD53C.. \u3160\u3160"
     YesButton1Text: Yes
