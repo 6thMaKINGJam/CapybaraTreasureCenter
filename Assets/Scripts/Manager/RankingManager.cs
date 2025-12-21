@@ -6,10 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 
 public class RankingManager : MonoBehaviour
 {
@@ -145,66 +141,42 @@ public class RankingManager : MonoBehaviour
     #region 기능 3: 랭킹 조회
 
     /// 시간 기준 상위 5명 반환
+
     public void GetTopAndMyRanking(Action<List<Dictionary<string, object>>, Dictionary<string, object>, int> onComplete, Action<string> onFailure)
-{
-    Debug.Log("<color=yellow>1. 서버 데이터 요청 시작</color>");
-    
-    // reference를 가져올 때 dbRef(이미 Awake에서 검증됨)를 사용하는 것이 더 안전합니다.
-    dbRef.Child("rankings").OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
     {
-        // 1. 서버 연결 자체 실패 체크
-        if (task.IsFaulted || task.IsCanceled) 
-        { 
-            string error = task.Exception?.ToString() ?? "Unknown Error";
-            Debug.LogError($"서버 응답 실패: {error}");
-            onFailure?.Invoke("서버 연결 실패카피!"); 
-            return; 
-        }
+        string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
+        var reference = FirebaseDatabase.GetInstance(firebaseUrl).GetReference("rankings");
 
-        Debug.Log($"<color=green>2. 데이터 수신 성공! 자식 수: {task.Result.ChildrenCount}</color>");
-
-        List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
-        Dictionary<string, object> myData = null;
-        int myRank = 0;
-        int count = 0;
-        
-        // PlayerIdKey 상수를 사용하거나 초기화 때 쓴 키와 정확히 일치시켜야 함
-        string myId = PlayerPrefs.GetString("playerId", "");
-
-        foreach (var child in task.Result.Children)
+        // 1. 전체 데이터를 시간순으로 가져와서 순위를 계산합니다.
+        reference.OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
         {
-            count++;
+            if (task.IsFaulted) { onFailure?.Invoke("서버 연결 실패카피!"); return; }
+
+            List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
+            Dictionary<string, object> myData = null;
+            int myRank = 0;
+            int count = 0;
             
-            // [중요 수정] 'as Dictionary' 대신 수동으로 데이터를 매핑하여 에러 방지
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["id"] = child.Key;
-            data["nickname"] = child.Child("nickname").Value?.ToString() ?? "익명";
-            
-            // 숫자 데이터는 안전하게 파싱
-            if (child.Child("timeMilliseconds").Value != null)
-            {
-                data["timeMilliseconds"] = Convert.ToInt64(child.Child("timeMilliseconds").Value);
-            }
-            else
-            {
-                data["timeMilliseconds"] = 0L;
-            }
+            string myId = PlayerPrefs.GetString("playerId", "");
 
-            // 상위 5명 리스트에 추가
-            if (count <= 5) top5List.Add(data);
-
-            // 내 데이터 찾기
-            if (child.Key == myId)
+            foreach (var child in task.Result.Children)
             {
-                myData = data;
-                myRank = count;
-                Debug.Log($"내 랭킹 발견: {myRank}위");
-            }
-        }
+                count++;
+                var data = child.Value as Dictionary<string, object>;
+                data["id"] = child.Key;
 
-        Debug.Log($"3. 가공 완료: Top5({top5List.Count}명), 내 순위({myRank})");
-        onComplete?.Invoke(top5List, myData, myRank);
-    });
-}
+                // 상위 5명 리스트에 추가
+                if (count <= 5) top5List.Add(data);
+
+                // 내 데이터 찾기 및 순위 저장
+                if (child.Key == myId)
+                {
+                    myData = data;
+                    myRank = count;
+                }
+            }
+            onComplete?.Invoke(top5List, myData, myRank);
+        });
+    }
     #endregion
 }
