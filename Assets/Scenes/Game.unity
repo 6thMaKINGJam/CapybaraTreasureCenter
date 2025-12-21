@@ -2938,6 +2938,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pressScale: 0.9
+--- !u!1 &854129266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 854129268}
+  - component: {fileID: 854129267}
+  m_Layer: 0
+  m_Name: '[Test]SoundManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &854129267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854129266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3652656679a2e41ecbbbf13e52c9393c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundData: {fileID: 11400000, guid: b07a4331d6944444d85b872f030a856e, type: 2}
+  fxSourcePoolSize: 5
+  bgmFadeDuration: 1.5
+--- !u!4 &854129268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854129266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 581.5612, y: 1019.62164, z: 0.45978004}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &868503433
 GameObject:
   m_ObjectHideFlags: 0
@@ -6597,3 +6644,4 @@ SceneRoots:
   - {fileID: 41879335}
   - {fileID: 261365896}
   - {fileID: 54926625}
+  - {fileID: 854129268}

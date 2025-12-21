@@ -563,6 +563,12 @@ private class BundleRestoreInfo
     }
     
     SaveManager.Save(gameData, "GameData");
+    // 👈 인덱스가 증가한 직후, 리스트 크기와 비교해서 클리어인지 먼저 확인!
+    if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+    {
+        HandleLevelClear();
+        return; // 클리어 시 함수 종료 (이후 UI 갱신 등 방지)
+    }
     
     // ExtractDisplayBundles() 호출 안 함!
     RefreshUI();
@@ -1135,6 +1141,17 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     // ========== 유틸리티 ==========
     private Box GetCurrentBox()
     {
+        // 안전장치: 인덱스가 0보다 작거나 리스트 개수보다 크면 안됨
+        if (gameData.CurrentBoxIndex < 0 || gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+        {
+            Debug.LogWarning($"[GetCurrentBox] 인덱스 범위 초과! Index: {gameData.CurrentBoxIndex}, Total Boxes: {gameData.Boxes.Count}");
+            
+            // 모든 박스를 다 채운 경우 마지막 박스를 반환하거나 null 처리
+            if (gameData.Boxes.Count > 0)
+                return gameData.Boxes[gameData.Boxes.Count - 1]; 
+            
+            return null;
+        }
         return gameData.Boxes[gameData.CurrentBoxIndex];
     }
     

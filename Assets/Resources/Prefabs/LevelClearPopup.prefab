@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 7189141543713061501}
   - component: {fileID: 7357769042806287777}
   m_Layer: 5
-  m_Name: RetryButton
+  m_Name: NextLevelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -906,9 +906,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'retry
-
-'
+  m_text: next level
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fff0ff0faccbe44708a1ae7163541cda, type: 2}
   m_sharedMaterial: {fileID: 1348533062974750801, guid: fff0ff0faccbe44708a1ae7163541cda, type: 2}
