@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Scripts.UI;
 using DG.Tweening;
 using System;
+using System.Diagnostics;
 
 public class GameManager : MonoBehaviour
 {
@@ -259,6 +260,15 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     // ===== 선택 =====
     else
     {
+        // 보석 개수 부족 시 선택 방지
+        if(gameData.RemainingGems[bundle.GemType] < bundle.GemCount)
+            {
+                ShowWarning($"{bundle.GemType} 보석이 부족하다카피!");
+                FlashRedScreen();
+
+                 return;
+            }
+        
         gameData.SelectedBundles.Add(bundle);
         
         // 원래 인덱스 저장
@@ -661,6 +671,28 @@ private class BundleRestoreInfo
                 // 엔딩 트리거 (최초 1회만 실행)
                 TriggerEnding();
                 return;
+            }
+
+            else
+            {
+                // 재클리어 (isLevel4Completed == true)
+                // BestTime=0 / 새로운 기록이 더 빠른 경우
+                if(progressData.BestTime == 0 || 
+                      clearTimeMs < progressData.BestTime)
+                {
+                    progressData.BestTime = clearTimeMs;
+                    SaveManager.Save(progressData, "ProgressData");
+                    Debug.Log("새로운 최고 기록 달성! 랭킹 업데이트 완료.");
+                }
+                else
+                {
+                    Debug.Log("기존 기록이 더 빠릅니다. 랭킹을 유지합니다.");
+                }
+
+                // 재클리어 시에는 엔딩 없이 다음 로직 진행
+
+
+
             }
         }
 
