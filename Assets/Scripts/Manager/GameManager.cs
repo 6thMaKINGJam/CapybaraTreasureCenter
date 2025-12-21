@@ -643,6 +643,9 @@ private class BundleRestoreInfo
         if(progressData.LastClearedLevel < gameData.CurrentLevelIndex)
         {
             progressData.LastClearedLevel = gameData.CurrentLevelIndex;
+            // 👈 중요: 변경 직후 반드시 저장!
+            SaveManager.Save(progressData, "ProgressData"); 
+            Debug.Log($"[Clear] 레벨 {gameData.CurrentLevelIndex} 클리어 완료. 다음 레벨 해금됨.");
         }
         
         SoundManager.Instance.PlayFX(SoundType.GameClear);
