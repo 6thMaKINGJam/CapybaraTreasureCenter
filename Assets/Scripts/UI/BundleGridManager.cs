@@ -196,36 +196,141 @@ public GemBundlePrefab GetPrefabAtIndex(int siblingIndex)
 }
 
     // ========== 그리드 갱신 (12개 묶음 표시) ==========
-    public void RefreshGrid(List<GemBundle> newBundles, Action<GemBundlePrefab> clickCallback)
+   public void RefreshGrid(List<GemBundle> newBundles, Action<GemBundlePrefab> clickCallback)
+{
+    StopAllShaking();
+    
+    foreach(var bundlePrefab in activeBundles)
     {
-        // 새로고침 시 흔들림 중지
-        StopAllShaking();
+        bundlePrefab.gameObject.SetActive(false);
+        bundlePrefab.OnClickBundle -= onBundleClickCallback;
+    }
+    activeBundles.Clear();
+    
+    currentDisplayData = new List<GemBundle>(newBundles);
+    onBundleClickCallback = clickCallback;
+    
+    // ★ 핵심: 인덱스 순서대로 생성하고 SiblingIndex 명시적 설정
+    for(int i = 0; i < newBundles.Count; i++)
+    {
+        GemBundle bundleData = newBundles[i];
         
-        // 기존 활성화된 묶음 전부 비활성화
-        foreach(var bundlePrefab in activeBundles)
+        GemBundlePrefab prefab = GetFromPool();
+        prefab.transform.SetParent(GridParent);
+        prefab.transform.SetSiblingIndex(i); // ★ 명시적 설정!
+        
+        if(bundleData == null) // Placeholder
         {
-            bundlePrefab.gameObject.SetActive(false);
-            bundlePrefab.OnClickBundle -= onBundleClickCallback;
+            SetupAsPlaceholder(prefab);
         }
-        activeBundles.Clear();
-        
-        // 새 데이터 저장
-        currentDisplayData = new List<GemBundle>(newBundles);
-        onBundleClickCallback = clickCallback;
-        
-        // 새 묶음들 표시
-        foreach(var bundleData in newBundles)
+        else // 일반 번들
         {
-            GemBundlePrefab prefab = GetFromPool();
-            prefab.transform.SetParent(GridParent);
             prefab.SetData(bundleData);
             prefab.OnClickBundle += onBundleClickCallback;
             prefab.SetSelected(false);
-            prefab.gameObject.SetActive(true);
             
-            activeBundles.Add(prefab);
+            // 투명도 복원 (혹시 Placeholder였을 경우)
+            CanvasGroup cg = prefab.GetComponent<CanvasGroup>();
+            if(cg != null) cg.alpha = 1f;
+            
+            Button btn = prefab.GetComponent<Button>();
+            if(btn != null) btn.interactable = true;
+        }
+        
+        prefab.gameObject.SetActive(true);
+        activeBundles.Add(prefab);
+    }
+}
+
+// ===== 특정 인덱스의 번들만 교체 (기존 ReplaceBundleWithAnimation 대체) =====
+public void ReplaceBundleAtIndex(
+    int index,
+    GemBundle newData,
+    Action<GemBundlePrefab> clickCallback,
+    bool isRestoring = false)
+{
+    // 해당 인덱스의 Prefab 찾기
+    GemBundlePrefab targetPrefab = null;
+    foreach(var prefab in activeBundles)
+    {
+        if(prefab.transform.GetSiblingIndex() == index && prefab.gameObject.activeSelf)
+        {
+            targetPrefab = prefab;
+            break;
         }
     }
+    
+    if(targetPrefab == null)
+    {
+        Debug.LogError($"[ReplaceBundleAtIndex] 인덱스 {index}의 Prefab을 찾을 수 없습니다!");
+        return;
+    }
+    
+    if(isRestoring)
+    {
+        // 복원: 애니메이션 없이 즉시
+        targetPrefab.SetData(newData);
+        targetPrefab.SetSelected(false);
+        
+        // 투명도 복원
+        CanvasGroup cg = targetPrefab.GetComponent<CanvasGroup>();
+        if(cg != null) cg.alpha = 1f;
+        
+        Button btn = targetPrefab.GetComponent<Button>();
+        if(btn != null) btn.interactable = true;
+        
+        // 콜백 재연결
+        targetPrefab.OnClickBundle -= clickCallback;
+        targetPrefab.OnClickBundle += clickCallback;
+    }
+    else
+    {
+        // 일반 교체: 애니메이션
+        targetPrefab.transform.DOScale(0f, 0.3f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() =>
+            {
+                if(newData == null) // Placeholder
+                {
+                    SetupAsPlaceholder(targetPrefab);
+                }
+                else // 일반 번들
+                {
+                    targetPrefab.SetData(newData);
+                    targetPrefab.OnClickBundle -= clickCallback;
+                    targetPrefab.OnClickBundle += clickCallback;
+                    targetPrefab.SetSelected(false);
+                    
+                    // 투명도 복원
+                    CanvasGroup cg = targetPrefab.GetComponent<CanvasGroup>();
+                    if(cg != null) cg.alpha = 1f;
+                    
+                    Button btn = targetPrefab.GetComponent<Button>();
+                    if(btn != null) btn.interactable = true;
+                }
+                
+                // 팝업 애니메이션
+                targetPrefab.transform.localScale = Vector3.zero;
+                targetPrefab.transform.DOScale(1.2f, 0.2f)
+                    .SetEase(Ease.OutBack)
+                    .OnComplete(() =>
+                    {
+                        targetPrefab.transform.DOScale(1.0f, 0.1f);
+                    });
+            });
+    }
+}
+
+// ===== Placeholder 설정 헬퍼 =====
+private void SetupAsPlaceholder(GemBundlePrefab prefab)
+{
+    CanvasGroup cg = prefab.GetComponent<CanvasGroup>();
+    if(cg == null) cg = prefab.gameObject.AddComponent<CanvasGroup>();
+    cg.alpha = 0f;
+    
+    Button btn = prefab.GetComponent<Button>();
+    if(btn != null) btn.interactable = false;
+}
 
     // ========== 단일 묶음 교체 ==========
     public void ReplaceBundle(GemBundlePrefab targetPrefab, GemBundle newData, Action<GemBundlePrefab> clickCallback)

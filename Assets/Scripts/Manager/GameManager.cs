@@ -48,8 +48,11 @@ public class GameManager : MonoBehaviour
     private int consecutiveSuccessCount = 0;
     private int lastCountedSecond = -1; // 중복 호출 방지용
   
-  private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs 
+private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs 
     = new Dictionary<GemBundle, GemBundlePrefab>();
+private Dictionary<GemBundle, int> selectedBundleOriginalIndices 
+    = new Dictionary<GemBundle, int>(); // Bundle → 원래 Grid 인덱스
+
 
 
     
@@ -197,7 +200,7 @@ public class GameManager : MonoBehaviour
         
         GridManager.RefreshGrid(gameData.CurrentDisplayBundles, OnBundleClicked);
     }
-    // ===== OnBundleClicked() =====
+   // ===== OnBundleClicked() - 완전 재작성 =====
 private void OnBundleClicked(GemBundlePrefab clickedPrefab)
 {
     GemBundle bundle = clickedPrefab.GetData();
@@ -208,113 +211,73 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     // 힌트 흔들림 중지
     GridManager.StopShakingBundle(bundle);
     
+    // 현재 Grid 인덱스 찾기
+    int gridIndex = clickedPrefab.transform.GetSiblingIndex();
+    
     // ===== 선택 취소 =====
     if(gameData.SelectedBundles.Contains(bundle))
     {
-        // 1. SelectedBundles에서 제거
         gameData.SelectedBundles.Remove(bundle);
         
-        // 2. 원래 Prefab 위치 가져오기
-        if(!selectedBundleOriginalPrefabs.ContainsKey(bundle))
+        // 원래 인덱스 가져오기
+        if(!selectedBundleOriginalIndices.ContainsKey(bundle))
         {
-            Debug.LogError($"[OnBundleClicked] {bundle.BundleID}의 원래 위치를 찾을 수 없습니다!");
+            Debug.LogError($"[OnBundleClicked] {bundle.BundleID}의 원래 인덱스를 찾을 수 없습니다!");
             return;
         }
         
-        GemBundlePrefab originalPrefab = selectedBundleOriginalPrefabs[bundle];
-        selectedBundleOriginalPrefabs.Remove(bundle);
+        int originalIndex = selectedBundleOriginalIndices[bundle];
+        selectedBundleOriginalIndices.Remove(bundle);
         
-        // 3. BundlePool에 다시 추가
+        // BundlePool에 다시 추가
         if(!gameData.BundlePool.Contains(bundle))
         {
             gameData.BundlePool.Add(bundle);
         }
         
-        // 4. CurrentDisplayBundles에서 현재 그 자리의 번들 찾기
-        int siblingIndex = originalPrefab.transform.GetSiblingIndex();
-        GemBundle currentBundleAtPosition = null;
+        // 현재 그 자리의 번들
+        GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
         
-        // activeBundles를 순회하며 같은 SiblingIndex 찾기
-        foreach(var prefab in GridManager.GetActiveBundles())
+        // 현재 번들이 새로 생성된 거라면 BundlePool에 반환
+        if(currentBundle != null && currentBundle != bundle)
         {
-            if(prefab.transform.GetSiblingIndex() == siblingIndex && prefab.gameObject.activeSelf)
+            if(!gameData.BundlePool.Contains(currentBundle))
             {
-                currentBundleAtPosition = prefab.GetData();
-                break;
+                gameData.BundlePool.Add(currentBundle);
             }
         }
         
-        // 5. 현재 그 자리에 있던 번들 처리 (Placeholder가 아닐 경우)
-        if(currentBundleAtPosition != null && currentBundleAtPosition != bundle)
-        {
-            // 새로 생성됐던 번들을 BundlePool로 반환
-            if(!gameData.BundlePool.Contains(currentBundleAtPosition))
-            {
-                gameData.BundlePool.Add(currentBundleAtPosition);
-            }
-            
-            // CurrentDisplayBundles에서 제거
-            gameData.CurrentDisplayBundles.Remove(currentBundleAtPosition);
-        }
+        // CurrentDisplayBundles 복원
+        gameData.CurrentDisplayBundles[originalIndex] = bundle;
         
-        // 6. CurrentDisplayBundles 갱신
-        int displayIndex = gameData.CurrentDisplayBundles.IndexOf(currentBundleAtPosition);
-        if(displayIndex >= 0)
-        {
-            gameData.CurrentDisplayBundles[displayIndex] = bundle;
-        }
-        else if(currentBundleAtPosition == null)
-        {
-            // Placeholder였던 경우, CurrentDisplayBundles에 추가
-            // SiblingIndex 순서에 맞게 삽입
-            if(siblingIndex < gameData.CurrentDisplayBundles.Count)
-            {
-                gameData.CurrentDisplayBundles[siblingIndex] = bundle;
-            }
-            else
-            {
-                gameData.CurrentDisplayBundles.Add(bundle);
-            }
-        }
-        
-        // 7. Grid에서 애니메이션과 함께 원래 번들로 복원
-        GridManager.ReplaceBundleWithAnimation(
-            originalPrefab,
+        // Grid에서 복원 (SiblingIndex 유지)
+        GridManager.ReplaceBundleAtIndex(
+            originalIndex,
             bundle,
             OnBundleClicked,
             isRestoring: true
         );
-        
-        originalPrefab.SetSelected(false);
     }
     // ===== 선택 =====
     else
     {
-        // 1. SelectedBundles에 추가
         gameData.SelectedBundles.Add(bundle);
-        clickedPrefab.SetSelected(true);
         
-        // 2. 원래 위치 저장
-        selectedBundleOriginalPrefabs[bundle] = clickedPrefab;
+        // 원래 인덱스 저장
+        selectedBundleOriginalIndices[bundle] = gridIndex;
         
-        // 3. CurrentDisplayBundles에서 인덱스 찾기
-        int displayIndex = gameData.CurrentDisplayBundles.IndexOf(bundle);
-        
-        // 4. BundlePool에서 제거
+        // BundlePool에서 제거
         gameData.BundlePool.Remove(bundle);
         
-        // 5. 새 번들 결정
+        // 새 번들 결정
         GemBundle newBundle = GetRandomFromRemainingPool();
         
-        // 6. CurrentDisplayBundles 갱신
-        if(displayIndex >= 0)
-        {
-            gameData.CurrentDisplayBundles[displayIndex] = newBundle;
-        }
+        // CurrentDisplayBundles 갱신
+        gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
-        // 7. Grid 애니메이션 교체
-        GridManager.ReplaceBundleWithAnimation(
-            clickedPrefab,
+        // Grid 애니메이션 교체 (SiblingIndex 유지)
+        GridManager.ReplaceBundleAtIndex(
+            gridIndex,
             newBundle,
             OnBundleClicked,
             isRestoring: false
@@ -353,114 +316,89 @@ private GemBundle GetRandomFromRemainingPool()
     int randomIndex = UnityEngine.Random.Range(0, availableBundles.Count);
     return availableBundles[randomIndex];
 }
+// ===== CancelSelection() - 간단 버전 =====
 public void CancelSelection()
 {
     if(gameData.SelectedBundles.Count == 0)
     {
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(
-            gameData.CurrentBoxIndex,
-            0,
-            GetCurrentBox().RequiredAmount
-        );
+        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
         return;
     }
     
-    // ★ 핵심: 복원 정보를 먼저 수집 (실행 전에 모든 정보 확보)
+    // 복원 정보 수집 (인덱스 순서대로 정렬)
     List<BundleRestoreInfo> restoreInfos = new List<BundleRestoreInfo>();
     
     foreach(var bundle in gameData.SelectedBundles)
     {
-        if(!selectedBundleOriginalPrefabs.ContainsKey(bundle))
+        if(!selectedBundleOriginalIndices.ContainsKey(bundle))
         {
-            Debug.LogWarning($"[CancelSelection] {bundle.BundleID}의 원래 위치를 찾을 수 없습니다!");
+            Debug.LogWarning($"[CancelSelection] {bundle.BundleID}의 인덱스를 찾을 수 없습니다!");
             continue;
         }
         
-        GemBundlePrefab originalPrefab = selectedBundleOriginalPrefabs[bundle];
-        int siblingIndex = originalPrefab.transform.GetSiblingIndex();
-        
-        // 현재 그 자리에 있는 번들 찾기
-        GemBundle currentBundleAtPosition = null;
-        foreach(var prefab in GridManager.GetActiveBundles())
-        {
-            if(prefab.transform.GetSiblingIndex() == siblingIndex && prefab.gameObject.activeSelf)
-            {
-                currentBundleAtPosition = prefab.GetData();
-                break;
-            }
-        }
+        int originalIndex = selectedBundleOriginalIndices[bundle];
+        GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
         
         restoreInfos.Add(new BundleRestoreInfo
         {
             OriginalBundle = bundle,
-            OriginalPrefab = originalPrefab,
-            SiblingIndex = siblingIndex,
-            CurrentBundleAtPosition = currentBundleAtPosition
+            OriginalIndex = originalIndex,
+            CurrentBundle = currentBundle
         });
     }
     
-    // ★ SiblingIndex 순서대로 정렬 (작은 인덱스부터 복원)
-    restoreInfos.Sort((a, b) => a.SiblingIndex.CompareTo(b.SiblingIndex));
+    // 인덱스 순서대로 정렬
+    restoreInfos.Sort((a, b) => a.OriginalIndex.CompareTo(b.OriginalIndex));
     
-    // ★ 복원 실행
+    // 복원 실행
     foreach(var info in restoreInfos)
     {
-        // 1. BundlePool에 원래 번들 추가
+        // BundlePool에 원래 번들 추가
         if(!gameData.BundlePool.Contains(info.OriginalBundle))
         {
             gameData.BundlePool.Add(info.OriginalBundle);
         }
         
-        // 2. 현재 그 자리에 있던 번들 처리 (새로 생성됐던 번들)
-        if(info.CurrentBundleAtPosition != null && info.CurrentBundleAtPosition != info.OriginalBundle)
+        // 현재 번들 반환
+        if(info.CurrentBundle != null && info.CurrentBundle != info.OriginalBundle)
         {
-            if(!gameData.BundlePool.Contains(info.CurrentBundleAtPosition))
+            if(!gameData.BundlePool.Contains(info.CurrentBundle))
             {
-                gameData.BundlePool.Add(info.CurrentBundleAtPosition);
+                gameData.BundlePool.Add(info.CurrentBundle);
             }
         }
         
-        // 3. ★ CurrentDisplayBundles를 SiblingIndex 기준으로 직접 수정
-        gameData.CurrentDisplayBundles[info.SiblingIndex] = info.OriginalBundle;
+        // CurrentDisplayBundles 복원
+        gameData.CurrentDisplayBundles[info.OriginalIndex] = info.OriginalBundle;
         
-        // 4. Grid에서 복원 애니메이션
-        GridManager.ReplaceBundleWithAnimation(
-            info.OriginalPrefab,
+        // Grid 복원
+        GridManager.ReplaceBundleAtIndex(
+            info.OriginalIndex,
             info.OriginalBundle,
             OnBundleClicked,
             isRestoring: true
         );
-        
-        info.OriginalPrefab.SetSelected(false);
     }
     
-    // 5. 선택 상태 전체 초기화
+    // 전체 초기화
     gameData.SelectedBundles.Clear();
-    selectedBundleOriginalPrefabs.Clear();
+    selectedBundleOriginalIndices.Clear();
     
-    // 6. UI 업데이트
+    // UI 업데이트
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-    UIManager.UpdateBoxUI(
-        gameData.CurrentBoxIndex,
-        0,
-        GetCurrentBox().RequiredAmount
-    );
-    
+    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
     GridManager.ClearAllSelections();
 }
 
-// ★ 복원 정보를 담을 클래스 (GameManager 내부 또는 별도 파일)
+// ===== 복원 정보 클래스 =====
 private class BundleRestoreInfo
 {
     public GemBundle OriginalBundle;
-    public GemBundlePrefab OriginalPrefab;
-    public int SiblingIndex;
-    public GemBundle CurrentBundleAtPosition;
+    public int OriginalIndex;
+    public GemBundle CurrentBundle;
 }
-
-
-    
+   
     // ========== 완료 버튼 ==========
    public void OnClickComplete()
     {
