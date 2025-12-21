@@ -47,7 +47,11 @@ public class MainHomeManager : MonoBehaviour
 
         levelSelectUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
         howToPlayUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
-        hallOfFameUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
+        hallOfFameUI.closeButton.onClick.AddListener(() =>
+        {
+            hallOfFameUI.gameObject.SetActive(false);
+            mainHomeUI.ShowMain();
+        });
     }
 
     private void CheckAndRunEndingSequence()
