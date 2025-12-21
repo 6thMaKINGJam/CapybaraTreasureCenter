@@ -31,6 +31,13 @@ public class HallOfFamePanel : MonoBehaviour
 
     private void UpdateUI(List<Dictionary<string, object>> top5, Dictionary<string, object> myData, int myRank)
     {
+        Debug.Log($"받아온 데이터 개수: {top5.Count}"); // 0이 출력된다면 Firebase 연결 문제
+    
+        foreach (var data in top5) {
+            foreach (var key in data.Keys) {
+                Debug.Log($"키: {key}, 값: {data[key]}"); // 데이터 구조 확인
+            }
+        }
         // 기존 리스트 청소
         foreach (Transform child in topRankContent) Destroy(child.gameObject);
         foreach (Transform child in myRankContent) Destroy(child.gameObject);

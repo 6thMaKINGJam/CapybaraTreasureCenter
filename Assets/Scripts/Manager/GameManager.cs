@@ -61,10 +61,11 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         if(Instance == null)
         {
             Instance = this;
+            // Firebase 초기화 로직
         }
         else
         {
-            Destroy(gameObject);
+            return;
         }
     }
     
@@ -557,6 +558,12 @@ private class BundleRestoreInfo
     }
     
     SaveManager.Save(gameData, "GameData");
+    // 👈 인덱스가 증가한 직후, 리스트 크기와 비교해서 클리어인지 먼저 확인!
+    if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+    {
+        HandleLevelClear();
+        return; // 클리어 시 함수 종료 (이후 UI 갱신 등 방지)
+    }
     
     // ExtractDisplayBundles() 호출 안 함!
     RefreshUI();
@@ -622,111 +629,111 @@ private class BundleRestoreInfo
     {
         gameData.GameState = GameState.Win;
         StopCoroutine(timeCheckCoroutine);
-        
-        // 1. 클리어 시간 및 별 계산
+
+        // 1. 시간 및 별 계산
         float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
         float maxTime = CurrentLevelConfig.TimeLimit;
-        
-        int starCount = 1; // 기본 1개
-        if (clearTime <= maxTime * 0.5f) starCount = 3;      // 50% 이하 시간: 별 3개
-        else if (clearTime <= maxTime * (2f/3f)) starCount = 2; // 66% 이하 시간: 별 2개
-        
-        // 2. 메시지 생성
+        int starCount = 1;
+        if (clearTime <= maxTime * 0.5f) starCount = 3;
+        else if (clearTime <= maxTime * 0.66f) starCount = 2;
+
         string clearMessage = GetClearMessage(clearTime);
 
-
-        // ProgressData 업데이트
+        // 2. 데이터 로드 및 업데이트
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        
-        if(progressData.LastClearedLevel < gameData.CurrentLevelIndex)
+
+        // 레벨 해금 정보 갱신 (공통)
+        if (progressData.LastClearedLevel < gameData.CurrentLevelIndex)
         {
             progressData.LastClearedLevel = gameData.CurrentLevelIndex;
-        }
-        
-        
-        // 레벨 4 클리어 시
-        if(gameData.CurrentLevelIndex == 4 && !progressData.isLevel4Completed)
-        {
-            int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
-           
-            progressData.isLevel4Completed = true;
-            if(progressData.BestTime == 0 || clearTimeMs < progressData.BestTime)
-            {
-                progressData.BestTime = clearTimeMs;
-            }
-            
-            SaveManager.Save(progressData, "ProgressData");
-            SaveManager.DeleteSave("GameData");
-            
-            
-                TriggerEnding();
-                return;
-          
+            Debug.Log($"[Clear] 다음 레벨 해금: {progressData.LastClearedLevel + 1}");
         }
 
-        if(gameData.CurrentLevelIndex == 4)
+        SoundManager.Instance.PlayFX(SoundType.GameClear);
+
+        // 3. 레벨별 분기 처리
+        if (gameData.CurrentLevelIndex == 4)
         {
             int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
 
-            // 최초 클리어인지 확인 (아직 false)
-            if(!progressData.isLevel4Completed)
+            if (!progressData.isLevel4Completed)
             {
-                // 최초 클리어 처리
+                // 최초 클리어
                 progressData.isLevel4Completed = true;
-                progressData.BestTime = clearTimeMs; // 첫 기록 저장
-
-                SaveManager.Save(progressData, "ProgressData");
-                SaveManager.DeleteSave("GameData"); // 게임 데이터 초기화
-
-                // 엔딩 트리거 (최초 1회만 실행)
+                progressData.BestTime = clearTimeMs;
+                
+                SaveManager.Save(progressData, "ProgressData"); // 👈 여기서 확실히 저장
+                SaveManager.DeleteSave("GameData");
                 TriggerEnding();
-                return;
             }
-
             else
             {
-                // 재클리어 (isLevel4Completed == true)
-                // BestTime=0 / 새로운 기록이 더 빠른 경우
-                if(progressData.BestTime == 0 || 
-                      clearTimeMs < progressData.BestTime)
+                // 재클리어: 기록 경신 확인
+                if (progressData.BestTime == 0 || clearTimeMs < progressData.BestTime)
                 {
                     progressData.BestTime = clearTimeMs;
                     SaveManager.Save(progressData, "ProgressData");
-                    Debug.Log("새로운 최고 기록 달성! 랭킹 업데이트 완료.");
                 }
-                else
-                {
-                    Debug.Log("기존 기록이 더 빠릅니다. 랭킹을 유지합니다.");
-                }
-
-                // 재클리어 시에는 엔딩 없이 다음 로직 진행
-
-
-
+                
+                // 재클리어 시에는 엔딩 없이 메인으로 가거나 선택 (여기선 팝업 예시)
+                ShowLevelClearPopup(starCount, clearMessage);
             }
         }
-
         else
         {
-            // 레벨 1~3 클리어
-           GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
-        LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
-        
-        if (popup != null)
-        {
-            popup.Setup(
-                starCount, 
-                clearMessage,
-               () => RestartLevel(), // 첫 번째 버튼(Retry)에 재시작 기능 연결!
-                () => GoToMainHome()  // 두 번째 버튼(Home)에 홈 이동 연결
-                );
-        }
-        else
-        {
-            Debug.LogError("[GameManager] LevelClearPopup을 찾을 수 없습니다! 경로를 확인하세요.");
-        }
+            // 레벨 1~3 클리어: 반드시 저장 후 팝업
+            SaveManager.Save(progressData, "ProgressData"); // 👈 메인 해금을 위해 필수!
+            ShowLevelClearPopup(starCount, clearMessage);
         }
     }
+
+// 팝업 생성 로직을 별도 함수로 빼면 중복 코드가 줄어듭니다.
+private void ShowLevelClearPopup(int starCount, string message)
+{
+    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
+    LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
+    if (popup != null)
+    {
+        popup.Setup(
+            starCount, 
+            message,
+            () => GoToNextLevel(), // 👈 RestartLevel 대신 다음 레벨 이동 함수 연결 권장
+            () => GoToMainHome()
+        );
+    }
+}
+public void GoToNextLevel()
+{
+    // 1. 시간 흐름 초기화
+    Time.timeScale = 1f;
+
+    // 2. 현재 레벨 번호 가져오기 (기본값 1)
+    int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+    int nextLevel = currentLevel + 1;
+
+    // 3. 다음 레벨 설정 파일이 Resources 폴더에 있는지 확인
+    // 파일 경로 예시: Resources/LevelData/Level_2.asset
+    LevelConfig nextConfig = Resources.Load<LevelConfig>($"LevelData/Level_{nextLevel}");
+
+    if (nextConfig != null)
+    {
+        // 다음 레벨이 존재하면 정보 갱신 및 저장
+        PlayerPrefs.SetInt("SelectedLevel", nextLevel);
+        PlayerPrefs.Save();
+
+        // 기존 게임 진행 데이터 삭제 (새 레벨을 처음부터 시작하기 위함)
+        SaveManager.DeleteSave("GameData");
+
+        // 현재 게임 씬 다시 로드 (InitGame에서 새 SelectedLevel을 읽어옴)
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    else
+    {
+        // 더 이상 다음 레벨이 없으면 메인 홈으로 이동
+        Debug.Log("모든 레벨을 클리어했습니다! 메인으로 돌아갑니다.");
+        GoToMainHome();
+    }
+}
     
   private string GetClearMessage(float clearTime)
     {
@@ -1129,6 +1136,17 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     // ========== 유틸리티 ==========
     private Box GetCurrentBox()
     {
+        // 안전장치: 인덱스가 0보다 작거나 리스트 개수보다 크면 안됨
+        if (gameData.CurrentBoxIndex < 0 || gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+        {
+            Debug.LogWarning($"[GetCurrentBox] 인덱스 범위 초과! Index: {gameData.CurrentBoxIndex}, Total Boxes: {gameData.Boxes.Count}");
+            
+            // 모든 박스를 다 채운 경우 마지막 박스를 반환하거나 null 처리
+            if (gameData.Boxes.Count > 0)
+                return gameData.Boxes[gameData.Boxes.Count - 1]; 
+            
+            return null;
+        }
         return gameData.Boxes[gameData.CurrentBoxIndex];
     }
     
