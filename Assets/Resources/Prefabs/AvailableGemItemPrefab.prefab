@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7819980912570103119}
   - component: {fileID: 5618856425386524767}
   - component: {fileID: 4825592740998369051}
-  - component: {fileID: 3871605974871876900}
   - component: {fileID: 1352844452340699386}
+  - component: {fileID: 7244495272027534330}
   m_Layer: 5
   m_Name: AvailableGemItemPrefab
   m_TagString: Untagged
@@ -79,20 +79,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3871605974871876900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2273705045484454930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfbbb06d0d8736c47b58f32a9902dbaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GemIcon: {fileID: 8699280952283876440}
-  Outline: {fileID: 1352844452340699386}
 --- !u!114 &1352844452340699386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +94,21 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &7244495272027534330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2273705045484454930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e41d0e75faa4ce2aa7a22f44db3dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GemIcon: {fileID: 8699280952283876440}
+  CountText: {fileID: 3945025993100280315}
+  SpriteDatabase: {fileID: 11400000, guid: 383b110ef0be59247b645b2218c51e12, type: 2}
 --- !u!1 &3426789969762315396
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,8 +251,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: num
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: fff0ff0faccbe44708a1ae7163541cda, type: 2}
+  m_sharedMaterial: {fileID: 1348533062974750801, guid: fff0ff0faccbe44708a1ae7163541cda, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

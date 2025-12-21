@@ -13,9 +13,6 @@ public class GameUIManager : MonoBehaviour
     public BundleGridManager GridManager; // 하단 12개 그리드 관리
     public SelectedBundlesUIPanel SelectionPanel; // 선택된 묶음 패널 관리
 
-    [Header("보석별 총량 표시")]
-    public List<TMP_Text> GemCountTexts; // 각 보석 종류별 UI Text (5개)
-
     [Header("상자 정보")]
     public TMP_Text BoxIndexText; // 상자 #번호
     public TMP_Text BoxProgressText; // 담은 개수 / 총개수
@@ -110,32 +107,9 @@ public class GameUIManager : MonoBehaviour
         if (RefreshCountText != null) RefreshCountText.text = refreshLeft.ToString();
         if (UndoCountText != null) UndoCountText.text = undoLeft.ToString();
 
-        // 3. 버튼 활성화/비활성화 제어 (0이면 클릭 불가)
-        // 만약 광고를 보고 계속 쓸 수 있게 하려면 이 부분을 수정해야 하지만,
-        // 지금은 "누르지 못하게" 하는 것이 목적이므로 false로 설정합니다.
-        if (HintButton != null) HintButton.interactable = (hintLeft > 0);
-        if (RefreshButton != null) RefreshButton.interactable = (refreshLeft > 0);
-        if (UndoButton != null) UndoButton.interactable = (undoLeft > 0);
-        
-        // (팁) 비활성화된 버튼의 색상을 어둡게 하고 싶다면 
-        // Button 컴포넌트의 Transition -> Disabled Color를 조절하면 됩니다.
     }
 
-    // ========== 보석별 총량 표시 업데이트 ==========
-    public void UpdateTotalGemUI(Dictionary<GemType, int> gemCounts)
-    {
-        foreach(var kvp in gemCounts)
-        {
-            int index = (int)kvp.Key;
-            if(index < GemCountTexts.Count && GemCountTexts[index] != null)
-            {
-                GemCountTexts[index].text = kvp.Value.ToString();
-                
-                // 0개면 빨간색 강조
-                GemCountTexts[index].color = (kvp.Value <= 0) ? Color.red : Color.white;
-            }
-        }
-    }
+  
 
     // ========== 상자 진행도 표시 업데이트 ==========
     public void UpdateBoxUI(int boxIndex, int currentAmount, int requiredAmount)
@@ -143,9 +117,7 @@ public class GameUIManager : MonoBehaviour
         BoxIndexText.text = $"상자 #{boxIndex + 1}";
         BoxProgressText.text = $"{currentAmount} / {requiredAmount}";
 
-        // 정확히 맞으면 완료 버튼 활성화
-        CompleteButton.interactable = (currentAmount == requiredAmount);
-    }
+   }
 
     // ========== 일시정지 팝업 ==========
     public void OpenPausePopup()

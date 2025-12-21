@@ -155,38 +155,36 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     }
     
     private void SetupNewGame()
-    {
-        gameData = new GameData();
-        gameData.CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);  // TODO : SelectedLevelPanel에서 넘겨준 레벨 받아오기
-        gameData.CurrentBoxIndex = 0;
-        gameData.GameState = GameState.Playing;
-        gameData.StartTime = Time.time;
-        gameData.ElapsedTime = 0f;
-        
-        chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
+{
+    gameData = new GameData();
+    gameData.CurrentLevelIndex = PlayerPrefs.GetInt("SelectedLevel", 1);
+    gameData.CurrentBoxIndex = 0;
+    gameData.GameState = GameState.Playing;
+    gameData.StartTime = Time.time;
+    gameData.ElapsedTime = 0f;
+    
+    chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
 
-        if(GemCountStatusPanel != null)
-        {
-            // 총 남은 보석 데이터를 기반으로 리스트 생성
-            List<GemBundle> initialGems = new List<GemBundle>();
-            foreach(var kvp in chunkData.TotalRemainingGems)
-            {
-                GemBundle gb = new GemBundle();
-                gb.GemType = kvp.Key;
-                gb.GemCount = kvp.Value;
-                initialGems.Add(gb);
-            }
-            GemCountStatusPanel.InitLevelGemStatus(initialGems);
-        }
-        
-        gameData.Boxes = new List<Box>(chunkData.AllBoxes);
-        gameData.BundlePool = new List<GemBundle>(chunkData.MergedBundlePool);
-        gameData.RemainingGems = new Dictionary<GemType, int>(chunkData.TotalRemainingGems);
-        
-        ExtractDisplayBundles();
-        
-        Debug.Log($"[GameManager] 새 게임 시작. 레벨: {gameData.CurrentLevelIndex}, 상자: {gameData.Boxes.Count}개");
+Debug.Log(GemCountStatusPanel);
+    // ===== 수정: GemCountPanelManager 초기화 =====
+    if(GemCountStatusPanel != null)
+    {
+        Debug.Log("[GameManager] GemCountStatusPanel 초기화 시작");
+        GemCountStatusPanel.InitLevelGemStatus(
+            chunkData.TotalRemainingGems, 
+            CurrentLevelConfig.GemTypeCount
+        );
     }
+    
+    gameData.Boxes = new List<Box>(chunkData.AllBoxes);
+    gameData.BundlePool = new List<GemBundle>(chunkData.MergedBundlePool);
+    gameData.RemainingGems = new Dictionary<GemType, int>(chunkData.TotalRemainingGems);
+    
+    ExtractDisplayBundles();
+    
+    Debug.Log($"[GameManager] 새 게임 시작. 레벨: {gameData.CurrentLevelIndex}");
+}
+
     
     private void ExtractDisplayBundles()
     {
@@ -275,6 +273,15 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
         // CurrentDisplayBundles 갱신
         gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
+        // ===== 추가: 보석 개수 차감 및 UI 업데이트 =====
+    gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
+    
+    if (GemCountStatusPanel != null)
+    {
+        GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+    }
+    
+    
         // Grid 애니메이션 교체 (SiblingIndex 유지)
         GridManager.ReplaceBundleAtIndex(
             gridIndex,
@@ -337,6 +344,13 @@ public void CancelSelection()
             continue;
         }
         
+        gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
+        
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+        }
+
         int originalIndex = selectedBundleOriginalIndices[bundle];
         GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
         
@@ -380,6 +394,8 @@ public void CancelSelection()
             isRestoring: true
         );
     }
+
+    
     
     // 전체 초기화
     gameData.SelectedBundles.Clear();
@@ -823,6 +839,12 @@ private class BundleRestoreInfo
         {
             gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
             gameData.BundlePool.Insert(0, bundle);
+        
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+        }
+
         }
         
         gameData.CurrentBoxIndex--;
@@ -1059,7 +1081,6 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
     private void RefreshUI()
     {
-        UIManager.UpdateTotalGemUI(gameData.RemainingGems);
         UIManager.UpdateBoxUI(
             gameData.CurrentBoxIndex,
             CalculateSelectedTotal(),

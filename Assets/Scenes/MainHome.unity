@@ -2903,7 +2903,6 @@ GameObject:
   - component: {fileID: 1030933218}
   - component: {fileID: 1030933217}
   - component: {fileID: 1030933216}
-  - component: {fileID: 1030933215}
   m_Layer: 5
   m_Name: HowToPlayButton
   m_TagString: Untagged
@@ -2931,23 +2930,6 @@ RectTransform:
   m_AnchoredPosition: {x: -240, y: -544}
   m_SizeDelta: {x: 400, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1030933215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1030933213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bba44310045399c42a7d3f5120e5824b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tutorialDisplayImage: {fileID: 0}
-  tutorialSprites: []
-  nextButton: {fileID: 0}
-  prevButton: {fileID: 0}
-  closeButton: {fileID: 0}
 --- !u!114 &1030933216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2991,7 +2973,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1030933217}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1840563983}
+        m_TargetAssemblyTypeName: Scripts.UI.MainHomePanel, Assembly-CSharp
+        m_MethodName: OpenPanel
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1920629866}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1030933217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3609,7 +3603,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1450519879}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1840563983}
+        m_TargetAssemblyTypeName: Scripts.UI.MainHomePanel, Assembly-CSharp
+        m_MethodName: OpenPanel
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 354454655}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1450519879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6066,7 +6072,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1993698679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1840563983}
+        m_TargetAssemblyTypeName: Scripts.UI.MainHomePanel, Assembly-CSharp
+        m_MethodName: OpenPanel
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1703983950}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1993698679
 MonoBehaviour:
   m_ObjectHideFlags: 0
