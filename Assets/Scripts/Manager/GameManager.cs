@@ -8,7 +8,6 @@ using UnityEngine.UI;
 using Scripts.UI;
 using DG.Tweening;
 using System;
-using System.Diagnostics;
 
 public class GameManager : MonoBehaviour
 {
