@@ -14,4 +14,5 @@ public enum SoundType {
     
     // 확장용 플레이스홀더
     Capybara,
+    timeLimit
 }
