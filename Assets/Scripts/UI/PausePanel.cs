@@ -33,7 +33,7 @@ public class PausePanel : MonoBehaviour
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
-            "정말 새로 시작하시겠습니까?\n현재 진행 상황이 사라집니다.",
+            "정말 새로 시작하시겠습니까?",
             () => {
                 GameManager.Instance.RestartLevel();
             },
@@ -46,7 +46,7 @@ public class PausePanel : MonoBehaviour
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
         BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
         popup.Setup(
-            "메인 홈으로 이동하시겠습니까?\n현재 진행 상황이 저장됩니다.",
+            "메인 홈으로 이동하시겠습니까?",
             () => {
                 GameManager.Instance.GoToMainHome();
             },
