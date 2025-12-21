@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13e7dc3cdca1c424f8b78b209e0f4bee, type: 3}
+  m_Name: SoundData
+  m_EditorClassIdentifier: 
+  bgmClips:
+  - sceneName: MainHome
+    clip: {fileID: 0}
+  - sceneName: Game
+    clip: {fileID: 0}
+  - sceneName: Tutorial
+    clip: {fileID: 0}
+  fxClips:
+  - type: 0
+    clip: {fileID: 8300000, guid: def0b6bdb71bc4eae8260221364f6ffd, type: 3}
+  - type: 1
+    clip: {fileID: 0}
+  - type: 2
+    clip: {fileID: 8300000, guid: f0efedc13ebf245a8a27418c07413264, type: 3}
+  - type: 3
+    clip: {fileID: 8300000, guid: b836aa63c23e24c0898c0a53a1f75a68, type: 3}
+  - type: 4
+    clip: {fileID: 8300000, guid: d628f47f425154ed89c0c3e28fc929be, type: 3}
+  - type: 5
+    clip: {fileID: 8300000, guid: f5522e18f7ffa4a0dab05129b30ddc7a, type: 3}
+  - type: 6
+    clip: {fileID: 8300000, guid: f674f9de95e60451db31d6a4f04171db, type: 3}
