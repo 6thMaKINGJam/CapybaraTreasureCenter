@@ -3,20 +3,22 @@ using UnityEngine.UI;
 
 public class HowToPlayPanel : MonoBehaviour
 {
-    [SerializeField] private Image tutorialDisplayImage;
-    [SerializeField] private Sprite[] tutorialSprites;
+    [Header("UI References")]
+    // 이제 단일 Image가 아니라, 페이지별로 보여줄 오브젝트(이미지) 배열입니다.
+    [SerializeField] private GameObject[] tutorialPages; 
+    
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
     public Button closeButton;  // X 버튼
+    
     private int currentTutorialIndex = 0;
 
     private void Awake()
-        {
-            // 버튼 클릭 시 로직 연결
-            nextButton.onClick.AddListener(NextTutorial);
-            prevButton.onClick.AddListener(PrevTutorial);
-            // closeButton은 MainHomeManager에서 일괄 연결하므로 여기서는 생략 가능합니다.
-        }
+    {
+        // 버튼 클릭 시 로직 연결
+        nextButton.onClick.AddListener(NextTutorial);
+        prevButton.onClick.AddListener(PrevTutorial);
+    }
 
     public void Init() // 패널이 열릴 때 초기화
     {
@@ -25,7 +27,7 @@ public class HowToPlayPanel : MonoBehaviour
     }
 
     public void NextTutorial() {
-        if (currentTutorialIndex < tutorialSprites.Length - 1) {
+        if (currentTutorialIndex < tutorialPages.Length - 1) {
             currentTutorialIndex++;
             UpdateTutorialUI();
         }
@@ -39,13 +41,22 @@ public class HowToPlayPanel : MonoBehaviour
     }
 
     private void UpdateTutorialUI()
+    {
+        // 1. 모든 페이지를 일단 비활성화
+        for (int i = 0; i < tutorialPages.Length; i++)
         {
-            if (tutorialSprites.Length > 0){
-                tutorialDisplayImage.sprite = tutorialSprites[currentTutorialIndex];
-            }
-
-            // 첫/마지막 페이지에서 버튼 비활성화
-            prevButton.interactable = (currentTutorialIndex > 0);
-            nextButton.interactable = (currentTutorialIndex < tutorialSprites.Length - 1);
+            if (tutorialPages[i] != null)
+                tutorialPages[i].SetActive(false);
         }
+
+        // 2. 현재 인덱스에 해당하는 페이지만 활성화
+        if (tutorialPages.Length > 0 && tutorialPages[currentTutorialIndex] != null)
+        {
+            tutorialPages[currentTutorialIndex].SetActive(true);
+        }
+
+        // 3. 첫/마지막 페이지에서 버튼 비활성화 상태 업데이트
+        prevButton.interactable = (currentTutorialIndex > 0);
+        nextButton.interactable = (currentTutorialIndex < tutorialPages.Length - 1);
+    }
 }
