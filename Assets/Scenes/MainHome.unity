@@ -1945,7 +1945,7 @@ MonoBehaviour:
   levelSelectUI: {fileID: 1703983954}
   howToPlayUI: {fileID: 1920629870}
   hallOfFameUI: {fileID: 354454656}
-  mainCanvasGroup: {fileID: 170236676}
+  mainCanvasGroup: {fileID: 1840563984}
 --- !u!114 &800542604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5352,6 +5352,7 @@ GameObject:
   - component: {fileID: 1840563982}
   - component: {fileID: 1840563981}
   - component: {fileID: 1840563983}
+  - component: {fileID: 1840563984}
   m_Layer: 5
   m_Name: MainHomePanel
   m_TagString: Untagged
@@ -5438,6 +5439,18 @@ MonoBehaviour:
   startButton: {fileID: 1993698678}
   howToPlayButton: {fileID: 1030933216}
   hallOfFameButton: {fileID: 1450519878}
+--- !u!225 &1840563984
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840563979}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1845796390
 GameObject:
   m_ObjectHideFlags: 0
@@ -5898,8 +5911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba44310045399c42a7d3f5120e5824b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialDisplayImage: {fileID: 633062563}
-  tutorialSprites: []
+  tutorialPages: []
   nextButton: {fileID: 216308127}
   prevButton: {fileID: 1871554899}
   closeButton: {fileID: 1845796392}
