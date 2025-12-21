@@ -49,8 +49,10 @@ public class MainHomeManager : MonoBehaviour
         howToPlayUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
         
         hallOfFameUI.closeButton.onClick.RemoveAllListeners();
+        
         hallOfFameUI.closeButton.onClick.AddListener(() =>
         {
+            Debug.Log("명예의 전당 닫기 버튼 클릭됨!");
             hallOfFameUI.gameObject.SetActive(false);
             mainHomeUI.ShowMain();
         });
