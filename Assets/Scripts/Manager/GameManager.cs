@@ -205,7 +205,7 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     
     // ===== 추가: 보석 개수 차감 및 UI 업데이트 =====
 int beforeCount = gameData.RemainingGems[bundle.GemType]; // 차감 전
-gameData.RemainingGems[bundle.GemType] -= bundle.GemCount; // 차감 실행
+// gameData.RemainingGems[bundle.GemType] -= bundle.GemCount; // 차감 실행
 int afterCount = gameData.RemainingGems[bundle.GemType];  // 차감 후
 
 Debug.Log($"[데이터 체크] 타입: {bundle.GemType} | 빼기 전: {beforeCount} | 뺄 개수: {bundle.GemCount} | 뺀 후: {afterCount}");
