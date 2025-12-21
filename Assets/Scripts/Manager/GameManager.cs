@@ -61,13 +61,10 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         if(Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializePlayerId();
             // Firebase 초기화 로직
         }
         else
         {
-            Destroy(gameObject);
             return;
         }
     }
