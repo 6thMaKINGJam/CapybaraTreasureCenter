@@ -498,7 +498,7 @@ private class BundleRestoreInfo
 {
     foreach(var bundle in gameData.SelectedBundles)
     {
-        gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
+        // gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
         
         // 이미 선택 시 제거했으므로 Contains 체크
         if(gameData.BundlePool.Contains(bundle))
@@ -599,7 +599,7 @@ private class BundleRestoreInfo
         }
         
         // 2. 게임오버 팝업 생성
-        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/UI/GameOverPopup");
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         
         if(popup != null)
@@ -709,7 +709,7 @@ private class BundleRestoreInfo
         else
         {
             // 레벨 1~3 클리어
-           GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/UI/LevelClearPopup");
+           GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
         LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
         
         if (popup != null)
