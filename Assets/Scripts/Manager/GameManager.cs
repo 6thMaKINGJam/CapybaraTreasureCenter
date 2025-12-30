@@ -608,6 +608,7 @@ private class BundleRestoreInfo
         // 2. 게임오버 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
+        SoundManager.Instance.PlayFX(SoundType.GameOver);
         
         if(popup != null)
         {
@@ -615,7 +616,6 @@ private class BundleRestoreInfo
             popup.Setup(
                 finalMessage, 
                 () => RestartLevel(), // 다시하기
-                () => ExecuteUndo(),  // 되돌리기
                 () => GoToMainHome()  // 메인으로
             );
         }
@@ -843,7 +843,7 @@ public void GoToNextLevel()
         return;
     }
     
-    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
     
     if(popupObj == null)
     {
@@ -851,14 +851,14 @@ public void GoToNextLevel()
         return;
     }
    
-    BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+    GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
     
     if(popup == null)
     {
         Debug.LogError("[HandleTimeOver] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
         return;
     }
-    
+     SoundManager.Instance.PlayFX(SoundType.GameOver);
     popup.Setup(
         randomMsg,
         () => RestartLevel(),

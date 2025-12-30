@@ -56,7 +56,7 @@ public class GemCountItem : MonoBehaviour
         CountText.text = count.ToString();
         
         // 0개일 때 빨간색 강조
-        CountText.color = (count <= 0) ? Color.red : Color.black;
+        CountText.color = (count <= 0) ? Color.red : Color.white;
     }
     
     public GemType GetGemType() => gemType;

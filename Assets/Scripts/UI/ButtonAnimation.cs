@@ -6,7 +6,7 @@ using UnityEngine.EventSystems; // 마우스 클릭 감지 위해 필요
 public class ButtonAnimation : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private Vector3 initialScale;
-    public float pressScale = 0.9f; // 눌렸을 때 크기 -> 0.9배
+    public float pressScale = 0.8f; // 눌렸을 때 크기 -> 0.9배
 
     void Awake() {
         initialScale = transform.localScale; // 원래 크기 저장

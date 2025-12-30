@@ -1,0 +1,1253 @@
+fileFormatVersion: 2
+guid: fc4385ebb2a244166bb593569852bc03
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: capy_angry_sprite_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80df142d79ee1435dbd21bb6488d8e1e
+      internalID: 1362776818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c38c97abff1fa401b91dcbedf4cbf923
+      internalID: -5332333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_2
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89e4d14f713ff4fce96dcdf37221e77e
+      internalID: 1700886910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_3
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e45ed90795da4591be8b08293e59521
+      internalID: -944491248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_4
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c99b31e49afb74ef4a5d96fedf3597f5
+      internalID: -461094116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_5
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8814e58403226471fa8f079497c31f8e
+      internalID: 1857758610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_6
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 228903d123bec4df28925b414f4afb43
+      internalID: 1170996374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_7
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2659cfd0abb91425180f898a184c5122
+      internalID: 628222412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_8
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da429bf1a0ce841c08b0626680587877
+      internalID: 1331724979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_9
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3123.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3c934fe6f238495db9fb56eae6a623b
+      internalID: 236368041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2a0e801c87d94ba09967a448f7ab2aa
+      internalID: -1783487626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_11
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1abbdabde74724dd2b4b19da5b95c2a4
+      internalID: 1360552180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_12
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acd926e60134f455787d3cbe8e99f9dc
+      internalID: 877847201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_13
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cec65de5b34d34c1c9271ee3d45305bf
+      internalID: 516425878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_14
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f840357e3b404753a6646e72b75b740
+      internalID: 1014342837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_15
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 639e55898c8fb46ac83b615dd5135d37
+      internalID: -590606185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_16
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90010324ab1904961909eb385a19cf7c
+      internalID: -651184049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_17
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe7053870974f4cbf84775c7fa6307ed
+      internalID: -112788969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_18
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a980d453872fd4af1b51b4e31eedb1be
+      internalID: 1102171542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_19
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 2343.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 145735ffa7bdd443f9543a3f05b82ce9
+      internalID: -1031500524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e91a03a04b92f4b7dbd914c2c68be233
+      internalID: -849872473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_21
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 029b12224c5754240a2665b579de26ca
+      internalID: -2121549133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_22
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eccba08491d7a4b63b1d1e315027b8cc
+      internalID: -51631019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_23
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8dcc3a589ea5c41c7a68800b695c058a
+      internalID: -216983004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_24
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff549652d6e0e4e7f8595891ad7dcc18
+      internalID: 231313711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_25
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b31313d1cc8fd4e0d9046b96b5a7b40e
+      internalID: 1147140825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_26
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52d132d6a0d044cb1890b5f21819df2b
+      internalID: 672060951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_27
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a10fa81851d9497bbd9af5c2ea5b9b3
+      internalID: -93652071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_28
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f9726230c7f24cf881b02f07c150acb
+      internalID: -1673434171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_29
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 1563.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54b09bb8c4a5d4a8e9dca7563d2de66d
+      internalID: -607370280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8763f62a092d94a4ab3e7fcb0e9a2f4a
+      internalID: 1520239562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_31
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9628da8299734aa8a95000de051816e
+      internalID: 1797527701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_32
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55576ab812490483cbbe231fa1a201d3
+      internalID: 756819462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_33
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 853ac853b6b5c4c2e9ea73cb88f06fd9
+      internalID: 311174109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_34
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf05142a7cf7943af8a55e24237839b1
+      internalID: -1747102286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_35
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6973ec3e7fefc4655a593e4a3e7dd8dc
+      internalID: 1793451091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_36
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbda22900bf7448adae4d4bb730a457e
+      internalID: -1159903633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_37
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06e4f739303e24ed7b183dea53b08cea
+      internalID: 1298481093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_38
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 12915906f06ee430ab89689441781338
+      internalID: -1321976556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_39
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 783.2
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f7435f878a5e494bbb123661232a8dc
+      internalID: 1619050458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ec4f648981cc449face80def21c5b07
+      internalID: 929229035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_41
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a3e8d0fa72e34f058152ce8230dc104
+      internalID: -2015583079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_42
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fa151fdaa1a74bdebd77157bcd24e15
+      internalID: 759198042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_43
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58c52b138ff88496484cc713b4b2af99
+      internalID: 2014531110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_44
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 776f5b68e1cef4a509a1b514b34f4dd4
+      internalID: -589219018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_45
+      rect:
+        serializedVersion: 2
+        x: 2560
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 401ec694e273a4c05a218f58258777f9
+      internalID: 1181109593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_46
+      rect:
+        serializedVersion: 2
+        x: 3072
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0a958ae281a4404f8c191285a99a50f
+      internalID: -1528986358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_47
+      rect:
+        serializedVersion: 2
+        x: 3584
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 674f43025befc4a92b60b262232e6c5a
+      internalID: -328737685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_48
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e00a8c5cfdd7a41499fa153a5ecbe3fb
+      internalID: -1850463687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_angry_sprite_49
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 3.2000122
+        width: 512
+        height: 780.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2a86ba8888364948b51b23a2cdc5648
+      internalID: -2010879323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      capy_angry_sprite_0: 1362776818
+      capy_angry_sprite_1: -5332333
+      capy_angry_sprite_10: -1783487626
+      capy_angry_sprite_11: 1360552180
+      capy_angry_sprite_12: 877847201
+      capy_angry_sprite_13: 516425878
+      capy_angry_sprite_14: 1014342837
+      capy_angry_sprite_15: -590606185
+      capy_angry_sprite_16: -651184049
+      capy_angry_sprite_17: -112788969
+      capy_angry_sprite_18: 1102171542
+      capy_angry_sprite_19: -1031500524
+      capy_angry_sprite_2: 1700886910
+      capy_angry_sprite_20: -849872473
+      capy_angry_sprite_21: -2121549133
+      capy_angry_sprite_22: -51631019
+      capy_angry_sprite_23: -216983004
+      capy_angry_sprite_24: 231313711
+      capy_angry_sprite_25: 1147140825
+      capy_angry_sprite_26: 672060951
+      capy_angry_sprite_27: -93652071
+      capy_angry_sprite_28: -1673434171
+      capy_angry_sprite_29: -607370280
+      capy_angry_sprite_3: -944491248
+      capy_angry_sprite_30: 1520239562
+      capy_angry_sprite_31: 1797527701
+      capy_angry_sprite_32: 756819462
+      capy_angry_sprite_33: 311174109
+      capy_angry_sprite_34: -1747102286
+      capy_angry_sprite_35: 1793451091
+      capy_angry_sprite_36: -1159903633
+      capy_angry_sprite_37: 1298481093
+      capy_angry_sprite_38: -1321976556
+      capy_angry_sprite_39: 1619050458
+      capy_angry_sprite_4: -461094116
+      capy_angry_sprite_40: 929229035
+      capy_angry_sprite_41: -2015583079
+      capy_angry_sprite_42: 759198042
+      capy_angry_sprite_43: 2014531110
+      capy_angry_sprite_44: -589219018
+      capy_angry_sprite_45: 1181109593
+      capy_angry_sprite_46: -1528986358
+      capy_angry_sprite_47: -328737685
+      capy_angry_sprite_48: -1850463687
+      capy_angry_sprite_49: -2010879323
+      capy_angry_sprite_5: 1857758610
+      capy_angry_sprite_6: 1170996374
+      capy_angry_sprite_7: 628222412
+      capy_angry_sprite_8: 1331724979
+      capy_angry_sprite_9: 236368041
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

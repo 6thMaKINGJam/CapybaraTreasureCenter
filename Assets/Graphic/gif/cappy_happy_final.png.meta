@@ -1,0 +1,813 @@
+fileFormatVersion: 2
+guid: f1956387c3d1b4cfdb4b1e5bf668d113
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cappy_happy_final_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9c42a38e19464fd89d8565301c7fe28
+      internalID: 993851329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_1
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d80b32a464a3454ca529f6e09a1cd34
+      internalID: -129183409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_2
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6280c9d4ef9b345fc9f853adaccec113
+      internalID: -1313906410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_3
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 765dc4d6280b94777a6e239e9513dc04
+      internalID: -1658477693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_4
+      rect:
+        serializedVersion: 2
+        x: 1128
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 705f04624169d4777baabe7c4b373b0f
+      internalID: -1754266480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_5
+      rect:
+        serializedVersion: 2
+        x: 1410
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7fae5f231942461f88e2a5f1b5e6614
+      internalID: -994958170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_6
+      rect:
+        serializedVersion: 2
+        x: 1692
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d7de075d8dfb466a8048bd406738e86
+      internalID: -1120679625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_7
+      rect:
+        serializedVersion: 2
+        x: 1974
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e09bbd7558ded44e390a2be34b5e98a4
+      internalID: 1827715840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_8
+      rect:
+        serializedVersion: 2
+        x: 2256
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3313e71c19e854d87bb347ef1f311fbf
+      internalID: -1437714860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_9
+      rect:
+        serializedVersion: 2
+        x: 2538
+        y: 758.6666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b340a5bc37e8242fba61d91bb578b456
+      internalID: -1455338224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b22df257f944946a1a20265003059f6e
+      internalID: -918322131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_11
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66aefdaceea58428b98083ddfa70debd
+      internalID: 449422256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_12
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bcd7afb60b06b437492d29674edbee71
+      internalID: -2073433761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_13
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f409e0f1df4d24fd892b4a4c0d323398
+      internalID: 765455158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_14
+      rect:
+        serializedVersion: 2
+        x: 1128
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb2cd1f073d3e4edf96f1422c9194c92
+      internalID: -1530782285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_15
+      rect:
+        serializedVersion: 2
+        x: 1410
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a66a8ac08fa5b41b98674d53e9521ece
+      internalID: -154023807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_16
+      rect:
+        serializedVersion: 2
+        x: 1692
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e76567f43b444afb811144aa3516a29
+      internalID: -743693023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_17
+      rect:
+        serializedVersion: 2
+        x: 1974
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 465d0f51152d8432aa22087b84817cfb
+      internalID: -708855705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_18
+      rect:
+        serializedVersion: 2
+        x: 2256
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbdd07c7126a74c10a3cc222d0118ae2
+      internalID: -163376619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_19
+      rect:
+        serializedVersion: 2
+        x: 2538
+        y: 379.66666
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7c8be8dd1bcd42eeb1008cd9eeb86ee
+      internalID: -1400343122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d964e27013a544694848d9f950908c27
+      internalID: 1369984825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_21
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7f5a4d34b62c43ce8d01b05debd2610
+      internalID: 165727996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_22
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 478526f915f63495c9d53626374dc632
+      internalID: 857061050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_23
+      rect:
+        serializedVersion: 2
+        x: 846
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d624eed65aa8a4bcf83282a1f19a660f
+      internalID: 831541768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_24
+      rect:
+        serializedVersion: 2
+        x: 1128
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c39c6b86cb91142eab090ac0a55fb5f3
+      internalID: 543998104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_25
+      rect:
+        serializedVersion: 2
+        x: 1410
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 088e4187e6d4b41dab34af38809e69dd
+      internalID: 127369396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_26
+      rect:
+        serializedVersion: 2
+        x: 1692
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b15b5cf63e4364437b985ff6c3af45cf
+      internalID: -212522557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_27
+      rect:
+        serializedVersion: 2
+        x: 1974
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd2712b8c32f14e3e83a9bd9b20bde05
+      internalID: -2136453080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_28
+      rect:
+        serializedVersion: 2
+        x: 2256
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 078bf78588b0d45dab21f9542af152f5
+      internalID: -1219689896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cappy_happy_final_29
+      rect:
+        serializedVersion: 2
+        x: 2538
+        y: 0.6666565
+        width: 282
+        height: 379.33334
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25c71e40c604a474884551bcd51bb011
+      internalID: 1356979475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      cappy_happy_final_0: 993851329
+      cappy_happy_final_1: -129183409
+      cappy_happy_final_10: -918322131
+      cappy_happy_final_11: 449422256
+      cappy_happy_final_12: -2073433761
+      cappy_happy_final_13: 765455158
+      cappy_happy_final_14: -1530782285
+      cappy_happy_final_15: -154023807
+      cappy_happy_final_16: -743693023
+      cappy_happy_final_17: -708855705
+      cappy_happy_final_18: -163376619
+      cappy_happy_final_19: -1400343122
+      cappy_happy_final_2: -1313906410
+      cappy_happy_final_20: 1369984825
+      cappy_happy_final_21: 165727996
+      cappy_happy_final_22: 857061050
+      cappy_happy_final_23: 831541768
+      cappy_happy_final_24: 543998104
+      cappy_happy_final_25: 127369396
+      cappy_happy_final_26: -212522557
+      cappy_happy_final_27: -2136453080
+      cappy_happy_final_28: -1219689896
+      cappy_happy_final_29: 1356979475
+      cappy_happy_final_3: -1658477693
+      cappy_happy_final_4: -1754266480
+      cappy_happy_final_5: -994958170
+      cappy_happy_final_6: -1120679625
+      cappy_happy_final_7: 1827715840
+      cappy_happy_final_8: -1437714860
+      cappy_happy_final_9: -1455338224
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
