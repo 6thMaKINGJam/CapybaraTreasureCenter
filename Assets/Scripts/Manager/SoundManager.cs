@@ -63,7 +63,44 @@ public class SoundManager : MonoBehaviour {
     void OnDisable() {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+    // ==================== BGM 제어 메서드 추가 ====================
+
+/// <summary>
+/// BGM 일시정지 (현재 재생 위치 유지)
+/// </summary>
+public void PauseBGM() {
+    if (currentBGMSource != null && currentBGMSource.isPlaying) {
+        currentBGMSource.Pause();
+        Debug.Log("[SoundManager] BGM 일시정지");
+    }
+}
+
+/// <summary>
+/// BGM 재개 (일시정지된 위치부터 재생)
+/// </summary>
+public void ResumeBGM() {
+    if (currentBGMSource != null && !currentBGMSource.isPlaying) {
+        currentBGMSource.UnPause();
+        Debug.Log("[SoundManager] BGM 재개");
+    }
+}
+
+/// <summary>
+/// BGM 즉시 정지
+/// </summary>
+public void StopBGM() {
+    if (currentBGMSource != null) {
+        currentBGMSource.Stop();
+        currentBGMSource.time = 0f; // 재생 위치 초기화
+        Debug.Log("[SoundManager] BGM 정지");
+    }
     
+    // 페이드 중이던 nextBGMSource도 정지
+    if (nextBGMSource != null && nextBGMSource.isPlaying) {
+        nextBGMSource.Stop();
+        nextBGMSource.time = 0f;
+    }
+}
     void InitializeAudioSources() {
         // BGM용 AudioSource 2개 생성
         bgmSource1 = gameObject.AddComponent<AudioSource>();

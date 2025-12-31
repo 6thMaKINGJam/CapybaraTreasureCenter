@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelID: 2
   BoxCount: 30
-  MaxRequiredPerBox: 30
-  GemTypeCount: 3
+  MaxRequiredPerBox: 15
+  GemTypeCount: 4
   TimeLimit: 120

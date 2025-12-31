@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Scripts.UI;
 using DG.Tweening;
 using System;
+using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,13 +30,15 @@ public class GameManager : MonoBehaviour
     [Header("카피바라 대사 시스템")]
     public CapyDialogue CapyDialogue;
     public TextMeshProUGUI CapyDialogueText; // 대사 표시할 UI Text
+    public GameObject CapyDialogueBUbble;
     
     [Header("효과")]
     public Image FlashOverlay; // 빨간 화면 깜박임용 Image (전체 화면 크기)
 
     [Header("UI 매니저 참조")]
     public GemCountPanelManager GemCountStatusPanel;
-    
+    [Header("배경 Video Player")]
+public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 게임 데이터
     private GameData gameData;
     private ChunkData chunkData;
@@ -104,15 +107,9 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
         LoadLevelConfig(selectedLevel);
         
-        // 이어하기 확인
-        if(SaveManager.HasSaveData("GameData"))
-        {
-            LoadGameData();
-        }
-        else
-        {
-            SetupNewGame();
-        }
+        
+        SetupNewGame();
+        
         
         // 시간 체크 시작
         levelStartTime = Time.time;
@@ -137,23 +134,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         }
     }
     
-    private void LoadGameData()
-    {
-        gameData = SaveManager.LoadData<GameData>("GameData");
-        Debug.Log("[GameManager] 이어하기 데이터 로드 완료");
-        
-        chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
-        
-        foreach(var completedBox in gameData.CompletedBoxes)
-        {
-            foreach(var usedBundle in completedBox.UsedBundles)
-            {
-                gameData.BundlePool.RemoveAll(b => b.BundleID == usedBundle.BundleID);
-            }
-        }
-        
-        ExtractDisplayBundles();
-    }
+  
     
     private void SetupNewGame()
 {
@@ -538,6 +519,7 @@ private class BundleRestoreInfo
         if(consecutiveSuccessCount >= 3)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.ConsecutiveSuccess);
+      CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
         else
         {
@@ -557,7 +539,7 @@ private class BundleRestoreInfo
         return;
     }
     
-    SaveManager.Save(gameData, "GameData");
+   
     // 👈 인덱스가 증가한 직후, 리스트 크기와 비교해서 클리어인지 먼저 확인!
     if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
     {
@@ -586,7 +568,11 @@ private class BundleRestoreInfo
     {
         gameData.GameState = GameState.GameOver;
         StopCoroutine(timeCheckCoroutine);
-        
+        // ===== 추가: VideoPlayer + BGM 정지 =====
+    StopBackgroundMedia();
+    CapyDialogue.StopDialogue(CapyDialogueText);
+    CapyDialogueBUbble.SetActive(false);
+    
         // 1. 표시할 최종 메시지 결정 (기본값: reason)
         string finalMessage = reason;
 
@@ -629,6 +615,9 @@ private class BundleRestoreInfo
     {
         gameData.GameState = GameState.Win;
         StopCoroutine(timeCheckCoroutine);
+// ===== 추가: VideoPlayer + BGM 정지 =====
+    StopBackgroundMedia();
+        CapyDialogue.StopDialogue(CapyDialogueText);
 
         // 1. 시간 및 별 계산
         float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
@@ -686,7 +675,26 @@ private class BundleRestoreInfo
             ShowLevelClearPopup(starCount, clearMessage);
         }
     }
+// ========== VideoPlayer + BGM 제어 헬퍼 ==========
 
+/// <summary>
+/// 배경 Video Player와 BGM을 즉시 정지
+/// </summary>
+private void StopBackgroundMedia()
+{
+    // VideoPlayer 정지
+    if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
+    {
+        backgroundVideoPlayer.Stop();
+        Debug.Log("[GameManager] VideoPlayer 정지");
+    }
+    
+    // BGM 정지
+    if(SoundManager.Instance != null)
+    {
+        SoundManager.Instance.StopBGM();
+    }
+}
 // 팝업 생성 로직을 별도 함수로 빼면 중복 코드가 줄어듭니다.
 private void ShowLevelClearPopup(int starCount, string message)
 {
@@ -721,8 +729,7 @@ public void GoToNextLevel()
         PlayerPrefs.SetInt("SelectedLevel", nextLevel);
         PlayerPrefs.Save();
 
-        // 기존 게임 진행 데이터 삭제 (새 레벨을 처음부터 시작하기 위함)
-        SaveManager.DeleteSave("GameData");
+     
 
         // 현재 게임 씬 다시 로드 (InitGame에서 새 SelectedLevel을 읽어옴)
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -814,6 +821,7 @@ public void GoToNextLevel()
                     if(CapyDialogue != null && CapyDialogueText != null)
                         CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.TimeLowWarning);
                     lowTimeWarningShown = true;
+                    CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
                 }
 
                 // 타임오버
@@ -833,7 +841,10 @@ public void GoToNextLevel()
     
     gameData.GameState = GameState.TimeOver;
     Debug.Log("[HandleTimeOver] 2. GameState 변경 완료");
-    
+     
+    // ===== 추가: VideoPlayer + BGM 정지 =====
+    StopBackgroundMedia();
+        CapyDialogue.StopDialogue(CapyDialogueText);
     
     string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
    
@@ -923,8 +934,6 @@ public void GoToNextLevel()
         
         // 연속 성공 카운트 리셋
         consecutiveSuccessCount = 0;
-        
-        SaveManager.Save(gameData, "GameData");
         
         ExtractDisplayBundles();
         RefreshUI();
@@ -1095,41 +1104,62 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     }
     
     // ========== 일시정지 ==========
-    public void TogglePause()
+   public void TogglePause()
+{
+    if(gameData.GameState == GameState.Playing)
     {
-        if(gameData.GameState == GameState.Playing)
-        {
-            gameData.GameState = GameState.Paused;
-            // levelStartTime 누적 코드 삭제
-            Time.timeScale = 0f;
-            UIManager.PausePopupPanel.SetActive(true);
-        }
-    }
-
-    public void Resume()
-    {
-        gameData.GameState = GameState.Playing;
-        // levelStartTime = Time.time; <- 이 줄 삭제
-        Time.timeScale = 1f;
+        gameData.GameState = GameState.Paused;
+        Time.timeScale = 0f;
+        UIManager.PausePopupPanel.SetActive(true);
         
-        if (UIManager.PausePopupPanel != null)
+        // ===== 추가: VideoPlayer + BGM 일시정지 =====
+        if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
         {
-            UIManager.PausePopupPanel.transform.DOKill();
-            UIManager.PausePopupPanel.SetActive(false);
+            backgroundVideoPlayer.Pause();
         }
+        
+        if(SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PauseBGM();
+        }
+            CapyDialogue.StopDialogue(CapyDialogueText);
     }
+}
+    public void Resume()
+{
+    gameData.GameState = GameState.Playing;
+    Time.timeScale = 1f;
+    
+    if (UIManager.PausePopupPanel != null)
+    {
+        UIManager.PausePopupPanel.transform.DOKill();
+        UIManager.PausePopupPanel.SetActive(false);
+    }
+    
+    // ===== 추가: VideoPlayer + BGM 재개 =====
+    if(backgroundVideoPlayer != null && !backgroundVideoPlayer.isPlaying)
+    {
+        backgroundVideoPlayer.Play();
+    }
+    
+    if(SoundManager.Instance != null)
+    {
+        SoundManager.Instance.ResumeBGM();
+    }
+        CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+}
     
     public void RestartLevel()
     {
         Time.timeScale = 1f; // 시간 흐름 복구
-        SaveManager.DeleteSave("GameData"); // 새 게임을 위해 기존 데이터 삭제
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void GoToMainHome()
     {
         Time.timeScale = 1f; // 시간 흐름 복구
-        // 필요하다면 여기서 SaveManager.Save(gameData, "GameData"); 호출
+ 
         SceneManager.LoadScene("MainHome");
     }
     
@@ -1184,10 +1214,12 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
             if (message == null)
             {
                 CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Warning);
+                CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
             }
             else
             {
                 CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
+                CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
             }
     
         }

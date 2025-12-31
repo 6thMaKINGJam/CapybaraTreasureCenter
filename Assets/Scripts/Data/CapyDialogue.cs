@@ -89,6 +89,9 @@ public class CapyDialogue : MonoBehaviour
         // 기존 대사 즉시 중단
         StopDialogue(targetText);
         
+        // 텍스트 색상 설정
+        SetTextColor(targetText, type);
+        
         // CanvasGroup 준비
         CanvasGroup canvasGroup = GetOrCreateCanvasGroup(targetText);
         
@@ -120,6 +123,9 @@ public class CapyDialogue : MonoBehaviour
         
         // 기존 대사 즉시 중단
         StopDialogue(targetText);
+        
+        // 커스텀 텍스트는 기본 색상(검정) 사용
+        targetText.color = Color.black;
         
         // CanvasGroup 준비
         CanvasGroup canvasGroup = GetOrCreateCanvasGroup(targetText);
@@ -196,6 +202,54 @@ public class CapyDialogue : MonoBehaviour
         activeDialogues.Clear();
     }
     
+    /// <summary>
+    /// DialogueType에 따라 텍스트 색상을 설정합니다
+    /// </summary>
+    private void SetTextColor(TextMeshProUGUI targetText, DialogueType type)
+    {
+        switch(type)
+        {
+            case DialogueType.Warning:
+            case DialogueType.TimeLowWarning:
+                targetText.color = Color.red;
+                break;
+            
+            case DialogueType.ConsecutiveSuccess:
+                targetText.color = Color.yellow;
+                break;
+            default:
+                targetText.color = Color.black;
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// 특정 Text의 Default 대사를 딜레이 후 다시 시작합니다
+    /// </summary>
+    /// <param name="targetText">대사를 표시할 TextMeshProUGUI</param>
+    /// <param name="delay">재시작까지 대기 시간 (초)</param>
+    public void RestartDefault(TextMeshProUGUI targetText, float delay = 0.5f)
+    {
+        if (targetText == null)
+        {
+            Debug.LogError("[CapyDialogue] RestartDefault: targetText가 null입니다!");
+            return;
+        }
+        
+        StartCoroutine(RestartDefaultAfterDelay(targetText, delay));
+    }
+    
+    private IEnumerator RestartDefaultAfterDelay(TextMeshProUGUI targetText, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        // Default 재시작 전 색상 검정으로 복원
+        targetText.color = Color.black;
+        
+        // Default 대사 다시 시작
+        ShowDialogue(targetText, DialogueType.Default);
+    }
+    
     // CanvasGroup 가져오거나 생성
     private CanvasGroup GetOrCreateCanvasGroup(TextMeshProUGUI targetText)
     {
@@ -219,6 +273,7 @@ public class CapyDialogue : MonoBehaviour
         
         return canvasGroup;
     }
+    
     /// <summary>
     /// 특정 타입의 대사 중 하나를 랜덤으로 반환합니다 (화면 표시 X)
     /// </summary>
@@ -237,6 +292,7 @@ public class CapyDialogue : MonoBehaviour
         // 데이터가 없으면 빈 문자열 반환
         return "";
     }
+    
     // 한 번만 표시하는 코루틴
     private IEnumerator ShowOnceCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
     {

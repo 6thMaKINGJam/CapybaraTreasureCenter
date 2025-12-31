@@ -791,7 +791,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
   m_sharedMaterial: {fileID: 77740803965008258, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
@@ -925,7 +925,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
   m_sharedMaterial: {fileID: 77740803965008258, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
@@ -3628,8 +3628,10 @@ MonoBehaviour:
   EndingPopupTransfrom: {fileID: 1479997283}
   CapyDialogue: {fileID: 1911645601}
   CapyDialogueText: {fileID: 2075978706}
+  CapyDialogueBUbble: {fileID: 804415966}
   FlashOverlay: {fileID: 1325110955}
   GemCountStatusPanel: {fileID: 1006858061}
+  backgroundVideoPlayer: {fileID: 1665326963}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
@@ -4787,7 +4789,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
   m_sharedMaterial: {fileID: 77740803965008258, guid: 717ad19c73b2dcc46828617df8672c6a, type: 2}
