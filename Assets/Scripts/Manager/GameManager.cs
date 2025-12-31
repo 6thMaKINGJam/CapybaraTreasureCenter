@@ -1013,8 +1013,8 @@ public void ProcessHint()
             {
                 if(success)
                 {
-                    gameData.HintCount++; // 광고 시청 후 카운트 증가
-                    ExecuteHint();
+                    
+                    ExecuteHintWithLoading();
                 }
             });
         },
@@ -1022,8 +1022,8 @@ public void ProcessHint()
     }
     else
     {
-        gameData.HintCount++; // 무료 사용 시 카운트 증가
-        ExecuteHint();
+       
+        ExecuteHintWithLoading();
     }
 }
 
@@ -1076,6 +1076,7 @@ private void ExecuteHint()
     
     if(hintBundles != null && hintBundles.Count > 0)
     {
+        gameData.HintCount++;
         // 힌트 표시 (흔들림)
         GridManager.ShakeBundles(hintBundles);
         
