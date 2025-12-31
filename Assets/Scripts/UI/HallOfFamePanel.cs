@@ -10,7 +10,6 @@ public class HallOfFamePanel : MonoBehaviour
     [SerializeField] private Transform topRankContent; // 상위 5명 부모
     [SerializeField] private Transform myRankContent;  // 내 등수 부모
 
-    [SerializeField] private GameObject recordPrefab;
     [SerializeField] private GameObject loadingUI;
     [SerializeField] private GameObject emptyText;
 
@@ -19,6 +18,9 @@ public class HallOfFamePanel : MonoBehaviour
         gameObject.SetActive(true);
         loadingUI?.SetActive(true);
         emptyText?.SetActive(false);
+
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(() => { gameObject.SetActive(false); });
 
         RankingManager.Instance.GetTopAndMyRanking((top5, myData, myRank) => {
             loadingUI?.SetActive(false);
@@ -59,8 +61,6 @@ public class HallOfFamePanel : MonoBehaviour
 
     private void CreateItem(Transform parent, int rank, Dictionary<string, object> data, bool isMine)
     {
-        var item = Instantiate(recordPrefab, parent).GetComponent<RecordItem>();
-        item.SetData(rank, data["nickname"].ToString(), (long)data["timeMilliseconds"], isMine);
     }
 }
 
