@@ -906,7 +906,7 @@ public void GoToNextLevel()
     
     gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
     
-    if(gameData.UndoCount > 2)
+    if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
     {
         // [수정됨] 확인 팝업 먼저 표시
         ShowAdConfirmationPopup(() =>
@@ -961,8 +961,8 @@ public void GoToNextLevel()
     public void ProcessRefresh()
 {
     gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
-    
-    if(gameData.RefreshCount > 2)
+        
+    if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
     {
         ShowAdConfirmationPopup(() =>
         {
@@ -1005,7 +1005,7 @@ public void GoToNextLevel()
 public void ProcessHint()
 {
     // 게임당 1회 제한
-    if(gameData.HintCount >= 1)
+    if(gameData.HintCount >= CurrentLevelConfig.MaxHintCount)
     {
         ShowAdConfirmationPopup(() =>
         {
@@ -1372,11 +1372,6 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
 
 
-private IEnumerator StopHintAfterDelay(float delay)
-{
-    yield return new WaitForSeconds(delay);
-    GridManager.StopAllShaking();
-}
 
 
 private void UpdateAllItemUI()
@@ -1384,126 +1379,19 @@ private void UpdateAllItemUI()
   
   
     // Undo/Refresh는 기존 방식
-    int undoLeft = Mathf.Max(0, 3 - gameData.UndoCount);
-    int refreshLeft = Mathf.Max(0, 3 - gameData.RefreshCount);
-    int hintLeft = Mathf.Max(0, 1 - gameData.HintCount);
+    int undoLeft = Mathf.Max(0, CurrentLevelConfig.MaxUndoCount - gameData.UndoCount);
+    int refreshLeft = Mathf.Max(0, CurrentLevelConfig.MaxRefreshCount - gameData.RefreshCount);
+    int hintLeft = Mathf.Max(0, CurrentLevelConfig.MaxHintCount - gameData.HintCount);
     
-    UIManager.UpdateHintAndItemUI(hintLeft, refreshLeft, undoLeft);
+     // ✅ 수정: 최대 횟수도 함께 전달
+    UIManager.UpdateHintAndItemUI(
+        hintLeft, CurrentLevelConfig.MaxHintCount,
+        refreshLeft, CurrentLevelConfig.MaxRefreshCount,
+        undoLeft, CurrentLevelConfig.MaxUndoCount
+    );
+
 }
 
-private List<GemBundle> FindHintCombination(Box targetBox)
-{
-    List<GemBundle> result = new List<GemBundle>();
-    Dictionary<GemType, int> typeCount = new Dictionary<GemType, int>();
-    
-    // 초기화
-    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
-    {
-        typeCount[(GemType)i] = 0;
-    }
-    
-    int totalNeeded = targetBox.RequiredAmount;
-    int totalGathered = 0;
-    
-    // ===== 1단계: 각 종류 1개 이상 확보 =====
-    foreach(var bundle in gameData.CurrentDisplayBundles)
-    {
-        // ✅ Placeholder 무시
-        if(bundle == null) continue;
-        
-        // 이 종류가 아직 0개면 추가
-        if(typeCount[bundle.GemType] == 0)
-        {
-            result.Add(bundle);
-            typeCount[bundle.GemType] += bundle.GemCount;
-            totalGathered += bundle.GemCount;
-            
-            // 이미 목표량 도달 시 종료
-            if(totalGathered >= totalNeeded)
-            {
-                // 초과한 경우 마지막 번들 제거하고 더 작은 걸 찾기
-                if(totalGathered > totalNeeded)
-                {
-                    result.RemoveAt(result.Count - 1);
-                    totalGathered -= bundle.GemCount;
-                    typeCount[bundle.GemType] -= bundle.GemCount;
-                    
-                    // 더 작은 번들 찾기
-                    foreach(var smallerBundle in gameData.CurrentDisplayBundles)
-                    {
-                        // ✅ Placeholder 무시
-                        if(smallerBundle == null) continue;
-                        
-                        if(result.Contains(smallerBundle)) continue;
-                        if(smallerBundle.GemType != bundle.GemType) continue;
-                        
-                        if(totalGathered + smallerBundle.GemCount == totalNeeded)
-                        {
-                            result.Add(smallerBundle);
-                            totalGathered += smallerBundle.GemCount;
-                            break;
-                        }
-                    }
-                }
-                
-                break;
-            }
-        }
-    }
-    
-    // ===== 2단계: 남은 개수 채우기 =====
-    if(totalGathered < totalNeeded)
-    {
-        foreach(var bundle in gameData.CurrentDisplayBundles)
-        {
-            // ✅ Placeholder 무시
-            if(bundle == null) continue;
-            
-            if(result.Contains(bundle)) continue;
-            
-            if(totalGathered + bundle.GemCount <= totalNeeded)
-            {
-                result.Add(bundle);
-                totalGathered += bundle.GemCount;
-                
-                if(totalGathered == totalNeeded) break;
-            }
-        }
-    }
-    
-    // ===== 검증: 정확히 목표량인지 확인 =====
-    int verification = 0;
-    Dictionary<GemType, int> verifyTypes = new Dictionary<GemType, int>();
-    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
-    {
-        verifyTypes[(GemType)i] = 0;
-    }
-    
-    foreach(var bundle in result)
-    {
-        verification += bundle.GemCount;
-        verifyTypes[bundle.GemType] += bundle.GemCount;
-    }
-    
-    // 개수가 맞지 않거나, 어떤 종류가 0개면 실패
-    if(verification != totalNeeded)
-    {
-        Debug.LogWarning($"[FindHintCombination] 개수 불일치: {verification} != {totalNeeded}");
-        return new List<GemBundle>();
-    }
-    
-    foreach(var kvp in verifyTypes)
-    {
-        if(kvp.Value < 1)
-        {
-            Debug.LogWarning($"[FindHintCombination] {kvp.Key} 타입이 0개");
-            return new List<GemBundle>();
-        }
-    }
-    
-    Debug.Log($"[FindHintCombination] 성공! 총 {result.Count}개 번들, 총량 {verification}개");
-    return result;
-}
 
 
     

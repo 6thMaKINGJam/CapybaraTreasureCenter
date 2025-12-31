@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelID: 4
   BoxCount: 100
-  MaxRequiredPerBox: 25
+  MaxRequiredPerBox: 15
   GemTypeCount: 5
   TimeLimit: 300
+  MaxUndoCount: 10
+  MaxRefreshCount: 10
+  MaxHintCount: 4

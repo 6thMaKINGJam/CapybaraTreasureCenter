@@ -63,6 +63,22 @@ public class GameUIManager : MonoBehaviour
     }
 
 // 팝업 생성 헬퍼 함수
+
+// ✅ 수정: 최대 횟수 파라미터 추가
+public void UpdateHintAndItemUI(
+    int hintLeft, int maxHint,
+    int refreshLeft, int maxRefresh,
+    int undoLeft, int maxUndo)
+{
+    if (HintCountText != null) 
+        HintCountText.text = $"{hintLeft}";
+    
+    if (RefreshCountText != null) 
+        RefreshCountText.text = $"{refreshLeft}";
+    
+    if (UndoCountText != null) 
+        UndoCountText.text = $"{undoLeft}";
+}
     
 
     // ========== 버튼 연결 ==========

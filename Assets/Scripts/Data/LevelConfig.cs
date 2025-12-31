@@ -22,4 +22,15 @@ public class LevelConfig : ScriptableObject
 
     [Header("기타 설정")]
     public float TimeLimit; // 5. 제한 시간
+
+      [Header("아이템 최대 횟수")]
+    [Tooltip("되돌리기 최대 사용 횟수 (무료)")]
+    public int MaxUndoCount = 3;
+    
+    [Tooltip("새로고침 최대 사용 횟수 (무료)")]
+    public int MaxRefreshCount = 3;
+    
+    [Tooltip("힌트 최대 사용 횟수 (무료)")]
+    public int MaxHintCount = 1;
+    
 }
