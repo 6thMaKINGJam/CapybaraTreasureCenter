@@ -82,32 +82,18 @@ public class GameUIManager : MonoBehaviour
         RefreshButton.onClick.AddListener(() => GameManager.Instance.ProcessRefresh());
     }
 
-    // 횟수 UI를 한 번에 업데이트하는 함수
-    public void UpdateItemCounts(int hintUsed, int refreshUsed, int undoUsed)
-    {   
-        if (HintCountText != null)
-            HintCountText.text = Mathf.Max(0, 1 - hintUsed).ToString();
-
-        if (RefreshCountText != null)
-            RefreshCountText.text = Mathf.Max(0, 3 - refreshUsed).ToString();
-
-        if (UndoCountText != null)
-            UndoCountText.text = Mathf.Max(0, 3 - undoUsed).ToString();
-    }
-
-    public void UpdateItemUI(int hintUsed, int refreshUsed, int undoUsed, int maxCount = 3)
-    {
-        // 1. 남은 횟수 계산
-        int hintLeft = Mathf.Max(0, maxCount - hintUsed);
-        int refreshLeft = Mathf.Max(0, maxCount - refreshUsed);
-        int undoLeft = Mathf.Max(0, maxCount - undoUsed);
-
-        // 2. 텍스트 업데이트
-        if (HintCountText != null) HintCountText.text = hintLeft.ToString();
-        if (RefreshCountText != null) RefreshCountText.text = refreshLeft.ToString();
-        if (UndoCountText != null) UndoCountText.text = undoLeft.ToString();
-
-    }
+// ✅ 기존 UpdateItemUI() 대신 사용
+public void UpdateHintAndItemUI(int hintLeft, int refreshLeft, int undoLeft)
+{
+    if (HintCountText != null) 
+        HintCountText.text = hintLeft.ToString();
+    
+    if (RefreshCountText != null) 
+        RefreshCountText.text = refreshLeft.ToString();
+    
+    if (UndoCountText != null) 
+        UndoCountText.text = undoLeft.ToString();
+}
 
   
 

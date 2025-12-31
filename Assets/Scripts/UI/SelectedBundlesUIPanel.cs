@@ -14,22 +14,27 @@ public class SelectedBundlesUIPanel : MonoBehaviour
     private List<GemBundlePrefab> pool = new List<GemBundlePrefab>();
 
     // ========== UI 업데이트 (선택된 묶음들 표시) ==========
-    public void UpdateUI(List<GemBundle> selectedBundles)
+    // SelectedBundlesUIPanel.cs 수정
+public void UpdateUI(List<GemBundle> selectedBundles)
+{
+    // ===== 변경: SetActive(false) 대신 Destroy =====
+    foreach(var prefab in pool)
     {
-        // 기존 활성화된 객체 전부 비활성화
-        foreach(var prefab in pool)
+        if(prefab != null && prefab.gameObject != null)
         {
-            prefab.gameObject.SetActive(false);
-        }
-
-        // 선택된 묶음들 표시
-        for(int i = 0; i < selectedBundles.Count; i++)
-        {
-            GemBundlePrefab prefab = GetFromPool(i);
-            prefab.SetData(selectedBundles[i]);
-            prefab.gameObject.SetActive(true);
+            Destroy(prefab.gameObject);
         }
     }
+    pool.Clear(); // 풀도 완전히 비움
+    
+    // 선택된 묶음들 표시
+    for(int i = 0; i < selectedBundles.Count; i++)
+    {
+        GemBundlePrefab prefab = GetFromPool(i);
+        prefab.SetData(selectedBundles[i]);
+        prefab.gameObject.SetActive(true);
+    }
+}
 
     // ========== 풀에서 객체 가져오기 ==========
     private GemBundlePrefab GetFromPool(int index)

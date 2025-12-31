@@ -3128,8 +3128,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -121.17682, y: 560.57}
-  m_SizeDelta: {x: 393.8936, y: 216}
+  m_AnchoredPosition: {x: -109.06, y: 567.1412}
+  m_SizeDelta: {x: 418.12, y: 229.1423}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &804415968
 MonoBehaviour:
@@ -3632,6 +3632,7 @@ MonoBehaviour:
   FlashOverlay: {fileID: 1325110955}
   GemCountStatusPanel: {fileID: 1006858061}
   backgroundVideoPlayer: {fileID: 1665326963}
+  HintLoadingUI: {fileID: 1109328245}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
@@ -8001,8 +8002,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5121, y: 20.8232}
-  m_SizeDelta: {x: 314.6512, y: 97.7486}
+  m_AnchoredPosition: {x: 0.512, y: 26.6643}
+  m_SizeDelta: {x: 367.2203, y: 156.1589}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2075978706
 MonoBehaviour:
@@ -8025,7 +8026,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\uC778\uAC04\uC740 \uBE68\uB77C\uC57C\uC9C0 \uC548\uADF8\uB798? \uB10C
-    \uC65C\uC774\uB807\uAC8C \uB290\uB824 "
+    \uC65C\uC774\uB807\uAC8C \uB290\uB824 \uC5B4\uCA4C\uACE0 \uC800\uCA4C\uACE0 \uB8F0\uB8E8\uB784\u3139\uB77C
+    \uD574\uC11C \uB108\uB294 \uC5B4\uCA4C\uACE0 \uD574\uC774\uBBF8\uB2C8\uB2C8\uB2C8\uB2C8\uB2C8\uB2C8\uBBF8\uBBF8\uBBF8\uBBF8\uBBF8\uBBF8\uBBF8\uB9CC\uD574! "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4cca6d2d58aa16143939852832b0c399, type: 2}
   m_sharedMaterial: {fileID: -5170115643134670115, guid: 4cca6d2d58aa16143939852832b0c399, type: 2}
@@ -8052,7 +8054,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.35
+  m_fontSize: 22.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

@@ -371,9 +371,9 @@ private void SetupAsPlaceholder(GemBundlePrefab prefab)
             GemBundlePrefab prefab = FindPrefabByData(bundleData);
             if(prefab != null)
             {
-                // DOTween으로 Z축 회전 (-5° ~ +5° 왕복)
+                // DOTween으로 Z축 회전 (-10° ~ +10° 왕복)
                 Tweener shakeTween = prefab.transform
-                    .DORotate(new Vector3(0, 0, 5f), 0.1f) // 5도 회전, 0.1초
+                    .DORotate(new Vector3(0, 0, 10f), 0.1f) // 10도 회전, 0.1초
                     .SetLoops(-1, LoopType.Yoyo) // 무한 왕복
                     .SetEase(Ease.InOutSine); // 부드러운 곡선
                 
@@ -405,7 +405,7 @@ private void SetupAsPlaceholder(GemBundlePrefab prefab)
     }
 
     // ========== 모든 흔들림 중지 ==========
-    private void StopAllShaking()
+    public void StopAllShaking()
     {
         foreach(var kvp in shakingTweens)
         {

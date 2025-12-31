@@ -42,7 +42,8 @@ public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 게임 데이터
     private GameData gameData;
     private ChunkData chunkData;
-    
+      [Header("힌트 로딩 UI")]
+    public GameObject HintLoadingUI;  // ✅ 추가
     // 시간 관련
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
@@ -144,6 +145,9 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     gameData.GameState = GameState.Playing;
     gameData.StartTime = Time.time;
     gameData.ElapsedTime = 0f;
+    gameData.UndoCount = 0;
+    gameData.RefreshCount = 0;
+    gameData.HintCount = 0;
     
     chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
 
@@ -185,15 +189,6 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
 {
     GemBundle bundle = clickedPrefab.GetData();
     
-    // ===== 추가: 보석 개수 차감 및 UI 업데이트 =====
-int beforeCount = gameData.RemainingGems[bundle.GemType]; // 차감 전
-// gameData.RemainingGems[bundle.GemType] -= bundle.GemCount; // 차감 실행
-int afterCount = gameData.RemainingGems[bundle.GemType];  // 차감 후
-
-Debug.Log($"[데이터 체크] 타입: {bundle.GemType} | 빼기 전: {beforeCount} | 뺄 개수: {bundle.GemCount} | 뺀 후: {afterCount}");
-    
-    
-    
     // Placeholder 클릭 방지
     if(bundle == null) return;
     
@@ -207,10 +202,8 @@ Debug.Log($"[데이터 체크] 타입: {bundle.GemType} | 빼기 전: {beforeCou
     if(gameData.SelectedBundles.Contains(bundle))
     {
         gameData.SelectedBundles.Remove(bundle);
-        // 취소해서 다시 돌려주기
         gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
         
-        // 원래 인덱스 가져오기
         if(!selectedBundleOriginalIndices.ContainsKey(bundle))
         {
             Debug.LogError($"[OnBundleClicked] {bundle.BundleID}의 원래 인덱스를 찾을 수 없습니다!");
@@ -220,16 +213,13 @@ Debug.Log($"[데이터 체크] 타입: {bundle.GemType} | 빼기 전: {beforeCou
         int originalIndex = selectedBundleOriginalIndices[bundle];
         selectedBundleOriginalIndices.Remove(bundle);
         
-        // BundlePool에 다시 추가
         if(!gameData.BundlePool.Contains(bundle))
         {
             gameData.BundlePool.Add(bundle);
         }
         
-        // 현재 그 자리의 번들
         GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
         
-        // 현재 번들이 새로 생성된 거라면 BundlePool에 반환
         if(currentBundle != null && currentBundle != bundle)
         {
             if(!gameData.BundlePool.Contains(currentBundle))
@@ -238,71 +228,86 @@ Debug.Log($"[데이터 체크] 타입: {bundle.GemType} | 빼기 전: {beforeCou
             }
         }
         
-        // CurrentDisplayBundles 복원
         gameData.CurrentDisplayBundles[originalIndex] = bundle;
         
-        // Grid에서 복원 (SiblingIndex 유지)
         GridManager.ReplaceBundleAtIndex(
             originalIndex,
             bundle,
             OnBundleClicked,
             isRestoring: true
         );
+        
+        // 취소는 즉시 UI 업데이트
+        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+        UIManager.UpdateBoxUI(
+            gameData.CurrentBoxIndex,
+            CalculateSelectedTotal(),
+            GetCurrentBox().RequiredAmount
+        );
+        
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+        }
     }
     // ===== 선택 =====
     else
     {
-        // 보석 개수 부족 시 선택 방지
-        if(gameData.RemainingGems[bundle.GemType] < bundle.GemCount)
-            {
-                ShowWarning($"{bundle.GemType} 보석이 부족하다카피!");
-                FlashRedScreen();
-
-                 return;
-            }
-        
-        gameData.SelectedBundles.Add(bundle);
-        
-        // 원래 인덱스 저장
-        selectedBundleOriginalIndices[bundle] = gridIndex;
-        
-        // BundlePool에서 제거
-        gameData.BundlePool.Remove(bundle);
-        
-        // 새 번들 결정
-        GemBundle newBundle = GetRandomFromRemainingPool();
-        
-        // CurrentDisplayBundles 갱신
-        gameData.CurrentDisplayBundles[gridIndex] = newBundle;
-        
-        // ===== 추가: 보석 개수 차감 및 UI 업데이트 =====
-    gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
-    
-    if (GemCountStatusPanel != null)
+       // ✅ 디버그 로그만 추가 (에러는 발생시키지 않음)
+    if(gameData.RemainingGems[bundle.GemType] < bundle.GemCount)
     {
-        GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+        Debug.LogWarning($"[OnBundleClicked] ⚠️ 동기화 문제 감지!");
+        Debug.LogWarning($"  - {bundle.GemType} 남은 개수: {gameData.RemainingGems[bundle.GemType]}");
+        Debug.LogWarning($"  - {bundle.GemType} 필요 개수: {bundle.GemCount}");
+        Debug.LogWarning($"  - BundlePool의 {bundle.GemType} 총합: {gameData.BundlePool.Where(b => b.GemType == bundle.GemType).Sum(b => b.GemCount)}");
+        Debug.LogWarning($"  - 선택 계속 진행...");
     }
     
-    
-        // Grid 애니메이션 교체 (SiblingIndex 유지)
+        gameData.SelectedBundles.Add(bundle);
+        selectedBundleOriginalIndices[bundle] = gridIndex;
+        gameData.BundlePool.Remove(bundle);
+        
+        GemBundle newBundle = GetRandomFromRemainingPool();
+        gameData.CurrentDisplayBundles[gridIndex] = newBundle;
+        
+        gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
+        
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+        }
+        
+        // Grid 교체 시작 (애니메이션 포함)
         GridManager.ReplaceBundleAtIndex(
             gridIndex,
             newBundle,
             OnBundleClicked,
             isRestoring: false
         );
+        
+        // 애니메이션 완료 후 UI 업데이트 (0.5초 딜레이)
+        StartCoroutine(UpdateSelectionUIAfterAnimation());
     }
+}
+// ✅ 새 메서드: 애니메이션 완료 후 UI 업데이트
+private IEnumerator UpdateSelectionUIAfterAnimation()
+{
+    // BundleGridManager의 애니메이션 시간과 동기화
+    // - 축소: 0.3초
+    // - 팝업: 0.2초
+    // 총 0.5초 대기
+    yield return new WaitForSeconds(0.5f);
     
-    // UI 업데이트
+    // 선택 패널 업데이트
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+    
+    // 상자 진행도 업데이트
     UIManager.UpdateBoxUI(
         gameData.CurrentBoxIndex,
         CalculateSelectedTotal(),
         GetCurrentBox().RequiredAmount
     );
 }
-
-
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
 // ===== 남은 Pool에서 랜덤 선택 =====
 private GemBundle GetRandomFromRemainingPool()
@@ -419,7 +424,10 @@ private class BundleRestoreInfo
    
     // ========== 완료 버튼 ==========
    public void OnClickComplete()
-    {
+    {    // ✅ 모든 흔들림 중지
+    GridManager.StopAllShaking();
+    
+
         Box currentBox = GetCurrentBox();
         int selectedTotal = CalculateSelectedTotal();
         
@@ -452,7 +460,11 @@ private class BundleRestoreInfo
         ShowWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
-        
+      
+    if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+    }
     }
 
     private bool ValidateGemTypes()
@@ -511,19 +523,25 @@ private class BundleRestoreInfo
     }
     
     gameData.SelectedBundles.Clear();
-    
+    // ===== 변경: DOTween 완료 후 UI 갱신 =====
+    DOVirtual.DelayedCall(0.1f, () => 
+    {
+        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
+    });
     consecutiveSuccessCount++;
 
     if(CapyDialogue != null && CapyDialogueText != null)
     {
         if(consecutiveSuccessCount >= 3)
         {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.ConsecutiveSuccess);
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.BoxCompleted);
       CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
         else
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+             CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
     }
     
@@ -546,8 +564,7 @@ private class BundleRestoreInfo
         HandleLevelClear();
         return; // 클리어 시 함수 종료 (이후 UI 갱신 등 방지)
     }
-    
-    // ExtractDisplayBundles() 호출 안 함!
+  
     RefreshUI();
 }
 
@@ -757,7 +774,7 @@ public void GoToNextLevel()
         if(clearTime <= fastCutoff)
         {
             // 제한시간의 절반보다 빨리 깸 (매우 빠름)
-            return $"대단하다카피! 소요시간: {clearTime:F1}초\n(제한시간의 절반도 안 썼어카피!)";
+            return $"대단하다카피! 소요시간: {clearTime:F1}초\n제한시간의 절반도 안 썼어카피!";
         }
         else if(clearTime <= normalCutoff)
         {
@@ -821,7 +838,7 @@ public void GoToNextLevel()
                     if(CapyDialogue != null && CapyDialogueText != null)
                         CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.TimeLowWarning);
                     lowTimeWarningShown = true;
-                    CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+                   
                 }
 
                 // 타임오버
@@ -983,30 +1000,342 @@ public void GoToNextLevel()
         
         ShowTopNotification("카드가 재배열되었습니다카피!");
     }
-    
-    public void ProcessHint()
+    // Assets/Scripts/Manager/GameManager.cs
+
+public void ProcessHint()
 {
-    string today = System.DateTime.Now.ToString("yyyy-MM-dd");
-    string lastHintDate = PlayerPrefs.GetString("LastHintDate", "");
-    
-    if(lastHintDate == today)
+    // 게임당 1회 제한
+    if(gameData.HintCount >= 1)
     {
-        // [수정됨] 확인 팝업 먼저 표시
         ShowAdConfirmationPopup(() =>
         {
             AdManager.Instance.ShowRewardedAd((success) =>
             {
-                if(success) ExecuteHint();
-                // ✅ 날짜는 광고 성공 시에만 갱신 (아래에서 처리)
+                if(success)
+                {
+                    gameData.HintCount++; // 광고 시청 후 카운트 증가
+                    ExecuteHint();
+                }
             });
         },
         null);
     }
     else
     {
+        gameData.HintCount++; // 무료 사용 시 카운트 증가
         ExecuteHint();
-        PlayerPrefs.SetString("LastHintDate", today); // 무료 사용 시 날짜 갱신
     }
+}
+
+
+// ✅ 새 메서드: 로딩 UI 포함 힌트 실행
+private IEnumerator ExecuteHintWithLoading()
+{
+    // 1. 로딩 UI 표시
+    if(HintLoadingUI != null)
+    {
+        HintLoadingUI.SetActive(true);
+    }
+    
+    // 2. 선택 강제 비우기 (애니메이션 포함)
+    if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+        
+        // CancelSelection의 애니메이션 시간 대기
+        // (DOTween 0.3초 축소 + 0.2초 팝업 = 약 0.5초)
+        yield return new WaitForSeconds(0.6f);
+    }
+    
+    // 3. 로딩 UI 숨김
+    if(HintLoadingUI != null)
+    {
+        HintLoadingUI.SetActive(false);
+    }
+    
+    // 4. 힌트 실행
+    ExecuteHint();
+}
+
+// Assets/Scripts/Manager/GameManager.cs
+
+private void ExecuteHint()
+{
+    // 1단계: 글렀는지 빠른 판정
+    if(!CheckIfSolvable())
+    {
+        if(CapyDialogue != null && CapyDialogueText != null)
+        {
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
+        }
+        return;
+    }
+    
+    // 2~3단계: 힌트 조합 찾기
+    List<GemBundle> hintBundles = FindHintCombination();
+    
+    if(hintBundles != null && hintBundles.Count > 0)
+    {
+        // 힌트 표시 (흔들림)
+        GridManager.ShakeBundles(hintBundles);
+        
+        ShowTopNotification("힌트를 확인하세요카피!");
+            
+    }
+    else
+    {
+        // 조합 실패 (현재 화면에서 불가능)
+        ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침을 추천합니다카피!");
+    }
+    
+    UpdateAllItemUI();
+}
+
+// ========== 1단계: 빠른 글렀는지 판정 ==========
+private bool CheckIfSolvable()
+{
+    int remainingBoxes = gameData.Boxes.Count - gameData.CurrentBoxIndex;
+    
+    // 각 색깔별로 체크
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    {
+        GemType type = (GemType)i;
+        
+        // 해당 색의 번들 총 개수
+        int totalBundles = gameData.BundlePool.Count(b => b.GemType == type);
+        
+        // 번들 개수 < 남은 상자 개수 → 불가능
+        if(totalBundles < remainingBoxes)
+        {
+            Debug.Log($"[Hint] {type} 색 번들 부족: {totalBundles}개 < {remainingBoxes}상자");
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// ========== 2~3단계: 힌트 조합 찾기 ==========
+private List<GemBundle> FindHintCombination()
+{
+    Box currentBox = GetCurrentBox();
+    int requiredAmount = currentBox.RequiredAmount;
+    int remainingBoxes = gameData.Boxes.Count - gameData.CurrentBoxIndex;
+    
+    // 2단계: 선택 가능 풀 생성
+    var pools = BuildSelectablePools(remainingBoxes, requiredAmount);
+    
+    if(pools == null)
+    {
+        Debug.Log("[Hint] 선택 가능 풀 생성 실패");
+        return null;
+    }
+    
+    // 작업용 복사본 생성 (원본 보존)
+    var workingPools = CreateWorkingPools(pools);
+    
+    // 3단계: 조합 생성
+    List<GemBundle> selectedBundles = new List<GemBundle>();
+    
+    // 3-1. 각 색 최소 1개씩 (작은 것부터)
+    int minSelectedTotal = 0;
+    
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    {
+        GemType type = (GemType)i;
+        
+        if(!workingPools.ContainsKey(type) || workingPools[type].AvailableBundles.Count == 0)
+        {
+            Debug.Log($"[Hint] {type} 색 선택 가능 번들 없음");
+            return null;
+        }
+        
+        var smallest = workingPools[type].AvailableBundles
+            .OrderBy(b => b.GemCount)
+            .FirstOrDefault();
+        
+        if(smallest == null)
+        {
+            Debug.Log($"[Hint] {type} 색 가장 작은 번들 없음");
+            return null;
+        }
+        
+        selectedBundles.Add(smallest);
+        minSelectedTotal += smallest.GemCount;
+        
+        workingPools[type].AvailableBundles.Remove(smallest);
+        workingPools[type].RemainingSelectCount--;
+    }
+    
+    // 총량 초과 체크
+    if(minSelectedTotal > requiredAmount)
+    {
+        Debug.Log($"[Hint] 최소 선택으로 총량 초과: {minSelectedTotal} > {requiredAmount}");
+        return null;
+    }
+    
+    // 총량 만족 체크
+    if(minSelectedTotal == requiredAmount)
+    {
+        Debug.Log("[Hint] 각 색 1개씩으로 정확히 맞음!");
+        return selectedBundles;
+    }
+    
+    // 3-2. 부족하면 추가 선택
+    int currentTotal = minSelectedTotal;
+    int needBundleCount = requiredAmount - minSelectedTotal;
+    HashSet<GemType> triedColors = new HashSet<GemType>();
+    
+    int loopCount = 0; // 안전장치
+    int maxLoops = 100;
+    
+    while(currentTotal < requiredAmount)
+    {
+        loopCount++;
+        if(loopCount > maxLoops)
+        {
+            Debug.LogError("[Hint] 무한 루프 감지!");
+            return null;
+        }
+        
+        // 선택 가능한 색 찾기
+        var availableColors = workingPools
+            .Where(p => p.Value.RemainingSelectCount > 0 
+                     && p.Value.AvailableBundles.Count > 0
+                     && !triedColors.Contains(p.Key))
+            .OrderByDescending(p => p.Value.AvailableBundles.Count)
+            .ToList();
+        
+        if(availableColors.Count == 0)
+        {
+            // 모든 색 다 시도했는데 못 찾음
+            Debug.Log("[Hint] 모든 색 시도했으나 조합 실패");
+            return null;
+        }
+        
+        GemType targetColor = availableColors.First().Key;
+        
+        // 남은 총량 계산
+        int remaining = requiredAmount - currentTotal;
+        
+        // 조건 만족하는 가장 큰 번들 선택
+        GemBundle selected = workingPools[targetColor].AvailableBundles
+            .Where(b => b.GemCount <= Math.Min(needBundleCount, remaining))
+            .OrderByDescending(b => b.GemCount)
+            .FirstOrDefault();
+        
+        if(selected == null)
+        {
+            // 이 색에서 못 찾음 → 이 색 제외
+            Debug.Log($"[Hint] {targetColor} 색에서 조건 만족 번들 없음, 다음 색으로");
+            triedColors.Add(targetColor);
+            continue;
+        }
+        
+        // 선택 성공
+        selectedBundles.Add(selected);
+        currentTotal += selected.GemCount;
+        needBundleCount -= selected.GemCount;
+        
+        workingPools[targetColor].AvailableBundles.Remove(selected);
+        workingPools[targetColor].RemainingSelectCount--;
+        
+        // 성공 시 다시 모든 색 시도 가능
+        triedColors.Clear();
+        
+        Debug.Log($"[Hint] {targetColor} 색에서 {selected.GemCount}개 번들 선택, 현재 총량: {currentTotal}");
+    }
+    
+    Debug.Log($"[Hint] 조합 완성! 총 {selectedBundles.Count}개 번들 선택");
+    return selectedBundles;
+}
+
+// ========== 선택 가능 풀 생성 ==========
+private Dictionary<GemType, PoolInfo> BuildSelectablePools(int remainingBoxes, int requiredAmount)
+{
+    var pools = new Dictionary<GemType, PoolInfo>();
+    
+    // maxBundleGemCount 계산
+    int maxBundleGemCount = requiredAmount - (CurrentLevelConfig.GemTypeCount - 1);
+    
+    Debug.Log($"[Hint] maxBundleGemCount: {maxBundleGemCount} (요구량 {requiredAmount} - 색 {CurrentLevelConfig.GemTypeCount - 1})");
+    
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    {
+        GemType type = (GemType)i;
+        
+        // 해당 색의 모든 번들 (BundlePool + CurrentDisplayBundles)
+        List<GemBundle> allBundles = gameData.BundlePool
+            .Where(b => b.GemType == type)
+            .ToList();
+        
+        int totalBundles = allBundles.Count;
+        
+        // 여유분 계산
+        int surplus = totalBundles - remainingBoxes;
+        
+        if(surplus < 0)
+        {
+            Debug.LogError($"[Hint] {type} 색 번들 부족: {totalBundles}개 < {remainingBoxes}상자");
+            return null;
+        }
+        
+        // 작은 번들만 필터링
+        List<GemBundle> smallBundles = allBundles
+            .Where(b => b.GemCount <= maxBundleGemCount)
+            .ToList();
+        
+        // 화면에 표시 중인 번들만 선택 가능
+        List<GemBundle> availableBundles = gameData.CurrentDisplayBundles
+            .Where(b => b.GemType == type && b.GemCount <= maxBundleGemCount)
+            .ToList();
+        
+        if(availableBundles.Count == 0)
+        {
+            Debug.LogWarning($"[Hint] {type} 색의 선택 가능 번들이 화면에 없음");
+            // 빈 리스트로 설정 (나중에 체크됨)
+        }
+        
+        pools[type] = new PoolInfo
+        {
+            AvailableBundles = availableBundles,
+            MaxSelectCount = surplus + 1
+        };
+        
+        Debug.Log($"[Hint] {type} 색: 총 {totalBundles}개, 화면 {availableBundles.Count}개, MaxSelect {surplus + 1}");
+    }
+    
+    return pools;
+}
+
+// ========== 작업용 풀 복사 ==========
+private Dictionary<GemType, WorkingPoolInfo> CreateWorkingPools(Dictionary<GemType, PoolInfo> originalPools)
+{
+    var workingPools = new Dictionary<GemType, WorkingPoolInfo>();
+    
+    foreach(var kvp in originalPools)
+    {
+        workingPools[kvp.Key] = new WorkingPoolInfo
+        {
+            AvailableBundles = new List<GemBundle>(kvp.Value.AvailableBundles),
+            RemainingSelectCount = kvp.Value.MaxSelectCount
+        };
+    }
+    
+    return workingPools;
+}
+
+// ========== 헬퍼 클래스 ==========
+private class PoolInfo
+{
+    public List<GemBundle> AvailableBundles;
+    public int MaxSelectCount;
+}
+
+private class WorkingPoolInfo
+{
+    public List<GemBundle> AvailableBundles;
+    public int RemainingSelectCount;
 }
 
 private void ShowAdConfirmationPopup(Action onYes, Action onNo)
@@ -1040,55 +1369,95 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     );
 }
     
-    private void ExecuteHint()
-    {
-        Box currentBox = GetCurrentBox();
-        List<GemBundle> hintBundles = FindHintCombination(currentBox);
-        
-        if(hintBundles == null || hintBundles.Count == 0)
-        {
-            ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침이 필요카피");
-            return;
-        }
-        UpdateAllItemUI();
-        
-    }
 
-    private void UpdateAllItemUI()
+
+private IEnumerator StopHintAfterDelay(float delay)
 {
-    UIManager.UpdateItemUI(
-        PlayerPrefs.GetInt("HintUsedToday", 0),
-        gameData.RefreshCount,
-        gameData.UndoCount
-    );
+    yield return new WaitForSeconds(delay);
+    GridManager.StopAllShaking();
 }
+
+
+private void UpdateAllItemUI()
+{
+  
+  
+    // Undo/Refresh는 기존 방식
+    int undoLeft = Mathf.Max(0, 3 - gameData.UndoCount);
+    int refreshLeft = Mathf.Max(0, 3 - gameData.RefreshCount);
+    int hintLeft = Mathf.Max(0, 1 - gameData.HintCount);
     
-    private List<GemBundle> FindHintCombination(Box targetBox)
+    UIManager.UpdateHintAndItemUI(hintLeft, refreshLeft, undoLeft);
+}
+
+private List<GemBundle> FindHintCombination(Box targetBox)
+{
+    List<GemBundle> result = new List<GemBundle>();
+    Dictionary<GemType, int> typeCount = new Dictionary<GemType, int>();
+    
+    // 초기화
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
     {
-        List<GemBundle> result = new List<GemBundle>();
-        Dictionary<GemType, int> needed = new Dictionary<GemType, int>();
+        typeCount[(GemType)i] = 0;
+    }
+    
+    int totalNeeded = targetBox.RequiredAmount;
+    int totalGathered = 0;
+    
+    // ===== 1단계: 각 종류 1개 이상 확보 =====
+    foreach(var bundle in gameData.CurrentDisplayBundles)
+    {
+        // ✅ Placeholder 무시
+        if(bundle == null) continue;
         
-        for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+        // 이 종류가 아직 0개면 추가
+        if(typeCount[bundle.GemType] == 0)
         {
-            needed[(GemType)i] = 1;
-        }
-        
-        int totalNeeded = targetBox.RequiredAmount;
-        int totalGathered = CurrentLevelConfig.GemTypeCount;
-        
-        // 1단계: 각 종류 1개씩
-        foreach(var bundle in gameData.CurrentDisplayBundles)
-        {
-            if(needed[bundle.GemType] > 0)
+            result.Add(bundle);
+            typeCount[bundle.GemType] += bundle.GemCount;
+            totalGathered += bundle.GemCount;
+            
+            // 이미 목표량 도달 시 종료
+            if(totalGathered >= totalNeeded)
             {
-                result.Add(bundle);
-                needed[bundle.GemType] = 0;
+                // 초과한 경우 마지막 번들 제거하고 더 작은 걸 찾기
+                if(totalGathered > totalNeeded)
+                {
+                    result.RemoveAt(result.Count - 1);
+                    totalGathered -= bundle.GemCount;
+                    typeCount[bundle.GemType] -= bundle.GemCount;
+                    
+                    // 더 작은 번들 찾기
+                    foreach(var smallerBundle in gameData.CurrentDisplayBundles)
+                    {
+                        // ✅ Placeholder 무시
+                        if(smallerBundle == null) continue;
+                        
+                        if(result.Contains(smallerBundle)) continue;
+                        if(smallerBundle.GemType != bundle.GemType) continue;
+                        
+                        if(totalGathered + smallerBundle.GemCount == totalNeeded)
+                        {
+                            result.Add(smallerBundle);
+                            totalGathered += smallerBundle.GemCount;
+                            break;
+                        }
+                    }
+                }
+                
+                break;
             }
         }
-        
-        // 2단계: 남은 개수 채우기
+    }
+    
+    // ===== 2단계: 남은 개수 채우기 =====
+    if(totalGathered < totalNeeded)
+    {
         foreach(var bundle in gameData.CurrentDisplayBundles)
         {
+            // ✅ Placeholder 무시
+            if(bundle == null) continue;
+            
             if(result.Contains(bundle)) continue;
             
             if(totalGathered + bundle.GemCount <= totalNeeded)
@@ -1099,9 +1468,43 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
                 if(totalGathered == totalNeeded) break;
             }
         }
-        
-        return result;
     }
+    
+    // ===== 검증: 정확히 목표량인지 확인 =====
+    int verification = 0;
+    Dictionary<GemType, int> verifyTypes = new Dictionary<GemType, int>();
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    {
+        verifyTypes[(GemType)i] = 0;
+    }
+    
+    foreach(var bundle in result)
+    {
+        verification += bundle.GemCount;
+        verifyTypes[bundle.GemType] += bundle.GemCount;
+    }
+    
+    // 개수가 맞지 않거나, 어떤 종류가 0개면 실패
+    if(verification != totalNeeded)
+    {
+        Debug.LogWarning($"[FindHintCombination] 개수 불일치: {verification} != {totalNeeded}");
+        return new List<GemBundle>();
+    }
+    
+    foreach(var kvp in verifyTypes)
+    {
+        if(kvp.Value < 1)
+        {
+            Debug.LogWarning($"[FindHintCombination] {kvp.Key} 타입이 0개");
+            return new List<GemBundle>();
+        }
+    }
+    
+    Debug.Log($"[FindHintCombination] 성공! 총 {result.Count}개 번들, 총량 {verification}개");
+    return result;
+}
+
+
     
     // ========== 일시정지 ==========
    public void TogglePause()
@@ -1190,21 +1593,18 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
         return total;
     }
     
-    private void RefreshUI()
-    {
-        UIManager.UpdateBoxUI(
-            gameData.CurrentBoxIndex,
-            CalculateSelectedTotal(),
-            GetCurrentBox().RequiredAmount
-        );
+   private void RefreshUI()
+{
+    UIManager.UpdateBoxUI(
+        gameData.CurrentBoxIndex,
+        CalculateSelectedTotal(),
+        GetCurrentBox().RequiredAmount
+    );
 
-        // 아이템 남은 횟수 UI 업데이트
-        UIManager.UpdateItemCounts(
-            PlayerPrefs.GetInt("HintUsedToday", 0), 
-            gameData.RefreshCount,
-            gameData.UndoCount
-        );
-    }
+    // ✅ UpdateAllItemUI() 호출로 통일
+    UpdateAllItemUI();
+}
+
     
     // ===== CapyDialogue 연결: 경고 메시지 =====
     private void ShowWarning(string message)
@@ -1237,8 +1637,7 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
     private IEnumerator FlashRedCoroutine()
     {
-        // 빨간색 반투명으로 설정
-        FlashOverlay.color = new Color(1f, 0f, 0f, 0.5f);
+       
         FlashOverlay.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(0.2f);
@@ -1253,6 +1652,7 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
         if(CapyDialogue != null && CapyDialogueText != null)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
+                  CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
         
         Debug.Log($"[GameManager] Notification: {message}");

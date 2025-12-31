@@ -15,7 +15,8 @@ public enum DialogueType
     Warning,              // 경고 (뭔가 잘못될 것 같을 때)
     TimeOverGameOver,     // 시간 오버로 게임오버
     TimeLowWarning,       // 시간 부족 경고
-    HallOfFame            // 명예의 전당 (레벨4 클리어)
+    HallOfFame,            // 명예의 전당 (레벨4 클리어)
+    AlreadyFailed
 }
 
 // 상황별 대사 데이터
@@ -28,6 +29,11 @@ public class DialogueData
     [Header("대사 목록")]
     [TextArea(2, 5)]
     public string[] Dialogues;
+
+     [Header("표시 설정")]
+    [Tooltip("true: 계속 떠있음 (다른 대사 호출 전까지) / false: 일정 시간 후 사라짐")]
+    public bool IsPersistent = false; // ✅ 추가
+    
     
     [Header("반복 설정")]
     [Tooltip("true: 대사가 계속 나왔다 사라졌다 반복 / false: 한 번만 표시")]
@@ -96,14 +102,20 @@ public class CapyDialogue : MonoBehaviour
         CanvasGroup canvasGroup = GetOrCreateCanvasGroup(targetText);
         
         // 새 대사 시작
-        if (data.IsLoop)
+       if (data.IsLoop)
         {
             activeDialogues[targetText] = StartCoroutine(LoopDialogueCoroutine(targetText, canvasGroup, data));
+        }
+        else if (data.IsPersistent) // ✅ 추가
+        {
+            activeDialogues[targetText] = StartCoroutine(PersistentDialogueCoroutine(targetText, canvasGroup, data));
         }
         else
         {
             activeDialogues[targetText] = StartCoroutine(ShowOnceCoroutine(targetText, canvasGroup, data));
         }
+
+
     }
     
     /// <summary>
@@ -113,7 +125,7 @@ public class CapyDialogue : MonoBehaviour
     /// <param name="text">표시할 텍스트</param>
     /// <param name="isLoop">반복 여부</param>
     /// <param name="loopInterval">반복 간격 (isLoop = true일 때만 적용)</param>
-    public void ShowDialogue(TextMeshProUGUI targetText, string text, bool isLoop = false, float loopInterval = 3f)
+    public void ShowDialogue(TextMeshProUGUI targetText, string text, bool isLoop = false, float loopInterval = 3f, bool isPersistent = false)
     {
         if (targetText == null)
         {
@@ -135,7 +147,8 @@ public class CapyDialogue : MonoBehaviour
         {
             Dialogues = new string[] { text },
             IsLoop = isLoop,
-            LoopInterval = loopInterval
+            LoopInterval = loopInterval,
+             IsPersistent = isPersistent // ✅ 추가
         };
         
         // 새 대사 시작
@@ -143,12 +156,33 @@ public class CapyDialogue : MonoBehaviour
         {
             activeDialogues[targetText] = StartCoroutine(LoopDialogueCoroutine(targetText, canvasGroup, tempData));
         }
+        else if (tempData.IsPersistent) // ✅ 추가
+        {
+            activeDialogues[targetText] = StartCoroutine(PersistentDialogueCoroutine(targetText, canvasGroup, tempData));
+        }
         else
         {
             activeDialogues[targetText] = StartCoroutine(ShowOnceCoroutine(targetText, canvasGroup, tempData));
         }
+
     }
     
+     private IEnumerator PersistentDialogueCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+    {
+        // 랜덤 대사 선택
+        string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
+        
+        // 텍스트 설정
+        targetText.text = selectedDialogue;
+        
+        // 페이드 인
+        yield return canvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
+        
+        // ✅ 여기서 멈춤 - 다른 대사 호출 전까지 계속 표시
+        // (StopDialogue가 호출될 때까지 대기)
+    }
+    
+
     /// <summary>
     /// 특정 UI Text의 대사를 즉시 중단합니다
     /// </summary>
@@ -211,6 +245,7 @@ public class CapyDialogue : MonoBehaviour
         {
             case DialogueType.Warning:
             case DialogueType.TimeLowWarning:
+            case DialogueType.AlreadyFailed:
                 targetText.color = Color.red;
                 break;
             

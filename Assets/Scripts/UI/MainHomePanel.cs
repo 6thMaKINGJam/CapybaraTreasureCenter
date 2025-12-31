@@ -31,7 +31,7 @@ namespace Scripts.UI
 
         private void SetAllPanelsInactive()
         {
-            mainPanel.SetActive(false);
+            
             levelSelectPanel.SetActive(false);
             howToPlayPanel.SetActive(false);
             hallOfFamePanel.SetActive(false);
