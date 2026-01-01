@@ -61,14 +61,13 @@ public class SaveDataEditorWindow : EditorWindow
             int bestTime = EditorGUILayout.IntField("최고 시간 기록", progressData.BestTime);
             
             // 총 보석 개수
-            int totalGemCount = EditorGUILayout.IntField("총 보석 개수", progressData.TotalGemCount);
-            
+           
             if(EditorGUI.EndChangeCheck())
             {
                 progressData.TutorialCompleted = tutorialCompleted;
                 progressData.LastClearedLevel = lastClearedLevel;
                 progressData.BestTime = bestTime;
-                progressData.TotalGemCount = totalGemCount;
+             
             }
             
             EditorGUILayout.Space();

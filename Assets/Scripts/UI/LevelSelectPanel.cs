@@ -1,82 +1,109 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
-
+using UnityEngine.UI;
 public class LevelSelectPanel : MonoBehaviour
 {
     [Header("Level Buttons")]
-        [SerializeField] private Button[] levelButtons;
-        [SerializeField] private GameObject[] lockVisuals;
-        [SerializeField] private GameObject[] clearVisuals; // 클리어 표시용 UI (추가)
-
-        [Header("Common UI")]
-        public Button closeButton; 
-
-        // PlayerPrefs Key 이름 확정
-        private const string SelectedLevelKey = "SelectedLevel";
-
-        private void Awake()
+    [SerializeField] private Button[] levelButtons;
+    [SerializeField] private GameObject[] lockVisuals;
+    
+    // ✅ 변경: Image 컴포넌트 배열 (각 레벨의 별 표시 이미지)
+    [SerializeField] private Image[] starImages; 
+    
+    // ✅ 추가: 별 개수별 스프라이트
+    [Header("Star Sprites")]
+    [SerializeField] private Sprite star1Sprite; // 별 1개 이미지
+    [SerializeField] private Sprite star2Sprite; // 별 2개 이미지
+    [SerializeField] private Sprite star3Sprite; // 별 3개 이미지
+    
+    [Header("Common UI")]
+    public Button closeButton;
+    
+    private const string SelectedLevelKey = "SelectedLevel";
+    
+    private void Awake()
+    {
+        for (int i = 0; i < levelButtons.Length; i++)
         {
-            // 각 버튼에 클릭 이벤트 동적 연결
-            for (int i = 0; i < levelButtons.Length; i++)
-            {
-                int levelIndex = i + 1;
-                levelButtons[i].onClick.AddListener(() => OnLevelClick(levelIndex));
-            }
+            int levelIndex = i + 1;
+            levelButtons[i].onClick.AddListener(() => OnLevelClick(levelIndex));
         }
-
-        /// <summary>
-        /// 패널이 열릴 때 호출하여 해금 및 클리어 상태 동기화
-        /// </summary>
-        /// <param name="lastClearedLevel">가장 최근에 클리어한 레벨 번호</param>
-        public void RefreshLevelNodes(int lastClearedLevel)
+    }
+    
+    public void RefreshLevelNodes(int lastClearedLevel)
+    {
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        
+        for (int i = 0; i < levelButtons.Length; i++)
         {
-            for (int i = 0; i < levelButtons.Length; i++)
+            int currentLevelNum = i + 1;
+            
+            // 1. 해금 여부
+            bool isUnlocked = (currentLevelNum == 1) || (lastClearedLevel >= currentLevelNum - 1);
+            
+            // 2. 자물쇠 표시 (해금되면 숨김)
+            if (lockVisuals.Length > i && lockVisuals[i] != null)
             {
-                int currentLevelNum = i + 1;
-
-                // 1. 잠금 해제 규칙: 레벨 1은 항상 해제, N 클리어 시 N+1 해제
-                bool isUnlocked = (currentLevelNum == 1) || (lastClearedLevel >= i);
+                lockVisuals[i].SetActive(!isUnlocked);
+            }
+            
+            // 3. 별 표시 (클리어한 레벨만)
+            if (starImages.Length > i && starImages[i] != null)
+            {
+                bool isCleared = progressData.LevelStars.ContainsKey(currentLevelNum);
                 
-                // 버튼 자체의 interactable은 true로 유지하여 잠긴 레벨 클릭 시 팝업을 띄울 수 있게 함
-                // (만약 클릭조차 막으려면 levelButtons[i].interactable = isUnlocked; 사용)
-
-                // 2. 잠금 상태 표시 (자물쇠 아이콘 등)
-                if (lockVisuals.Length > i && lockVisuals[i] != null)
+                if (isCleared)
                 {
-                    lockVisuals[i].SetActive(!isUnlocked);
+                    int stars = progressData.LevelStars[currentLevelNum];
+                    UpdateStarDisplay(starImages[i], stars);
                 }
-
-                // 3. 클리어 표시 (별이나 '완료' 텍스트 등)
-                if (clearVisuals.Length > i && clearVisuals[i] != null)
+                else
                 {
-                    clearVisuals[i].SetActive(lastClearedLevel >= currentLevelNum);
+                    // 미클리어 → 별 이미지 숨김
+                    starImages[i].gameObject.SetActive(false);
                 }
             }
         }
-
-        /// <summary>
-        /// 레벨 버튼 클릭 시 동작
-        /// </summary>
-        private void OnLevelClick(int levelNum)
+    }
+    
+    // ✅ 새 메서드: 별 개수에 따라 스프라이트 교체
+    private void UpdateStarDisplay(Image starImage, int starCount)
+    {
+        starImage.gameObject.SetActive(true);
+        
+        switch(starCount)
         {
-            // 현재 해금 상태를 확인하기 위해 ProgressData 다시 체크 (또는 상태 저장 변수 활용)
-            ProgressData data = SaveManager.LoadData<ProgressData>("ProgressData");
-            bool isUnlocked = (levelNum == 1) || (data.LastClearedLevel >= levelNum - 1);
-
-            if (isUnlocked)
-            {
-                // 해제된 레벨: PlayerPrefs 저장 후 이동
-                PlayerPrefs.SetInt(SelectedLevelKey, levelNum);
-                PlayerPrefs.Save();
-                SceneManager.LoadScene("Game");
-            }
-            else
-            {
-                // 잠긴 레벨: 안내 팝업 출력 (2-D 팝업 시스템 활용)
-                Debug.Log($"{levelNum - 1} 레벨을 먼저 클리어해야 합니다.");
-                // BaseWarningPopup.Instance.Show("이전 레벨을 먼저 클리어하세요!"); 
-            }
+            case 1:
+                starImage.sprite = star1Sprite;
+                break;
+            case 2:
+                starImage.sprite = star2Sprite;
+                break;
+            case 3:
+                starImage.sprite = star3Sprite;
+                break;
+            default:
+                Debug.LogWarning($"[LevelSelectPanel] 잘못된 별 개수: {starCount}");
+                starImage.gameObject.SetActive(false);
+                break;
         }
+    }
+    
+    private void OnLevelClick(int levelNum)
+    {
+        ProgressData data = SaveManager.LoadData<ProgressData>("ProgressData");
+        bool isUnlocked = (levelNum == 1) || (data.LastClearedLevel >= levelNum - 1);
+        
+        if (isUnlocked)
+        {
+            PlayerPrefs.SetInt(SelectedLevelKey, levelNum);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("Game");
+        }
+        else
+        {
+            Debug.Log($"{levelNum - 1} 레벨을 먼저 클리어해야 합니다.");
+        }
+    }
 }

@@ -312,8 +312,10 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
 // ===== 남은 Pool에서 랜덤 선택 =====
 private GemBundle GetRandomFromRemainingPool()
 {
-    List<GemBundle> availableBundles = new List<GemBundle>(gameData.BundlePool);
-    
+    // ✅ 수정: null 제외하고 사용 가능한 번들만 필터링
+    List<GemBundle> availableBundles = gameData.BundlePool
+        .Where(b => b != null) // ← null 제외
+        .ToList();
     foreach(var displayedBundle in gameData.CurrentDisplayBundles)
     {
         if(displayedBundle != null)
@@ -648,13 +650,22 @@ private class BundleRestoreInfo
         // 2. 데이터 로드 및 업데이트
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
 
-        // 레벨 해금 정보 갱신 (공통)
-        if (progressData.LastClearedLevel < gameData.CurrentLevelIndex)
-        {
-            progressData.LastClearedLevel = gameData.CurrentLevelIndex;
-            Debug.Log($"[Clear] 다음 레벨 해금: {progressData.LastClearedLevel + 1}");
-        }
+ // ✅ 별 개수 갱신 (기존 기록보다 좋으면 업데이트)
+    int currentLevel = gameData.CurrentLevelIndex;
+    if (!progressData.LevelStars.ContainsKey(currentLevel) || 
+        progressData.LevelStars[currentLevel] < starCount)
+    {
+        progressData.LevelStars[currentLevel] = starCount;
+    }
 
+       // 레벨 해금
+    if (progressData.LastClearedLevel < currentLevel)
+    {
+        progressData.LastClearedLevel = currentLevel;
+    }
+    
+    SaveManager.Save(progressData, "ProgressData");
+    
         SoundManager.Instance.PlayFX(SoundType.GameClear);
 
         // 3. 레벨별 분기 처리
@@ -906,6 +917,7 @@ public void GoToNextLevel()
     
     gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
     
+    
     if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
     {
         // [수정됨] 확인 팝업 먼저 표시
@@ -914,7 +926,7 @@ public void GoToNextLevel()
             // Yes 클릭 시에만 광고 호출
             AdManager.Instance.ShowRewardedAd((success) =>
             {
-                if(success) ExecuteUndo();
+                if(success)  StartCoroutine(ExecuteUndoWithCancle());
                 // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
             });
         }, 
@@ -922,9 +934,23 @@ public void GoToNextLevel()
     }
     else
     {
-        ExecuteUndo();
+        StartCoroutine(ExecuteUndoWithCancle());
     }
 }
+
+private IEnumerator ExecuteUndoWithCancle()
+    {
+        // 2. 선택 강제 비우기 (애니메이션 포함)
+    if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+        
+        // CancelSelection의 애니메이션 시간 대기
+        // (DOTween 0.3초 축소 + 0.2초 팝업 = 약 0.5초)
+        yield return new WaitForSeconds(0.6f);
+    }
+    ExecuteUndo();
+    }   
 
 
     
@@ -1014,7 +1040,7 @@ public void ProcessHint()
                 if(success)
                 {
                     
-                    ExecuteHintWithLoading();
+                   StartCoroutine(ExecuteHintWithLoading());
                 }
             });
         },
@@ -1023,7 +1049,7 @@ public void ProcessHint()
     else
     {
        
-        ExecuteHintWithLoading();
+       StartCoroutine(ExecuteHintWithLoading());
     }
 }
 
@@ -1101,9 +1127,11 @@ private bool CheckIfSolvable()
     for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
     {
         GemType type = (GemType)i;
+        // ✅ 수정: null 필터링
+        int totalBundles = gameData.BundlePool
+            .Count(b => b != null && b.GemType == type);
         
-        // 해당 색의 번들 총 개수
-        int totalBundles = gameData.BundlePool.Count(b => b.GemType == type);
+        
         
         // 번들 개수 < 남은 상자 개수 → 불가능
         if(totalBundles < remainingBoxes)
@@ -1184,7 +1212,7 @@ private List<GemBundle> FindHintCombination()
     
     // 3-2. 부족하면 추가 선택
     int currentTotal = minSelectedTotal;
-    int needBundleCount = requiredAmount - minSelectedTotal;
+   
     HashSet<GemType> triedColors = new HashSet<GemType>();
     
     int loopCount = 0; // 안전장치
@@ -1198,14 +1226,15 @@ private List<GemBundle> FindHintCombination()
             Debug.LogError("[Hint] 무한 루프 감지!");
             return null;
         }
-        
-        // 선택 가능한 색 찾기
+         int remaining = requiredAmount - currentTotal;
+
+        // 1단계 선택 가능한 색 찾기
         var availableColors = workingPools
-            .Where(p => p.Value.RemainingSelectCount > 0 
-                     && p.Value.AvailableBundles.Count > 0
-                     && !triedColors.Contains(p.Key))
-            .OrderByDescending(p => p.Value.AvailableBundles.Count)
-            .ToList();
+        .Where(p => p.Value.RemainingSelectCount > 0 
+                 && p.Value.AvailableBundles.Count > 0
+                 && !triedColors.Contains(p.Key))
+        .ToList();
+    
         
         if(availableColors.Count == 0)
         {
@@ -1213,42 +1242,118 @@ private List<GemBundle> FindHintCombination()
             Debug.Log("[Hint] 모든 색 시도했으나 조합 실패");
             return null;
         }
+
+        // ✅ 2단계: 번들 개수가 비슷한지 확인
+    int maxBundleCount = availableColors.Max(p => p.Value.AvailableBundles.Count);
+    var topColors = availableColors
+        .Where(p => p.Value.AvailableBundles.Count == maxBundleCount)
+        .ToList();
+    
+    GemBundle selected = null;
+    GemType selectedColor = GemType.Red;
+
+        // ✅ 3단계: 번들 개수가 같은 색이 여러 개면 → 전체 통합 검색
+    if(topColors.Count > 1)
+    {
+        Debug.Log($"[Hint] {topColors.Count}개 색의 번들 개수 동일 ({maxBundleCount}개) → 통합 검색");
         
-        GemType targetColor = availableColors.First().Key;
+        // 모든 후보 색의 번들을 하나로 합침
+        List<(GemBundle bundle, GemType color)> allCandidates = new List<(GemBundle, GemType)>();
         
-        // 남은 총량 계산
-        int remaining = requiredAmount - currentTotal;
+        foreach(var colorInfo in topColors)
+        {
+            GemType color = colorInfo.Key;
+            foreach(var bundle in workingPools[color].AvailableBundles)
+            {
+                allCandidates.Add((bundle, color));
+            }
+        }
         
-        // 조건 만족하는 가장 큰 번들 선택
-        GemBundle selected = workingPools[targetColor].AvailableBundles
-            .Where(b => b.GemCount <= Math.Min(needBundleCount, remaining))
-            .OrderByDescending(b => b.GemCount)
-            .FirstOrDefault();
+        // ① 정확히 남은 양을 채우는 번들 찾기
+        var exactMatch = allCandidates
+            .FirstOrDefault(item => item.bundle.GemCount == remaining);
+        
+        if(exactMatch.bundle != null)
+        {
+            selected = exactMatch.bundle;
+            selectedColor = exactMatch.color;
+            Debug.Log($"[Hint] 정확히 맞는 번들 발견: {selectedColor} {selected.GemCount}개");
+        }
+        else
+        {
+            // ② 없으면 큰 번들부터 (남은 양 이하)
+            var largestFit = allCandidates
+                .Where(item => item.bundle.GemCount <= remaining)
+                .OrderByDescending(item => item.bundle.GemCount)
+                .FirstOrDefault();
+            
+            if(largestFit.bundle != null)
+            {
+                selected = largestFit.bundle;
+                selectedColor = largestFit.color;
+                Debug.Log($"[Hint] 큰 번들 선택 (통합): {selectedColor} {selected.GemCount}개");
+            }
+        }
+    }
+    else
+    {
+        // ✅ 4단계: 번들 개수가 확실히 많은 색 하나만 있으면 → 기존 로직
+        selectedColor = topColors.First().Key;
+        
+        // ① 정확히 맞는 번들
+        selected = workingPools[selectedColor].AvailableBundles
+            .FirstOrDefault(b => b.GemCount == remaining);
         
         if(selected == null)
         {
-            // 이 색에서 못 찾음 → 이 색 제외
-            Debug.Log($"[Hint] {targetColor} 색에서 조건 만족 번들 없음, 다음 색으로");
-            triedColors.Add(targetColor);
-            continue;
+            // ② 큰 번들부터
+            selected = workingPools[selectedColor].AvailableBundles
+                .Where(b => b.GemCount <= remaining)
+                .OrderByDescending(b => b.GemCount)
+                .FirstOrDefault();
         }
         
-        // 선택 성공
-        selectedBundles.Add(selected);
-        currentTotal += selected.GemCount;
-        needBundleCount -= selected.GemCount;
-        
-        workingPools[targetColor].AvailableBundles.Remove(selected);
-        workingPools[targetColor].RemainingSelectCount--;
-        
-        // 성공 시 다시 모든 색 시도 가능
-        triedColors.Clear();
-        
-        Debug.Log($"[Hint] {targetColor} 색에서 {selected.GemCount}개 번들 선택, 현재 총량: {currentTotal}");
+        if(selected != null)
+        {
+            Debug.Log($"[Hint] {selectedColor} 색 우세 → {selected.GemCount}개 선택");
+        }
     }
     
-    Debug.Log($"[Hint] 조합 완성! 총 {selectedBundles.Count}개 번들 선택");
-    return selectedBundles;
+    // ✅ 5단계: 선택 실패 시 해당 색 제외
+    if(selected == null)
+    {
+        if(topColors.Count > 1)
+        {
+            // 통합 검색 실패 → 모든 후보 색 제외
+            foreach(var colorInfo in topColors)
+            {
+                triedColors.Add(colorInfo.Key);
+            }
+            Debug.Log($"[Hint] 통합 검색 실패 → {topColors.Count}개 색 제외");
+        }
+        else
+        {
+            // 단일 색 실패
+            triedColors.Add(topColors.First().Key);
+            Debug.Log($"[Hint] {topColors.First().Key} 색 조건 만족 번들 없음");
+        }
+        continue;
+    }
+    
+    // ✅ 6단계: 선택 성공 → 업데이트
+    selectedBundles.Add(selected);
+    currentTotal += selected.GemCount;
+    
+    workingPools[selectedColor].AvailableBundles.Remove(selected);
+    workingPools[selectedColor].RemainingSelectCount--;
+    
+    triedColors.Clear();
+    
+    Debug.Log($"[Hint] {selectedColor} 색에서 {selected.GemCount}개 번들 선택, 현재 총량: {currentTotal}/{requiredAmount}");
+}
+
+Debug.Log($"[Hint] 조합 완성! 총 {selectedBundles.Count}개 번들 선택");
+return selectedBundles;
 }
 
 // ========== 선택 가능 풀 생성 ==========
@@ -1266,9 +1371,10 @@ private Dictionary<GemType, PoolInfo> BuildSelectablePools(int remainingBoxes, i
         GemType type = (GemType)i;
         
         // 해당 색의 모든 번들 (BundlePool + CurrentDisplayBundles)
-        List<GemBundle> allBundles = gameData.BundlePool
-            .Where(b => b.GemType == type)
+         List<GemBundle> allBundles = gameData.BundlePool
+            .Where(b => b != null && b.GemType == type) // ← null 체크!
             .ToList();
+        
         
         int totalBundles = allBundles.Count;
         
@@ -1287,8 +1393,9 @@ private Dictionary<GemType, PoolInfo> BuildSelectablePools(int remainingBoxes, i
             .ToList();
         
         // 화면에 표시 중인 번들만 선택 가능
+        // ✅ 수정: null 필터링 (이미 위에서 했지만 명확히)
         List<GemBundle> availableBundles = gameData.CurrentDisplayBundles
-            .Where(b => b.GemType == type && b.GemCount <= maxBundleGemCount)
+            .Where(b => b != null && b.GemType == type && b.GemCount <= maxBundleGemCount)
             .ToList();
         
         if(availableBundles.Count == 0)

@@ -6431,11 +6431,14 @@ MonoBehaviour:
   - {fileID: 909356500}
   - {fileID: 526642961}
   - {fileID: 1027667767}
-  clearVisuals:
-  - {fileID: 1327525386}
-  - {fileID: 1135044942}
-  - {fileID: 206517699}
-  - {fileID: 1824931684}
+  starImages:
+  - {fileID: 1327525388}
+  - {fileID: 1135044944}
+  - {fileID: 206517701}
+  - {fileID: 1824931686}
+  star1Sprite: {fileID: 21300000, guid: 550bf958f9e764eda81dfc37aacf41b5, type: 3}
+  star2Sprite: {fileID: 21300000, guid: 5ccccd15f7cf54b6d98fb0f3203fa6b3, type: 3}
+  star3Sprite: {fileID: 21300000, guid: 9e00139da20274c75a22846e7aac9422, type: 3}
   closeButton: {fileID: 1892577746}
 --- !u!1 &1717236390
 GameObject:
