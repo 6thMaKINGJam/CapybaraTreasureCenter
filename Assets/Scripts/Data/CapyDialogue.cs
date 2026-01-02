@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using System;
+using UnityEngine.UI;
 
 // 대사 상황 타입
 public enum DialogueType
@@ -49,6 +50,9 @@ public class CapyDialogue : MonoBehaviour
     [Header("대사 데이터")]
     public List<DialogueData> DialogueDatas = new List<DialogueData>();
     
+    [Header("말풍선 이미지")] // ← 추가
+public GameObject DialogueBubble; // Inspector에 할당
+
     [Header("애니메이션 설정")]
     [Tooltip("페이드 인 시간 (초)")]
     public float FadeInDuration = 0.3f;
@@ -63,7 +67,19 @@ public class CapyDialogue : MonoBehaviour
     private Dictionary<TextMeshProUGUI, Coroutine> activeDialogues = new Dictionary<TextMeshProUGUI, Coroutine>();
     private Dictionary<TextMeshProUGUI, CanvasGroup> canvasGroups = new Dictionary<TextMeshProUGUI, CanvasGroup>();
     
-    
+    private CanvasGroup bubbleCanvasGroup; // ← 추가
+
+    void Awake() // ← 추가
+{
+    if(DialogueBubble != null)
+    {
+        bubbleCanvasGroup = DialogueBubble.GetComponent<CanvasGroup>();
+        if(bubbleCanvasGroup == null)
+        {
+            bubbleCanvasGroup = DialogueBubble.AddComponent<CanvasGroup>();
+        }
+    }
+}
     /// <summary>
     /// 특정 상황의 대사를 표시합니다 (배열에서 랜덤 선택)
     /// </summary>
@@ -167,48 +183,37 @@ public class CapyDialogue : MonoBehaviour
 
     }
     
-     private IEnumerator PersistentDialogueCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
-    {
-        // 랜덤 대사 선택
-        string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
-        
-        // 텍스트 설정
-        targetText.text = selectedDialogue;
-        
-        // 페이드 인
-        yield return canvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
-        
-        // ✅ 여기서 멈춤 - 다른 대사 호출 전까지 계속 표시
-        // (StopDialogue가 호출될 때까지 대기)
-    }
     
 
     /// <summary>
     /// 특정 UI Text의 대사를 즉시 중단합니다
     /// </summary>
     /// <param name="targetText">중단할 TextMeshProUGUI</param>
-    public void StopDialogue(TextMeshProUGUI targetText)
+   public void StopDialogue(TextMeshProUGUI targetText)
+{
+    if (targetText == null) return;
+    
+    if (activeDialogues.ContainsKey(targetText) && activeDialogues[targetText] != null)
     {
-        if (targetText == null) return;
-        
-        // 해당 Text의 코루틴이 실행 중이면 중단
-        if (activeDialogues.ContainsKey(targetText) && activeDialogues[targetText] != null)
-        {
-            StopCoroutine(activeDialogues[targetText]);
-            activeDialogues.Remove(targetText);
-        }
-        
-        // CanvasGroup이 있으면 DOTween 정리 및 투명화
-        if (canvasGroups.ContainsKey(targetText))
-        {
-            CanvasGroup canvasGroup = canvasGroups[targetText];
-            canvasGroup.DOKill();
-            canvasGroup.alpha = 0f;
-        }
-        
-        // 텍스트 초기화
-        targetText.text = "";
+        StopCoroutine(activeDialogues[targetText]);
+        activeDialogues.Remove(targetText);
     }
+    
+    if (canvasGroups.ContainsKey(targetText))
+    {
+        canvasGroups[targetText].DOKill();
+        canvasGroups[targetText].alpha = 1f; // 텍스트는 항상 보이게
+    }
+    
+    // ← 말풍선 페이드 아웃
+    if(bubbleCanvasGroup != null)
+    {
+        bubbleCanvasGroup.DOKill();
+        bubbleCanvasGroup.alpha = 0f;
+    }
+    
+    targetText.text = "";
+}
     
     /// <summary>
     /// 모든 대사를 중단합니다
@@ -241,21 +246,36 @@ public class CapyDialogue : MonoBehaviour
     /// </summary>
     private void SetTextColor(TextMeshProUGUI targetText, DialogueType type)
     {
+        Color outlineColor = Color.black;
         switch(type)
         {
             case DialogueType.Warning:
             case DialogueType.TimeLowWarning:
             case DialogueType.AlreadyFailed:
                 targetText.color = Color.red;
+             outlineColor = Color.red;
+             targetText.fontSizeMax = 55f;
                 break;
             
-            case DialogueType.ConsecutiveSuccess:
-                targetText.color = Color.yellow;
+            case DialogueType.BoxCompleted:
+                targetText.color = new Color(1f, 0.6f, 0f);
+                outlineColor = new Color(1f, 0.4f, 0f); // 어두운 노랑
+                targetText.fontSizeMax = 55f;
+             
                 break;
             default:
                 targetText.color = Color.black;
+                outlineColor = Color.black;
+                targetText.fontSizeMax = 45f;
+               
                 break;
+
         }
+        // ✅ 전용 Material이므로 바로 수정 가능
+    if (targetText.fontMaterial != null)
+    {
+        targetText.fontMaterial.SetColor("_OutlineColor", outlineColor);
+    }
     }
     
     /// <summary>
@@ -328,61 +348,74 @@ public class CapyDialogue : MonoBehaviour
         return "";
     }
     
-    // 한 번만 표시하는 코루틴
-    private IEnumerator ShowOnceCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+ // 한 번만 표시
+private IEnumerator ShowOnceCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+{
+    string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
+    targetText.text = selectedDialogue;
+    
+    // ← 말풍선 페이드 인 (텍스트 CanvasGroup은 항상 1로)
+    canvasGroup.alpha = 1f;
+    if(bubbleCanvasGroup != null)
     {
-        // 랜덤 대사 선택
-        string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
-        
-        // 텍스트 설정
-        targetText.text = selectedDialogue;
-        
-        // 페이드 인
-        yield return canvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
-        
-        // 표시 유지
-        yield return new WaitForSeconds(DisplayDuration);
-        
-        // 페이드 아웃
-        yield return canvasGroup.DOFade(0f, FadeOutDuration).WaitForCompletion();
-        
-        // 텍스트 초기화
-        targetText.text = "";
-        
-        // 완료 후 딕셔너리에서 제거
-        if (activeDialogues.ContainsKey(targetText))
-        {
-            activeDialogues.Remove(targetText);
-        }
+        yield return bubbleCanvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
     }
     
-    // 반복 표시하는 코루틴
-    private IEnumerator LoopDialogueCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+    yield return new WaitForSeconds(DisplayDuration);
+    
+    // ← 말풍선 페이드 아웃
+    if(bubbleCanvasGroup != null)
     {
-        while (true) // 외부에서 StopDialogue()로 중단할 때까지 무한 반복
-        {
-            // 랜덤 대사 선택
-            string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
-            
-            // 텍스트 설정
-            targetText.text = selectedDialogue;
-            
-            // 페이드 인
-            yield return canvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
-            
-            // 표시 유지 (루프에서는 짧게)
-            yield return new WaitForSeconds(DisplayDuration);
-            
-            // 페이드 아웃
-            yield return canvasGroup.DOFade(0f, FadeOutDuration).WaitForCompletion();
-            
-            // 텍스트 초기화
-            targetText.text = "";
-            
-            // 다음 대사까지 대기
-            yield return new WaitForSeconds(data.LoopInterval);
-        }
+        yield return bubbleCanvasGroup.DOFade(0f, FadeOutDuration).WaitForCompletion();
     }
+    
+    targetText.text = "";
+    
+    if (activeDialogues.ContainsKey(targetText))
+    {
+        activeDialogues.Remove(targetText);
+    }
+}
+
+// 계속 표시
+private IEnumerator PersistentDialogueCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+{
+    string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
+    targetText.text = selectedDialogue;
+    
+    canvasGroup.alpha = 1f;
+    if(bubbleCanvasGroup != null)
+    {
+        yield return bubbleCanvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
+    }
+}
+
+// 반복 표시
+private IEnumerator LoopDialogueCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
+{
+    while (true)
+    {
+        string selectedDialogue = data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
+        targetText.text = selectedDialogue;
+        
+        canvasGroup.alpha = 1f;
+        if(bubbleCanvasGroup != null)
+        {
+            yield return bubbleCanvasGroup.DOFade(1f, FadeInDuration).WaitForCompletion();
+        }
+        
+        yield return new WaitForSeconds(DisplayDuration);
+        
+        if(bubbleCanvasGroup != null)
+        {
+            yield return bubbleCanvasGroup.DOFade(0f, FadeOutDuration).WaitForCompletion();
+        }
+        
+        targetText.text = "";
+        
+        yield return new WaitForSeconds(data.LoopInterval);
+    }
+}
     
     private void OnDestroy()
     {

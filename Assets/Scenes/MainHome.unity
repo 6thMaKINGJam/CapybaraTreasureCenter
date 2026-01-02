@@ -755,9 +755,9 @@ RectTransform:
   - {fileID: 2105375035}
   m_Father: {fileID: 1138894365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 540, y: -136.28705}
   m_SizeDelta: {x: 879.6442, y: 272.5741}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &268327385
@@ -881,9 +881,9 @@ RectTransform:
   - {fileID: 915178859}
   m_Father: {fileID: 1138894365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 540, y: -689.43524}
   m_SizeDelta: {x: 879.6442, y: 272.5741}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &290593245
@@ -3564,9 +3564,9 @@ RectTransform:
   - {fileID: 2084368412}
   m_Father: {fileID: 1138894365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 540, y: -412.86115}
   m_SizeDelta: {x: 879.6442, y: 272.5741}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &934649005
@@ -3953,8 +3953,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 299, y: -717}
-  m_SizeDelta: {x: 566.0148, y: 593.3652}
+  m_AnchoredPosition: {x: 310, y: -728}
+  m_SizeDelta: {x: 475.83, y: 498.83}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1021952047
 MonoBehaviour:
@@ -4937,7 +4937,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1257551964}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 021e31d35d6b94eda8ec9a9ece8269ae, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 6b5be04c733a243c5b185f86fe94df9b, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -6345,7 +6345,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1703983951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6747,9 +6747,9 @@ RectTransform:
   - {fileID: 1986645484}
   m_Father: {fileID: 1138894365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 540, y: -966.00934}
   m_SizeDelta: {x: 879.6442, y: 272.5741}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1802287742
@@ -7423,6 +7423,7 @@ GameObject:
   - component: {fileID: 1867365160}
   - component: {fileID: 1867365162}
   - component: {fileID: 1867365161}
+  - component: {fileID: 1867365163}
   m_Layer: 5
   m_Name: CapyImage
   m_TagString: Untagged
@@ -7487,6 +7488,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1867365159}
   m_CullTransparentMesh: 1
+--- !u!114 &1867365163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867365159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08dca49976d0f4c9e8894f51a474a517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleTime: 0.6
+  wiggleDuration: 0.2
+  strength: 2
 --- !u!1 &1871554897
 GameObject:
   m_ObjectHideFlags: 0

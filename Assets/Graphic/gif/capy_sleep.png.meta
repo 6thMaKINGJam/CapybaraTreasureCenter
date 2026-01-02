@@ -1,0 +1,1143 @@
+fileFormatVersion: 2
+guid: 98bb8f7d53de4480081f94bf769a6eda
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: capy_sleep_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebc9567eeba37462d98975e834ccf1df
+      internalID: 30178466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_1
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: adeaadc5cd1ce4bec9bf50a9e4156911
+      internalID: -1828463444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_2
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cdf324f153864b3881f0c2e6d5f506d
+      internalID: 1144735263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_3
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3b1f66fc56754be0b9a96f3c79dab3c
+      internalID: -986867374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_4
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fbddf3656bb941498d4ab5cd399b88d
+      internalID: -27747063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_5
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cc5f1bfed0c049fe825eb6bf81ae13f
+      internalID: 761938764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_6
+      rect:
+        serializedVersion: 2
+        x: 2346
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5a133b0a86bc47149d45ede8b87bb4e
+      internalID: 109839888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_7
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57e33f3f57f344705a1f46440dd5055f
+      internalID: -1836936691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_8
+      rect:
+        serializedVersion: 2
+        x: 3128
+        y: 1584
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3986d8438f30e480a8f0afdf374d803f
+      internalID: -640429114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 230bcf025646b4cdd9bcb063ef2aca5a
+      internalID: 510742232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_10
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa2e1cdaa8763472fa57fca55bf1d77d
+      internalID: -1856103929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_11
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4ecec2def3524c4e810b1c6f798b6f4
+      internalID: -148868460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_12
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f402b2c089f440a480a08f83798a28b
+      internalID: -2063974832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_13
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e634fa95fe5e148f5bbb2f6b9788baa6
+      internalID: 385901737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_14
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffad431dc928e4cbc86c803bd96d1ff6
+      internalID: 253753726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_15
+      rect:
+        serializedVersion: 2
+        x: 2346
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8bc4a1d9e76d48f495b816516c72d6b
+      internalID: 123312659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_16
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0db4ca31154c4d2e8162b0241882085
+      internalID: -883952516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_17
+      rect:
+        serializedVersion: 2
+        x: 3128
+        y: 1188
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd7d1dbe872ef4aa7a8d13a2cbd8d555
+      internalID: -1989707333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 195eba41020fc4a1b88a499ddc1d281b
+      internalID: -1774968985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_19
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c92f150753784a388e3376436454401
+      internalID: 388942816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_20
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd97ea99923494c09ba4162d94b60e4c
+      internalID: 63849297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_21
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6864db58aa0e42c7a2a4ff514506935
+      internalID: 534801862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_22
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84901b3bfa2f44c29afb8ffb8f22f6a6
+      internalID: -587957966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_23
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c0cf2963adde49e8a5aa9290c95767d
+      internalID: -547161488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_24
+      rect:
+        serializedVersion: 2
+        x: 2346
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ac4cf35413a34227b38264827e1f728
+      internalID: -1691092321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_25
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c3680f1f3dad4ec094369162deb19c7
+      internalID: 1754260097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_26
+      rect:
+        serializedVersion: 2
+        x: 3128
+        y: 792
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1816772524dcb4003b729e2895382449
+      internalID: 700971049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_27
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 117726d09ca864f8885484c1ea1a4d6a
+      internalID: 2033130034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_28
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c689ba0c1e624d0e9eb628f5a96c132
+      internalID: 1719689508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_29
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c8604113d95b417686ed7b3fd794b71
+      internalID: -1327525239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_30
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a81869fa5bf784a5f911508af4f81dd8
+      internalID: 1714368267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_31
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61607ca8dc8b14fb38d2a0df72297ae5
+      internalID: 221700867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_32
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f149415896df4604b25feb186aa2f27
+      internalID: 1088424079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_33
+      rect:
+        serializedVersion: 2
+        x: 2346
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 284b6f7f978bc44a28e86088fa748870
+      internalID: 2051884782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_34
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e49d7d7c45fd4cc9b44b993c78f5ed9
+      internalID: 8094887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_35
+      rect:
+        serializedVersion: 2
+        x: 3128
+        y: 396
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea9a39558c8ad403787c5efc6d4cd4fc
+      internalID: 1126877275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 184a1570f22e14300aaec60b5403b75b
+      internalID: 1764517911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_37
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3e6842ed25fd4d7f8328fdb30aa25d3
+      internalID: 587845164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_38
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49df183be1315459fb2fb2c31bb436e6
+      internalID: -676666952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_39
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6336403f535974bf586177b524a19f1b
+      internalID: 319746496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_40
+      rect:
+        serializedVersion: 2
+        x: 1564
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd6fc634b361c48a4b3ecc0af5bacefa
+      internalID: 270073875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_41
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1726473f38f62472196a5c10873cfba7
+      internalID: 432700467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_42
+      rect:
+        serializedVersion: 2
+        x: 2346
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bed959bae68f646178243e2873bfae0c
+      internalID: -1062757195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_43
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c038d633b50a4cc9905cd1a44674b51
+      internalID: 116799128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capy_sleep_44
+      rect:
+        serializedVersion: 2
+        x: 3128
+        y: 0
+        width: 391
+        height: 396
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a29ddf7b6831c4a51b4ef23b540f6a0d
+      internalID: -1386782108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      capy_sleep_0: 30178466
+      capy_sleep_1: -1828463444
+      capy_sleep_10: -1856103929
+      capy_sleep_11: -148868460
+      capy_sleep_12: -2063974832
+      capy_sleep_13: 385901737
+      capy_sleep_14: 253753726
+      capy_sleep_15: 123312659
+      capy_sleep_16: -883952516
+      capy_sleep_17: -1989707333
+      capy_sleep_18: -1774968985
+      capy_sleep_19: 388942816
+      capy_sleep_2: 1144735263
+      capy_sleep_20: 63849297
+      capy_sleep_21: 534801862
+      capy_sleep_22: -587957966
+      capy_sleep_23: -547161488
+      capy_sleep_24: -1691092321
+      capy_sleep_25: 1754260097
+      capy_sleep_26: 700971049
+      capy_sleep_27: 2033130034
+      capy_sleep_28: 1719689508
+      capy_sleep_29: -1327525239
+      capy_sleep_3: -986867374
+      capy_sleep_30: 1714368267
+      capy_sleep_31: 221700867
+      capy_sleep_32: 1088424079
+      capy_sleep_33: 2051884782
+      capy_sleep_34: 8094887
+      capy_sleep_35: 1126877275
+      capy_sleep_36: 1764517911
+      capy_sleep_37: 587845164
+      capy_sleep_38: -676666952
+      capy_sleep_39: 319746496
+      capy_sleep_4: -27747063
+      capy_sleep_40: 270073875
+      capy_sleep_41: 432700467
+      capy_sleep_42: -1062757195
+      capy_sleep_43: 116799128
+      capy_sleep_44: -1386782108
+      capy_sleep_5: 761938764
+      capy_sleep_6: 109839888
+      capy_sleep_7: -1836936691
+      capy_sleep_8: -640429114
+      capy_sleep_9: 510742232
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

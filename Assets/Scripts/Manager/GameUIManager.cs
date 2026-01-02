@@ -129,12 +129,12 @@ public void UpdateHintAndItemUI(int hintLeft, int refreshLeft, int undoLeft)
   
 
     // ========== 상자 진행도 표시 업데이트 ==========
-    public void UpdateBoxUI(int boxIndex, int currentAmount, int requiredAmount)
-    {
-        BoxIndexText.text = $"상자 #{boxIndex + 1}";
-        BoxProgressText.text = $"{currentAmount} / {requiredAmount}";
-
-   }
+    // ========== 상자 진행도 표시 업데이트 ==========
+public void UpdateBoxUI(int boxIndex, int currentAmount, int requiredAmount, int totalBoxCount)
+{
+    BoxIndexText.text = $"상자 #{boxIndex + 1} / {totalBoxCount}";
+    BoxProgressText.text = $"{currentAmount} / {requiredAmount}";
+}
 
     // ========== 일시정지 팝업 ==========
     public void OpenPausePopup()

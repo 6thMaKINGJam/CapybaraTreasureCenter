@@ -45,9 +45,15 @@ public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
       [Header("힌트 로딩 UI")]
     public GameObject HintLoadingUI;  // ✅ 추가
     // 시간 관련
+
+    [Header("알림")]
+public GameObject NotificationPanel; // Inspector 할당
+public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
+public float NotificationDuration = 2f; // 표시 시간
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
     
+
     // 연속 성공 카운트
     private int consecutiveSuccessCount = 0;
     private int lastCountedSecond = -1; // 중복 호출 방지용
@@ -242,10 +248,12 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
         // 취소는 즉시 UI 업데이트
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
         UIManager.UpdateBoxUI(
-            gameData.CurrentBoxIndex,
-            CalculateSelectedTotal(),
-            GetCurrentBox().RequiredAmount
-        );
+    gameData.CurrentBoxIndex,
+    CalculateSelectedTotal(),
+    GetCurrentBox().RequiredAmount,
+    gameData.Boxes.Count // ← 추가
+);
+
         
         if (GemCountStatusPanel != null)
         {
@@ -307,7 +315,8 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
     UIManager.UpdateBoxUI(
         gameData.CurrentBoxIndex,
         CalculateSelectedTotal(),
-        GetCurrentBox().RequiredAmount
+        GetCurrentBox().RequiredAmount,
+        gameData.Boxes.Count
     );
 }
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
@@ -340,7 +349,7 @@ public void CancelSelection()
     if(gameData.SelectedBundles.Count == 0)
     {
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
+        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount,  gameData.Boxes.Count);
         return;
     }
     
@@ -414,7 +423,7 @@ public void CancelSelection()
     
     // UI 업데이트
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
+    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount,gameData.Boxes.Count);
     GridManager.ClearAllSelections();
 }
 
@@ -540,12 +549,12 @@ public void ProcessBoxCompletion()
         if (consecutiveSuccessCount >= 1)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.BoxCompleted);
-            CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+            CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
         }
         else
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-            CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+            CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
         }
     }
 
@@ -580,8 +589,13 @@ public void ProcessBoxCompletion()
             Box nextBox = GetCurrentBox();
             if (nextBox != null)
             {
-                UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, nextBox.RequiredAmount);
-            }
+           UIManager.UpdateBoxUI(
+    gameData.CurrentBoxIndex, 
+    0, 
+    nextBox.RequiredAmount,
+    gameData.Boxes.Count // ← 추가
+);
+ }
 
             // 하단 아이템 개수 등 갱신
             UpdateAllItemUI();
@@ -1643,10 +1657,11 @@ private void UpdateAllItemUI()
     
    private void RefreshUI()
 {
-    UIManager.UpdateBoxUI(
+   UIManager.UpdateBoxUI(
         gameData.CurrentBoxIndex,
         CalculateSelectedTotal(),
-        GetCurrentBox().RequiredAmount
+        GetCurrentBox().RequiredAmount,
+        gameData.Boxes.Count // ← 추가
     );
 
     // ✅ UpdateAllItemUI() 호출로 통일
@@ -1662,12 +1677,12 @@ private void UpdateAllItemUI()
             if (message == null)
             {
                 CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Warning);
-                CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
             }
             else
             {
                 CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
-                CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
             }
     
         }
@@ -1693,16 +1708,41 @@ private void UpdateAllItemUI()
         FlashOverlay.gameObject.SetActive(false);
     }
     
-    private void ShowTopNotification(string message)
+   private void ShowTopNotification(string message)
+{
+    if(NotificationPanel == null || NotificationText == null)
     {
-        // TODO: 상단 알림창 구현
-        // 임시로 CapyDialogue 활용
-        if(CapyDialogue != null && CapyDialogueText != null)
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
-                  CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
-        }
-        
-        Debug.Log($"[GameManager] Notification: {message}");
+        Debug.LogWarning("[GameManager] NotificationPanel이 할당되지 않았습니다!");
+        return;
     }
+    
+    StopCoroutine(nameof(NotificationCoroutine));
+    StartCoroutine(NotificationCoroutine(message));
+}
+
+private IEnumerator NotificationCoroutine(string message)
+{
+    NotificationText.text = message;
+    
+    // CanvasGroup 가져오기/생성
+    CanvasGroup canvasGroup = NotificationPanel.GetComponent<CanvasGroup>();
+    if(canvasGroup == null)
+    {
+        canvasGroup = NotificationPanel.AddComponent<CanvasGroup>();
+    }
+    
+    NotificationPanel.SetActive(true);
+    
+    // 페이드 인
+    canvasGroup.alpha = 0f;
+    yield return canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+    
+    // 유지
+    yield return new WaitForSeconds(NotificationDuration);
+    
+    // 페이드 아웃
+    yield return canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();
+    
+    NotificationPanel.SetActive(false);
+}
 }
