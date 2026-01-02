@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 public class LevelSelectPanel : MonoBehaviour
 {
     [Header("Level Buttons")]
@@ -29,11 +30,24 @@ public class LevelSelectPanel : MonoBehaviour
             int levelIndex = i + 1;
             levelButtons[i].onClick.AddListener(() => OnLevelClick(levelIndex));
         }
+
+        closeButton.onClick.AddListener(() => 
+        {
+            gameObject.SetActive(false);
+        });
     }
     
-    public void RefreshLevelNodes(int lastClearedLevel)
+    // ✅ 변경: OnEnable에서 자동 갱신
+    private void OnEnable()
+    {
+        RefreshUI();
+    }
+    
+    // ✅ 이름 변경 및 내부 구현 수정
+    private void RefreshUI()
     {
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        int lastClearedLevel = progressData.LastClearedLevel;
         
         for (int i = 0; i < levelButtons.Length; i++)
         {
@@ -48,22 +62,21 @@ public class LevelSelectPanel : MonoBehaviour
                 lockVisuals[i].SetActive(!isUnlocked);
             }
             
-            // 3. 별 표시 (클리어한 레벨만)
-            if (starImages.Length > i && starImages[i] != null)
+           // 3. 별 표시 (✅ 헬퍼 메서드 사용)
+        if (starImages.Length > i && starImages[i] != null)
+        {
+            bool isCleared = progressData.HasCleared(currentLevelNum);
+            
+            if (isCleared)
             {
-                bool isCleared = progressData.LevelStars.ContainsKey(currentLevelNum);
-                
-                if (isCleared)
-                {
-                    int stars = progressData.LevelStars[currentLevelNum];
-                    UpdateStarDisplay(starImages[i], stars);
-                }
-                else
-                {
-                    // 미클리어 → 별 이미지 숨김
-                    starImages[i].gameObject.SetActive(false);
-                }
+                int stars = progressData.GetStars(currentLevelNum);
+                UpdateStarDisplay(starImages[i], stars);
             }
+            else
+            {
+                starImages[i].gameObject.SetActive(false);
+            }
+        }
         }
     }
     

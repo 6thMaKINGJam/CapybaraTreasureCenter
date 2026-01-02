@@ -12,13 +12,15 @@ public class LevelClearPopup : MonoBehaviour
     public GameObject[] StarObjects;
     
     [Header("버튼 연결")]
-    public Button RetryButton; // [변경됨] NextLevelButton -> RetryButton
+    public Button NextLevelButton; // ✅ 추가
+    public Button RetryButton;
     public Button HomeButton;
 
     [Header("연출 설정")]
     public float StarDelay = 0.3f;
 
-    // 콜백 저장용 변수
+    // ✅ 콜백 3개로 변경
+    private Action onNextLevelCallback;
     private Action onRetryCallback;
     private Action onHomeCallback;
 
@@ -27,19 +29,27 @@ public class LevelClearPopup : MonoBehaviour
     /// </summary>
     /// <param name="starCount">별 개수</param>
     /// <param name="message">메시지</param>
+    /// <param name="onNextLevel">다음 레벨 버튼 기능</param>
     /// <param name="onRetry">다시하기 버튼 기능</param>
     /// <param name="onHome">홈으로 가기 버튼 기능</param>
-    public void Setup(int starCount, string message, Action onRetry, Action onHome)
+    public void Setup(int starCount, string message, Action onNextLevel, Action onRetry, Action onHome)
     {
         // 1. 텍스트 설정
         if (MessageText != null)
             MessageText.text = message;
 
         // 2. 콜백 저장
+        onNextLevelCallback = onNextLevel;
         onRetryCallback = onRetry;
         onHomeCallback = onHome;
 
-        // 3. 버튼 리스너 연결 (기존 연결 제거 후 새로 추가)
+        // 3. 버튼 리스너 연결
+        if(NextLevelButton != null)
+        {
+            NextLevelButton.onClick.RemoveAllListeners();
+            NextLevelButton.onClick.AddListener(() => onNextLevelCallback?.Invoke());
+        }
+        
         if(RetryButton != null)
         {
             RetryButton.onClick.RemoveAllListeners();

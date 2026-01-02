@@ -13,6 +13,13 @@ public class HallOfFamePanel : MonoBehaviour
     [SerializeField] private GameObject loadingUI;
     [SerializeField] private GameObject emptyText;
 
+public void OnEnable()
+    {
+        closeButton.onClick.AddListener(() => 
+        {
+            gameObject.SetActive(false);
+        });
+    }   
     public void Open()
     {
         gameObject.SetActive(true);

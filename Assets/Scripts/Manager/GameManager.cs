@@ -57,7 +57,8 @@ private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs
 private Dictionary<GemBundle, int> selectedBundleOriginalIndices 
     = new Dictionary<GemBundle, int>(); // Bundle → 원래 Grid 인덱스
 
-
+ private HintManager hintManager;
+    
 
     
     void Awake()
@@ -65,7 +66,8 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         if(Instance == null)
         {
             Instance = this;
-            // Firebase 초기화 로직
+            // ✅ HintManager 초기화
+            hintManager = new HintManager();
         }
         else
         {
@@ -490,85 +492,109 @@ private class BundleRestoreInfo
         return true;
     }
     
-   private void ProcessBoxCompletion()
+ // GameManager.cs 내부
+
+public void ProcessBoxCompletion()
 {
-    foreach(var bundle in gameData.SelectedBundles)
+    // 1. 흔들림 등 효과 중지
+    GridManager.StopAllShaking();
+
+    // 2. [데이터 처리] 사용한 번들 제거 및 정리 (즉시 실행)
+    foreach (var bundle in gameData.SelectedBundles)
     {
-        // gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
-        
-        // 이미 선택 시 제거했으므로 Contains 체크
-        if(gameData.BundlePool.Contains(bundle))
+        // Pool과 Display 목록에서 제거
+        if (gameData.BundlePool.Contains(bundle))
         {
             gameData.BundlePool.Remove(bundle);
         }
-        
-        if(gameData.CurrentDisplayBundles.Contains(bundle))
+
+        if (gameData.CurrentDisplayBundles.Contains(bundle))
         {
             gameData.CurrentDisplayBundles.Remove(bundle);
         }
     }
-    
+
+    // 3. 완료된 상자 기록 저장
     CompletedBox completedBox = new CompletedBox();
     completedBox.BoxIndex = gameData.CurrentBoxIndex;
     completedBox.UsedBundles = new List<GemBundle>(gameData.SelectedBundles);
     gameData.CompletedBoxes.Add(completedBox);
-    
+
+    // 4. 상자 인덱스 증가
     gameData.CurrentBoxIndex++;
-    
-    // selectedBundleOriginalPrefabs 정리
-    foreach(var bundle in gameData.SelectedBundles)
+
+    // 5. 선택 관련 데이터 초기화
+    foreach (var bundle in gameData.SelectedBundles)
     {
-        if(selectedBundleOriginalPrefabs.ContainsKey(bundle))
+        if (selectedBundleOriginalPrefabs.ContainsKey(bundle))
         {
             selectedBundleOriginalPrefabs.Remove(bundle);
         }
     }
-    
     gameData.SelectedBundles.Clear();
-    // ===== 변경: DOTween 완료 후 UI 갱신 =====
-    DOVirtual.DelayedCall(0.1f, () => 
-    {
-        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount);
-    });
-    consecutiveSuccessCount++;
 
-    if(CapyDialogue != null && CapyDialogueText != null)
+    // 6. 연속 성공 카운트 및 대사 처리
+    consecutiveSuccessCount++;
+    if (CapyDialogue != null && CapyDialogueText != null)
     {
-        if(consecutiveSuccessCount >= 3)
+        if (consecutiveSuccessCount >= 1)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.BoxCompleted);
-      CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+            CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
         else
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-             CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
+            CapyDialogue.RestartDefault(CapyDialogueText, 2.5f);
         }
     }
-    
-    if(CheckGameOver())
+
+    // 7. 게임오버 체크 (보석이 말랐는지 확인)
+    if (CheckGameOver())
     {
         HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
         return;
     }
-    
-    if(gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+
+    // 8. [시각적 연출] 상자 교체 애니메이션 실행
+    // 데이터는 이미 위에서 변했으므로, 애니메이션이 끝난 후 UI를 갱신합니다.
+    if (UIManager != null)
     {
-        HandleLevelClear();
-        return;
+        UIManager.AnimateBoxChange(() =>
+        {
+            // === 이 안의 코드는 애니메이션(0.3~0.5초)이 끝난 후 실행됩니다 ===
+
+            // A. 레벨 클리어 체크
+            // (인덱스가 증가했으므로 전체 개수와 비교)
+            if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+            {
+                HandleLevelClear();
+                return; 
+            }
+
+            // B. UI 갱신 (새로운 상자 정보로 표시)
+            // 선택 패널 비우기
+            UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+            
+            // 상단 상자 정보 갱신 (다음 상자 요구량 표시)
+            Box nextBox = GetCurrentBox();
+            if (nextBox != null)
+            {
+                UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, nextBox.RequiredAmount);
+            }
+
+            // 하단 아이템 개수 등 갱신
+            UpdateAllItemUI();
+        });
     }
-    
-   
-    // 👈 인덱스가 증가한 직후, 리스트 크기와 비교해서 클리어인지 먼저 확인!
-    if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+    else
     {
-        HandleLevelClear();
-        return; // 클리어 시 함수 종료 (이후 UI 갱신 등 방지)
+        // 만약 UIManager가 없거나 연결 안 됐을 경우를 대비한 안전장치 (즉시 갱신)
+        RefreshUI();
+        if (gameData.CurrentBoxIndex >= gameData.Boxes.Count) HandleLevelClear();
     }
-  
-    RefreshUI();
 }
+
 
     // ========== 게임오버/클리어 체크 ==========
     private bool CheckGameOver()
@@ -630,35 +656,32 @@ private class BundleRestoreInfo
             Debug.LogError("[GameManager] GameOverPopup을 찾을 수 없습니다!");
         }
     }
-    private void HandleLevelClear()
-    {
-        gameData.GameState = GameState.Win;
-        StopCoroutine(timeCheckCoroutine);
-// ===== 추가: VideoPlayer + BGM 정지 =====
+private void HandleLevelClear()
+{
+    gameData.GameState = GameState.Win;
+    StopCoroutine(timeCheckCoroutine);
+    
+    // ===== 추가: VideoPlayer + BGM 정지 =====
     StopBackgroundMedia();
-        CapyDialogue.StopDialogue(CapyDialogueText);
+    CapyDialogue.StopDialogue(CapyDialogueText);
 
-        // 1. 시간 및 별 계산
-        float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
-        float maxTime = CurrentLevelConfig.TimeLimit;
-        int starCount = 1;
-        if (clearTime <= maxTime * 0.5f) starCount = 3;
-        else if (clearTime <= maxTime * 0.66f) starCount = 2;
+    // 1. 시간 및 별 계산
+    float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
+    float maxTime = CurrentLevelConfig.TimeLimit;
+    int starCount = 1;
+    if (clearTime <= maxTime * 0.5f) starCount = 3;
+    else if (clearTime <= maxTime * 0.66f) starCount = 2;
 
-        string clearMessage = GetClearMessage(clearTime);
+    string clearMessage = GetClearMessage(clearTime);
 
-        // 2. 데이터 로드 및 업데이트
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+    // 2. 데이터 로드 및 업데이트
+    ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
 
- // ✅ 별 개수 갱신 (기존 기록보다 좋으면 업데이트)
+    // ✅ 별 개수 갱신 (기존 기록보다 좋으면 업데이트)
     int currentLevel = gameData.CurrentLevelIndex;
-    if (!progressData.LevelStars.ContainsKey(currentLevel) || 
-        progressData.LevelStars[currentLevel] < starCount)
-    {
-        progressData.LevelStars[currentLevel] = starCount;
-    }
+     progressData.SetStars(currentLevel, starCount);
 
-       // 레벨 해금
+    // 레벨 해금
     if (progressData.LastClearedLevel < currentLevel)
     {
         progressData.LastClearedLevel = currentLevel;
@@ -666,78 +689,68 @@ private class BundleRestoreInfo
     
     SaveManager.Save(progressData, "ProgressData");
     
-        SoundManager.Instance.PlayFX(SoundType.GameClear);
+    SoundManager.Instance.PlayFX(SoundType.GameClear);
 
-        // 3. 레벨별 분기 처리
-        if (gameData.CurrentLevelIndex == 4)
+    // 3. 레벨별 분기 처리
+    if (gameData.CurrentLevelIndex == 4)
+    {
+        int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
+
+        if (!progressData.isLevel4Completed)
         {
-            int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
-
-            if (!progressData.isLevel4Completed)
-            {
-                // 최초 클리어
-                progressData.isLevel4Completed = true;
-                progressData.BestTime = clearTimeMs;
-                
-                SaveManager.Save(progressData, "ProgressData"); // 👈 여기서 확실히 저장
-                SaveManager.DeleteSave("GameData");
-                TriggerEnding();
-            }
-            else
-            {
-                // 재클리어: 기록 경신 확인
-                if (progressData.BestTime == 0 || clearTimeMs < progressData.BestTime)
-                {
-                    progressData.BestTime = clearTimeMs;
-                    SaveManager.Save(progressData, "ProgressData");
-                }
-                
-                // 재클리어 시에는 엔딩 없이 메인으로 가거나 선택 (여기선 팝업 예시)
-                ShowLevelClearPopup(starCount, clearMessage);
-            }
+            // 최초 클리어
+            progressData.isLevel4Completed = true;
+            progressData.BestTime = clearTimeMs;
+            
+            SaveManager.Save(progressData, "ProgressData");
+            SaveManager.DeleteSave("GameData");
+            TriggerEnding();
         }
         else
         {
-            // 레벨 1~3 클리어: 반드시 저장 후 팝업
-            SaveManager.Save(progressData, "ProgressData"); // 👈 메인 해금을 위해 필수!
-            ShowLevelClearPopup(starCount, clearMessage);
+            // 재클리어: 기록 경신 확인
+            if (progressData.BestTime == 0 || clearTimeMs < progressData.BestTime)
+            {
+                progressData.BestTime = clearTimeMs;
+                SaveManager.Save(progressData, "ProgressData");
+            }
+            
+            // ✅ 레벨 4는 NextLevel 버튼 비활성화
+            ShowLevelClearPopup(starCount, clearMessage, isLastLevel: true);
         }
     }
-// ========== VideoPlayer + BGM 제어 헬퍼 ==========
-
-/// <summary>
-/// 배경 Video Player와 BGM을 즉시 정지
-/// </summary>
-private void StopBackgroundMedia()
-{
-    // VideoPlayer 정지
-    if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
+    else
     {
-        backgroundVideoPlayer.Stop();
-        Debug.Log("[GameManager] VideoPlayer 정지");
-    }
-    
-    // BGM 정지
-    if(SoundManager.Instance != null)
-    {
-        SoundManager.Instance.StopBGM();
+        // 레벨 1~3 클리어
+        ShowLevelClearPopup(starCount, clearMessage, isLastLevel: false);
     }
 }
-// 팝업 생성 로직을 별도 함수로 빼면 중복 코드가 줄어듭니다.
-private void ShowLevelClearPopup(int starCount, string message)
+
+// ✅ 팝업 생성 함수 수정
+private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel)
 {
     GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
     LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
+    
     if (popup != null)
     {
         popup.Setup(
             starCount, 
             message,
-            () => GoToNextLevel(), // 👈 RestartLevel 대신 다음 레벨 이동 함수 연결 권장
-            () => GoToMainHome()
+            () => GoToNextLevel(), // ✅ 다음 레벨
+            () => RestartLevel(),  // ✅ 다시하기
+            () => GoToMainHome()   // ✅ 메인홈
         );
+        
+        // ✅ 레벨 4면 다음 레벨 버튼 비활성화
+        if (isLastLevel && popup.NextLevelButton != null)
+        {
+            popup.NextLevelButton.interactable = false;
+        }
     }
 }
+
+// ✅ 다음 레벨로 이동 함수 추가
 public void GoToNextLevel()
 {
     // 1. 시간 흐름 초기화
@@ -757,8 +770,6 @@ public void GoToNextLevel()
         PlayerPrefs.SetInt("SelectedLevel", nextLevel);
         PlayerPrefs.Save();
 
-     
-
         // 현재 게임 씬 다시 로드 (InitGame에서 새 SelectedLevel을 읽어옴)
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -769,7 +780,26 @@ public void GoToNextLevel()
         GoToMainHome();
     }
 }
+
+/// <summary>
+/// 배경 Video Player와 BGM을 즉시 정지
+/// </summary>
+private void StopBackgroundMedia()
+{
+    // VideoPlayer 정지
+    if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
+    {
+        backgroundVideoPlayer.Stop();
+        Debug.Log("[GameManager] VideoPlayer 정지");
+    }
     
+    // BGM 정지
+    if(SoundManager.Instance != null)
+    {
+        SoundManager.Instance.StopBGM();
+    }
+}
+
   private string GetClearMessage(float clearTime)
     {
         // 1. 현재 레벨의 총 제한시간 가져오기
@@ -1055,6 +1085,7 @@ public void ProcessHint()
 
 
 // ✅ 새 메서드: 로딩 UI 포함 힌트 실행
+// ✅ ExecuteHintWithLoading() 수정 - HintManager 사용
 private IEnumerator ExecuteHintWithLoading()
 {
     // 1. 로딩 UI 표시
@@ -1063,25 +1094,50 @@ private IEnumerator ExecuteHintWithLoading()
         HintLoadingUI.SetActive(true);
     }
     
-    // 2. 선택 강제 비우기 (애니메이션 포함)
+    // 2. 선택 강제 비우기
     if(gameData.SelectedBundles.Count > 0)
     {
         CancelSelection();
-        
-        // CancelSelection의 애니메이션 시간 대기
-        // (DOTween 0.3초 축소 + 0.2초 팝업 = 약 0.5초)
         yield return new WaitForSeconds(0.6f);
     }
     
-    // 3. 로딩 UI 숨김
+    // 3. 한 프레임 대기 (백트래킹 시간 확보)
+    yield return null;
+    
+    // 4. ✅ HintManager에 위임
+    List<GemBundle> hintBundles = hintManager.FindHintCombination(
+        GetCurrentBox(),
+        gameData.BundlePool,
+        gameData.CurrentDisplayBundles,
+        gameData.Boxes.Count - gameData.CurrentBoxIndex,
+        CurrentLevelConfig.GemTypeCount
+    );
+    
+    // 5. 로딩 UI 숨김
     if(HintLoadingUI != null)
     {
         HintLoadingUI.SetActive(false);
     }
     
-    // 4. 힌트 실행
-    ExecuteHint();
+    // 6. 결과 처리
+    if(hintBundles != null && hintBundles.Count > 0)
+    {
+        gameData.HintCount++;
+        GridManager.ShakeBundles(hintBundles);
+        ShowTopNotification("힌트를 확인하세요카피!");
+    }
+    else
+    {
+        // 모든 전략 실패 → 이미 글렀음
+        if(CapyDialogue != null && CapyDialogueText != null)
+        {
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
+        }
+    }
+    
+    UpdateAllItemUI();
 }
+
 
 // Assets/Scripts/Manager/GameManager.cs
 
@@ -1183,11 +1239,7 @@ private List<GemBundle> FindHintCombination()
             .OrderBy(b => b.GemCount)
             .FirstOrDefault();
         
-        if(smallest == null)
-        {
-            Debug.Log($"[Hint] {type} 색 가장 작은 번들 없음");
-            return null;
-        }
+        
         
         selectedBundles.Add(smallest);
         minSelectedTotal += smallest.GemCount;

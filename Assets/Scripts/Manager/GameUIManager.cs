@@ -41,6 +41,9 @@ public class GameUIManager : MonoBehaviour
     public TextMeshProUGUI CountdownText;
     private CanvasGroup countdownCanvasGroup;
 
+    [Header("연출 컨트롤러")]
+    public BoxVisualController BoxVisual; // ★ 추가! 인스펙터에서 연결
+
 
 
     void Awake()
@@ -63,7 +66,19 @@ public class GameUIManager : MonoBehaviour
     }
 
 // 팝업 생성 헬퍼 함수
-
+// ★ 연출 실행용 래퍼 함수 추가
+    public void AnimateBoxChange(System.Action onFinished)
+    {
+        if(BoxVisual != null)
+        {
+            BoxVisual.PlayCompleteAnimation(onFinished);
+        }
+        else
+        {
+            // 연출기가 없으면 그냥 즉시 완료 처리
+            onFinished?.Invoke();
+        }
+    }
 // ✅ 수정: 최대 횟수 파라미터 추가
 public void UpdateHintAndItemUI(
     int hintLeft, int maxHint,

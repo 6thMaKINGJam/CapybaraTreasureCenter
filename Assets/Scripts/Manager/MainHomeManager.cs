@@ -80,7 +80,8 @@ public class MainHomeManager : MonoBehaviour
     public void OnClickGameStart()
     {
         mainHomeUI.OpenPanel(mainHomeUI.LevelSelectPanel);
-        levelSelectUI.RefreshLevelNodes(currentProgress.LastClearedLevel);
+        // ✅ 제거: levelSelectUI.RefreshLevelNodes() 호출 삭제
+        // LevelSelectPanel이 OnEnable에서 자동 갱신
     }
 
     public void OnClickHowToPlay()

@@ -13,6 +13,14 @@ public class HowToPlayPanel : MonoBehaviour
     
     private int currentTutorialIndex = 0;
 
+public void OnEnable()
+    {
+        closeButton.onClick.AddListener(() => 
+        {
+            gameObject.SetActive(false);
+        });
+    }  
+    
     private void Awake()
     {
         // 버튼 클릭 시 로직 연결

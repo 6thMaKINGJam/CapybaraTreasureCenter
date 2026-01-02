@@ -10,6 +10,40 @@ public class SelectedBundlesUIPanel : MonoBehaviour
     [Header("패널 부모")]
     public Transform PanelParent; // Horizontal Layout Group
     
+    [SerializeField] private BoxVisualController boxVisual;
+
+private void OnEnable()
+{
+    if (boxVisual != null)
+    {
+        boxVisual.OnGemTrfChanged += HandleGemTrfChanged;
+
+        // 시작할 때도 현재 gem_trf로 1번 세팅
+        HandleGemTrfChanged(boxVisual.CurrentGemTrf);
+    }
+}
+
+private void OnDisable()
+{
+    if (boxVisual != null)
+        boxVisual.OnGemTrfChanged -= HandleGemTrfChanged;
+}
+
+private void HandleGemTrfChanged(RectTransform newGemTrf)
+{
+    if (newGemTrf == null) return;
+
+    // ★ 핵심: PanelParent를 현재 박스의 gem_trf로 갱신
+    PanelParent = newGemTrf;
+
+    // (선택) 이미 만들어진 UI가 남아있을 수 있으면 부모도 같이 옮김
+    foreach (var prefab in pool)
+    {
+        if (prefab != null)
+            prefab.transform.SetParent(PanelParent, false);
+    }
+}
+
     // 오브젝트 풀
     private List<GemBundlePrefab> pool = new List<GemBundlePrefab>();
 
