@@ -7971,7 +7971,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bba44310045399c42a7d3f5120e5824b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialPages: []
+  tutorialImage: {fileID: 633062563}
+  tutorialSprites:
+  - {fileID: 21300000, guid: c4dcc95d8ae8844e4855baea4f6a46ec, type: 3}
+  - {fileID: 21300000, guid: bb33b9e239c074bcc8c4c84e725de9ce, type: 3}
+  - {fileID: 21300000, guid: fd5ee7255c08a4f2db80535b5fe7920f, type: 3}
+  - {fileID: 21300000, guid: 1c75900e09f794b74b664afc63b890be, type: 3}
+  - {fileID: 21300000, guid: 8a6fbe2748ef741cd90c5062ad257f66, type: 3}
   nextButton: {fileID: 216308127}
   prevButton: {fileID: 1871554899}
   closeButton: {fileID: 1845796392}
