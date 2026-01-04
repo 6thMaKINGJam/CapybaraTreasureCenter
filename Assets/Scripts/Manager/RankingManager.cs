@@ -1,7 +1,5 @@
 using UnityEngine;
-using Firebase;
-using Firebase.Database;
-using Firebase.Extensions;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +9,7 @@ public class RankingManager : MonoBehaviour
 {
     public static RankingManager Instance { get; private set; }
 
-    private DatabaseReference dbRef;
+
     private const string PlayerIdKey = "playerId";
     
     private string playerId;
@@ -28,8 +26,7 @@ public class RankingManager : MonoBehaviour
         string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
         
         try {
-            // GetInstance에 URL을 직접 전달하여 예외를 방지합니다.
-            dbRef = FirebaseDatabase.GetInstance(firebaseUrl).RootReference;
+      
             Debug.Log("<color=green>Firebase 연결 성공!</color>");
         } catch (System.Exception e) {
             Debug.LogError($"Firebase 연결 실패: {e.Message}");
@@ -61,65 +58,12 @@ public class RankingManager : MonoBehaviour
 
     public void RegisterRanking(string nickname, long score, Action onSuccess, Action<string> onFailure)
     {
-        if (!NetworkManager.Instance.IsNetworkAvailable())
-        {
-            onFailure?.Invoke("네트워크 연결이 없어 자동 반영 대기 모드로 전환됩니다.");
-            return;
-        }
-
-        // 기존 기록 확인 후 갱신 로직 실행
-        dbRef.Child("rankings").Child(playerId).GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                onFailure?.Invoke("데이터 조회 실패");
-                return;
-            }
-
-            bool shouldUpdate = true;
-            if (task.Result.Exists)
-            {
-                long existingTime = long.Parse(task.Result.Child("timeMilliseconds").Value.ToString());
-                // 현재 기록이 더 짧은(좋은) 경우에만 갱신
-                shouldUpdate = score < existingTime;
-            }
-
-            if (shouldUpdate)
-            {
-                UploadToFirebase(nickname, score, onSuccess, onFailure);
-            }
-            else
-            {
-                onSuccess?.Invoke(); // 기존 기록이 더 좋으므로 바로 성공 처리
-            }
-        });
+       
     }
 
     private void UploadToFirebase(string nickname, long score, Action onSuccess, Action<string> onFailure)
     {
-        Dictionary<string, object> entry = new Dictionary<string, object>
-        {
-            { "nickname", nickname },
-            { "timeMilliseconds", score },
-            { "timestamp", ServerValue.Timestamp } //
-        };
-
-        dbRef.Child("rankings").Child(playerId).UpdateChildrenAsync(entry).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted && !task.IsFaulted)
-            {
-                // 업로드 성공 시 ProgressData 업데이트
-                var data = SaveManager.LoadData<ProgressData>("ProgressData");
-                data.EndingCompleted = true; // endingCompleted 대응
-                SaveManager.Save(data, "ProgressData");
-                
-                onSuccess?.Invoke();
-            }
-            else
-            {
-                onFailure?.Invoke(task.Exception?.ToString());
-            }
-        });
+        
     }
     #endregion
 
@@ -129,12 +73,7 @@ public class RankingManager : MonoBehaviour
 
     public async Task<bool> IsNicknameExists(string nickname)
     {
-        var dataSnapshot = await dbRef.Child("rankings")
-            .OrderByChild("nickname")
-            .EqualTo(nickname)
-            .GetValueAsync();
-
-        return dataSnapshot.Exists;
+        return false;
     }
     #endregion
 
@@ -144,63 +83,6 @@ public class RankingManager : MonoBehaviour
     
     public void GetTopAndMyRanking(Action<List<Dictionary<string, object>>, Dictionary<string, object>, int> onComplete, Action<string> onFailure)
 {
-    Debug.Log("<color=yellow>1. 서버에 랭킹 데이터를 요청합니다...</color>");
-
-    // dbRef가 없거나 초기화가 필요할 때를 대비해 reference 직접 생성
-    string firebaseUrl = "https://capybaratreasurecenter-default-rtdb.firebaseio.com";
-    var reference = FirebaseDatabase.GetInstance(firebaseUrl).GetReference("rankings");
-
-    reference.OrderByChild("timeMilliseconds").GetValueAsync().ContinueWithOnMainThread(task =>
-    {
-        if (task.IsFaulted || task.IsCanceled)
-        {
-            Debug.LogError("서버 응답 실패: " + task.Exception);
-            onFailure?.Invoke("서버 연결 실패카피!");
-            return;
-        }
-
-        Debug.Log($"<color=green>2. 데이터 수신 성공! 자식 개수: {task.Result.ChildrenCount}</color>");
-
-        List<Dictionary<string, object>> top5List = new List<Dictionary<string, object>>();
-        Dictionary<string, object> myData = null;
-        int myRank = 0;
-        int count = 0;
-        
-        // PlayerIdKey 상수를 사용하거나 직접 "playerId" 입력
-        string myId = PlayerPrefs.GetString("playerId", "");
-
-        foreach (var child in task.Result.Children)
-        {
-            count++;
-
-            // [핵심 수정] 'as Dictionary'는 에러 위험이 큼. 수동 매핑으로 변경.
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["id"] = child.Key;
-            
-            // nickname 가져오기
-            data["nickname"] = child.Child("nickname").Value?.ToString() ?? "익명카피";
-            
-            // timeMilliseconds 가져오기 (숫자 변환 에러 방지)
-            object rawTime = child.Child("timeMilliseconds").Value;
-            data["timeMilliseconds"] = (rawTime != null) ? Convert.ToInt64(rawTime) : 0L;
-
-            // 상위 5명 리스트 추가
-            if (count <= 5) top5List.Add(data);
-
-            // 내 데이터 확인
-            if (child.Key == myId)
-            {
-                myData = data;
-                myRank = count;
-                Debug.Log($"내 데이터 찾음! 순위: {myRank}");
-            }
-        }
-
-        Debug.Log($"<color=cyan>3. 가공 완료: Top5 {top5List.Count}명 / 내 순위 {myRank}</color>");
-        
-        // [중요] 루프가 다 끝난 뒤에만 콜백 호출
-        onComplete?.Invoke(top5List, myData, myRank);
-    });
 }
     #endregion
 }

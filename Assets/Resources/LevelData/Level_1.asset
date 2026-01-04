@@ -16,7 +16,7 @@ MonoBehaviour:
   BoxCount: 10
   MaxRequiredPerBox: 10
   GemTypeCount: 3
-  TimeLimit: 600
+  TimeLimit: 60
   MaxUndoCount: 3
   MaxRefreshCount: 2
   MaxHintCount: 1

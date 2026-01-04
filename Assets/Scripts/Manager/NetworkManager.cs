@@ -1,6 +1,4 @@
 using UnityEngine;
-using Firebase; // Firebase 의존성 확인을 위해 필요
-using Firebase.Extensions;
 
 
 public class NetworkManager : MonoBehaviour
@@ -38,19 +36,7 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     private void InitializeFirebase()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == DependencyStatus.Available)
-            {
-                IsFirebaseReady = true;
-                Debug.Log("Firebase가 정상적으로 초기화되었습니다.");
-            }
-            else
-            {
-                IsFirebaseReady = false;
-                Debug.LogError($"Firebase 의존성을 해결할 수 없습니다: {dependencyStatus}");
-            }
-        });
+       
     }
 
     // 기존 상세 상태 확인 메서드 유지
