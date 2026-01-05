@@ -306,7 +306,7 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
     // - 축소: 0.3초
     // - 팝업: 0.2초
     // 총 0.5초 대기
-    yield return new WaitForSeconds(0.5f);
+    yield return new WaitForSeconds(0.25f);
     
     // 선택 패널 업데이트
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
