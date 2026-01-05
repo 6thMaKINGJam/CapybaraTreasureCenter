@@ -1,110 +1,111 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 
-/// <summary>
-/// 레벨별 보석 종류와 남은 개수를 표시하는 패널 관리
-/// </summary>
 public class GemCountPanelManager : MonoBehaviour
 {
-    [Header("보석 개수 아이템 프리팹")]
-    [Tooltip("Image + TextMeshProUGUI가 있는 프리팹을 할당하세요")]
+    [Header("위험도 UI 설정")]
+    public Slider DangerSlider; // 타이머 아래에 새로 추가할 슬라이더
+    public Image SliderFillImage; // 슬라이더의 색상을 바꿀 Fill 이미지
+    
+    [Header("기존 아이템 설정")]
     public GameObject GemCountItemPrefab;
-    
-    [Header("스프라이트 데이터베이스")]
     public GemSpriteDatabase SpriteDatabase;
-    
-    // GemType → GemCountItem 매핑
+
     private Dictionary<GemType, GemCountItem> gemItemDict = new Dictionary<GemType, GemCountItem>();
-    
-    /// <summary>
-    /// 현재 레벨의 보석 현황판 초기화
-    /// </summary>
-    /// <param name="totalGems">보석 종류별 총량 (ChunkData.TotalRemainingGems)</param>
-    /// <param name="gemTypeCount">레벨에서 사용하는 보석 종류 수 (LevelConfig.GemTypeCount)</param>
+    private Dictionary<GemType, int> currentGems = new Dictionary<GemType, int>();
+    private int totalBoxesInLevel;
+    private int gemTypeCount;
+
+    // 초기화 시 상자 총 개수 정보를 받도록 수정
     public void InitLevelGemStatus(Dictionary<GemType, int> totalGems, int gemTypeCount)
     {
-        // 기존 UI 전부 제거
+        this.gemTypeCount = gemTypeCount;
+        currentGems = new Dictionary<GemType, int>(totalGems);
+        
+        // UI 생성 (처음엔 숨겨져 있을 수 있음)
+        CreateGemItems();
+        UpdateDangerUI(0); // 초기 업데이트
+    }
+
+    private void CreateGemItems()
+    {
         ClearAllItems();
-        
-        if (SpriteDatabase == null)
+        foreach (var kvp in currentGems)
         {
-            Debug.LogError("[GemCountPanelManager] SpriteDatabase가 할당되지 않았습니다!");
-            return;
-        }
-        
-        if (GemCountItemPrefab == null)
-        {
-            Debug.LogError("[GemCountPanelManager] GemCountItemPrefab이 할당되지 않았습니다!");
-            return;
-        }
-        
-        // 레벨에서 사용하는 보석 종류만큼 생성 (0 ~ gemTypeCount-1)
-        for (int i = 0; i < gemTypeCount; i++)
-        {
-            GemType type = (GemType)i;
-            
-            // 해당 타입의 총량 가져오기 (없으면 0)
-            int count = totalGems.ContainsKey(type) ? totalGems[type] : 0;
-            
-            // 프리팹 생성
             GameObject itemObj = Instantiate(GemCountItemPrefab, transform);
             GemCountItem item = itemObj.GetComponent<GemCountItem>();
-            
-            if (item == null)
-            {
-                Debug.LogError($"[GemCountPanelManager] GemCountItemPrefab에 GemCountItem 컴포넌트가 없습니다!");
-                Destroy(itemObj);
-                continue;
-            }
-            
-            // 데이터 설정
-            item.SetData(type, count, SpriteDatabase);
-            
-            // Dictionary에 저장
-            gemItemDict[type] = item;
+            item.SetData(kvp.Key, kvp.Value, SpriteDatabase);
+            gemItemDict[kvp.Key] = item;
         }
+    }
+
+    public void UpdateGemCount(GemType type, int newCount, int remainingBoxes)
+    {
+        currentGems[type] = newCount;
         
-        Debug.Log($"[GemCountPanelManager] {gemTypeCount}종류 보석 UI 초기화 완료");
-    }
-    
-    /// <summary>
-    /// 특정 보석 종류의 개수만 업데이트
-    /// </summary>
-    /// <param name="type">업데이트할 보석 종류</param>
-    /// <param name="newCount">새로운 개수</param>
-    public void UpdateGemCount(GemType type, int newCount)
-    {
+        // 기존 개별 아이템 업데이트
         if (gemItemDict.ContainsKey(type))
-        {
             gemItemDict[type].UpdateCount(newCount);
-        }
-        else
-        {
-            Debug.LogWarning($"[GemCountPanelManager] {type} 타입의 UI 아이템이 존재하지 않습니다!");
-        }
+
+        UpdateDangerUI(remainingBoxes);
     }
-    
-    /// <summary>
-    /// 모든 보석 종류의 개수를 한 번에 업데이트 (필요 시 사용)
-    /// </summary>
-    public void UpdateAllGemCounts(Dictionary<GemType, int> gemCounts)
+
+    private void UpdateDangerUI(int remainingBoxes)
     {
-        foreach (var kvp in gemCounts)
+        if (remainingBoxes < 4)
         {
-            UpdateGemCount(kvp.Key, kvp.Value);
+            if(DangerSlider != null) DangerSlider.gameObject.SetActive(false);
+            SetGemItemsVisibility(true);
+            return;
+        }
+
+        if(DangerSlider != null) DangerSlider.gameObject.SetActive(true);
+        SetGemItemsVisibility(false);
+
+        int minGemCount = currentGems.Values.Count > 0 ? currentGems.Values.Min() : 0;
+        
+        // 1. 비율 계산 (0.0 ~ 1.0)
+        // 보석이 상자보다 많으면 1.0 이상이 나옵니다.
+        float ratio = (remainingBoxes > 0) ? (float)minGemCount / remainingBoxes : 1f;
+
+        float sliderValue = 0f;
+        Color statusColor = Color.green;
+
+        // 2. 위험도 판정 (기획에 맞춰 조절하세요)
+        if (ratio < 0.5f) // 보석이 상자의 절반도 안 될 때 (위험)
+        {
+            statusColor = Color.red;
+            sliderValue = Mathf.Lerp(0f, 0.33f, ratio / 0.5f); 
+        }
+        else if (ratio < 1.0f) // 보석이 상자보다 약간 적을 때 (경고)
+        {
+            statusColor = Color.yellow;
+            sliderValue = Mathf.Lerp(0.33f, 0.66f, (ratio - 0.5f) / 0.5f);
+        }
+        else // 보석이 충분할 때 (안전)
+        {
+            statusColor = Color.green;
+            sliderValue = Mathf.Lerp(0.66f, 1f, Mathf.Min(ratio - 1f, 1f));
+        }
+
+        // 3. UI 적용
+        if (DangerSlider != null) DangerSlider.value = sliderValue;
+        if (SliderFillImage != null) SliderFillImage.color = statusColor;
+    }
+
+    private void SetGemItemsVisibility(bool visible)
+    {
+        foreach (var item in gemItemDict.Values)
+        {
+            item.gameObject.SetActive(visible);
         }
     }
-    
-    /// <summary>
-    /// 기존 UI 아이템 전부 제거
-    /// </summary>
+
     private void ClearAllItems()
     {
         gemItemDict.Clear();
-        
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
+        foreach (Transform child in transform) Destroy(child.gameObject);
     }
 }

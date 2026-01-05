@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 게임 데이터
     private GameData gameData;
+    private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
     private ChunkData chunkData;
       [Header("힌트 로딩 UI")]
     public GameObject HintLoadingUI;  // ✅ 추가
@@ -168,6 +169,9 @@ Debug.Log(GemCountStatusPanel);
             chunkData.TotalRemainingGems, 
             CurrentLevelConfig.GemTypeCount
         );
+        // 초기화 시 현재 남은 상자 수도 고려하도록 업데이트 호출
+        int remainingBoxes = gameData.Boxes.Count - gameData.CurrentBoxIndex;
+        GemCountStatusPanel.UpdateGemCount((GemType)0, chunkData.TotalRemainingGems[(GemType)0], remainingBoxes);
     }
     
     gameData.Boxes = new List<Box>(chunkData.AllBoxes);
@@ -257,7 +261,7 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
         
         if (GemCountStatusPanel != null)
         {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
     }
     // ===== 선택 =====
@@ -282,14 +286,13 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     GemType nextColor = GetNextColorInCycle(bundle.GemType);
     GemBundle newBundle = GetNextBundleByColor(nextColor);
     
-
         gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
         gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
         
         if (GemCountStatusPanel != null)
         {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
         
         // Grid 교체 시작 (애니메이션 포함)
@@ -397,6 +400,7 @@ private GemBundle GetNextBundleByColor(GemType targetColor)
     return colorBundles[randomIdx];
 }
 
+
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
 // ===== 남은 Pool에서 랜덤 선택 =====
 private GemBundle GetRandomFromRemainingPool()
@@ -446,7 +450,7 @@ public void CancelSelection()
         
         if (GemCountStatusPanel != null)
         {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
 
         int originalIndex = selectedBundleOriginalIndices[bundle];
@@ -1088,7 +1092,7 @@ private IEnumerator ExecuteUndoWithCancle()
         
         if (GemCountStatusPanel != null)
         {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType]);
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
 
         }
