@@ -163,13 +163,19 @@ public void ReplaceBundleAtIndex(
 // ===== Placeholder 설정 헬퍼 =====
 private void SetupAsPlaceholder(GemBundlePrefab prefab)
 {
+    prefab.SetData(null); // ← 명시적으로 null 설정
+    
     CanvasGroup cg = prefab.GetComponent<CanvasGroup>();
     if(cg == null) cg = prefab.gameObject.AddComponent<CanvasGroup>();
     cg.alpha = 0f;
     
     Button btn = prefab.GetComponent<Button>();
-    if(btn != null) btn.interactable = false;
+    if(btn != null) 
+    {
+        btn.interactable = false; // ← 클릭 자체를 막음
+    }
 }
+
 
    
     // ========== 모든 선택 해제 ==========

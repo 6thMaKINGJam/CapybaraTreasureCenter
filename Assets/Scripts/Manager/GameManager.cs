@@ -277,7 +277,12 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
         selectedBundleOriginalIndices[bundle] = gridIndex;
         gameData.BundlePool.Remove(bundle);
         
-        GemBundle newBundle = GetRandomFromRemainingPool();
+       // GemBundle newBundle = GetRandomFromRemainingPool();
+ // ★ 수정: 색상 순환 로직 적용
+    GemType nextColor = GetNextColorInCycle(bundle.GemType);
+    GemBundle newBundle = GetNextBundleByColor(nextColor);
+    
+
         gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
         gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
@@ -319,6 +324,79 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
         gameData.Boxes.Count
     );
 }
+
+// ========== 색상 순환 시스템 ==========
+
+/// <summary>
+/// 현재 색의 다음 색상을 순환 순서대로 반환 (사용 가능한 색만)
+/// </summary>
+private GemType GetNextColorInCycle(GemType currentColor)
+{
+    // 전체 색상 순서: Red → Yellow → Green → Blue → Purple
+    GemType[] fullCycle = new GemType[] 
+    { 
+        GemType.Red, 
+        GemType.Yellow, 
+        GemType.Green, 
+        GemType.Blue, 
+        GemType.Purple 
+    };
+    
+    // 현재 레벨에서 사용 중인 색상만 필터링
+    List<GemType> availableColors = new List<GemType>();
+    for(int i = 0; i < CurrentLevelConfig.GemTypeCount; i++)
+    {
+        availableColors.Add((GemType)i);
+    }
+    
+    // 현재 색 다음부터 순환하며 사용 가능한 색 찾기
+    int startIdx = Array.IndexOf(fullCycle, currentColor);
+    
+    for(int i = 1; i < fullCycle.Length; i++)
+    {
+        int checkIdx = (startIdx + i) % fullCycle.Length;
+        GemType candidateColor = fullCycle[checkIdx];
+        
+        if(availableColors.Contains(candidateColor))
+        {
+            return candidateColor;
+        }
+    }
+    
+    // 모든 색을 순회했는데도 없으면 현재 색 반환 (fallback)
+    return currentColor;
+}
+
+/// <summary>
+/// 다음 색상에 해당하는 번들을 BundlePool에서 찾아 반환
+/// </summary>
+private GemBundle GetNextBundleByColor(GemType targetColor)
+{
+    // 1. 해당 색상의 번들 필터링
+    List<GemBundle> colorBundles = gameData.BundlePool
+        .Where(b => b != null && b.GemType == targetColor)
+        .ToList();
+    
+    // 2. 이미 화면에 표시된 번들 제외
+    foreach(var displayedBundle in gameData.CurrentDisplayBundles)
+    {
+        if(displayedBundle != null)
+        {
+            colorBundles.Remove(displayedBundle);
+        }
+    }
+    
+    // 3. 남은 번들이 없으면 null
+    if(colorBundles.Count == 0)
+    {
+        return null;
+    }
+    
+    // 4. 랜덤 선택 (같은 색 중에서는 랜덤)
+    int randomIdx = UnityEngine.Random.Range(0, colorBundles.Count);
+    return colorBundles[randomIdx];
+}
+
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
 // ===== 남은 Pool에서 랜덤 선택 =====
 private GemBundle GetRandomFromRemainingPool()
