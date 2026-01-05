@@ -13,9 +13,10 @@ namespace Scripts.UI
 
         [Header("Main Buttons")]
         // 매니저가 리스너를 달 수 있도록 public으로 선언하거나 Get함수를 만듭니다.
-        public Button startButton;
+        public Button levelSelectButton;
         public Button howToPlayButton;
         public Button hallOfFameButton;
+        public Button ChallengeButton;
 
         public void ShowMain()
         {
