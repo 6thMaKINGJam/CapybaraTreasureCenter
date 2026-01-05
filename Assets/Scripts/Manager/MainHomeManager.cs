@@ -41,7 +41,7 @@ public class MainHomeManager : MonoBehaviour
 
     private void SetupButtons()
     {
-        mainHomeUI.levelSelectButton.onClick.AddListener(OnClickLevelSelect);
+        mainHomeUI.startButton.onClick.AddListener(OnClickGameStart);
         mainHomeUI.howToPlayButton.onClick.AddListener(OnClickHowToPlay);
         mainHomeUI.hallOfFameButton.onClick.AddListener(OnClickHallOfFame);
 
@@ -77,7 +77,7 @@ public class MainHomeManager : MonoBehaviour
         }
     }
 
-    public void OnClickLevelSelect()
+    public void OnClickGameStart()
     {
         mainHomeUI.OpenPanel(mainHomeUI.LevelSelectPanel);
         // ✅ 제거: levelSelectUI.RefreshLevelNodes() 호출 삭제
