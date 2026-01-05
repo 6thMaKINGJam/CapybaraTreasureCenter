@@ -277,7 +277,7 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
         selectedBundleOriginalIndices[bundle] = gridIndex;
         gameData.BundlePool.Remove(bundle);
         
-        GemBundle newBundle = GetRandomFromRemainingPool();
+        GemBundle newBundle = GetRandomFromRemainingPool(bundle.GemType);
         gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
         gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
@@ -321,27 +321,53 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
 }
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
 // ===== 남은 Pool에서 랜덤 선택 =====
-private GemBundle GetRandomFromRemainingPool()
+private GemBundle GetRandomFromRemainingPool(GemType clickedType)
 {
-    // ✅ 수정: null 제외하고 사용 가능한 번들만 필터링
-    List<GemBundle> availableBundles = gameData.BundlePool
-        .Where(b => b != null) // ← null 제외
-        .ToList();
-    foreach(var displayedBundle in gameData.CurrentDisplayBundles)
+    GemType nextType = clickedType;
+    List<GemBundle> targetBundles = new List<GemBundle>();
+
+    // 최대 5번(모든 색상 수만큼) 반복하여 있는 색상을 찾음
+    for (int i = 0; i < 5; i++)
     {
-        if(displayedBundle != null)
+        // 1. 순서에 따른 다음 색상 결정
+        nextType = GetNextColor(nextType);
+
+        // 2. Pool에서 해당 타입의 번들이 있는지 확인
+        targetBundles = gameData.BundlePool
+            .Where(b => b != null && b.GemType == nextType)
+            .ToList();
+
+        // 3. 만약 이 색상의 보석이 존재한다면 반복 중단
+        if (targetBundles.Count > 0)
         {
-            availableBundles.Remove(displayedBundle);
+            break;
         }
+        
+        // 해당 색상이 없으면 루프가 다시 돌면서 그 다음 색상을 찾음
     }
-    
-    if(availableBundles.Count == 0)
+
+    // 최종적으로 찾은 번들 리스트가 비어있지 않다면 랜덤 반환
+    if (targetBundles.Count > 0)
     {
-        return null;
+        int randomIndex = UnityEngine.Random.Range(0, targetBundles.Count);
+        return targetBundles[randomIndex];
     }
-    
-    int randomIndex = UnityEngine.Random.Range(0, availableBundles.Count);
-    return availableBundles[randomIndex];
+
+    return null;
+}
+
+// 색상 순환 로직
+private GemType GetNextColor(GemType current)
+{
+    switch (current)
+    {
+        case GemType.Red:    return GemType.Yellow;
+        case GemType.Yellow: return GemType.Green;
+        case GemType.Green:  return GemType.Blue;
+        case GemType.Blue:   return GemType.Purple;
+        case GemType.Purple: return GemType.Red;
+        default:             return GemType.Red;
+    }
 }
 // ===== CancelSelection() - 간단 버전 =====
 public void CancelSelection()
