@@ -87,6 +87,25 @@ public class SelectedBundlesUIPanel : MonoBehaviour
         }
     }
 
+    public void RemoveLastGem()
+{
+    // pool 리스트에서 활성화된(화면에 보이는) 마지막 객체를 찾습니다.
+    if (pool.Count > 0)
+    {
+        int lastIdx = pool.Count - 1;
+        GemBundlePrefab lastGem = pool[lastIdx];
+
+        if (lastGem != null)
+        {
+            // 실제 게임 오브젝트 파괴
+            Destroy(lastGem.gameObject);
+        }
+        
+        // 리스트에서 참조 제거
+        pool.RemoveAt(lastIdx);
+    }
+}
+
     // ========== 새 보석 생성 ==========
     private GemBundlePrefab CreateNewGem()
     {

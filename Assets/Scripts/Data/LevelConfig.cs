@@ -28,7 +28,7 @@ public class LevelConfig : ScriptableObject
     public int MaxUndoCount = 3;
     
     [Tooltip("새로고침 최대 사용 횟수 (무료)")]
-    public int MaxRefreshCount = 3;
+    public int MaxUndo1Count = 3;
     
     [Tooltip("힌트 최대 사용 횟수 (무료)")]
     public int MaxHintCount = 1;

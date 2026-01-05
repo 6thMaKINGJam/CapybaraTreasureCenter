@@ -110,7 +110,7 @@ public void UpdateHintAndItemUI(
         CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
         UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
         CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
-        RefreshButton.onClick.AddListener(() => GameManager.Instance.ProcessRefresh());
+        RefreshButton.onClick.AddListener(() => GameManager.Instance.Process1Undo());
     }
 
 // ✅ 기존 UpdateItemUI() 대신 사용

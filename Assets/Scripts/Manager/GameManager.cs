@@ -155,7 +155,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     gameData.StartTime = Time.time;
     gameData.ElapsedTime = 0f;
     gameData.UndoCount = 0;
-    gameData.RefreshCount = 0;
+    gameData.Undo1Count = 0;
     gameData.HintCount = 0;
     
     chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
@@ -285,7 +285,7 @@ private void OnBundleClicked(GemBundlePrefab clickedPrefab)
  // ★ 수정: 색상 순환 로직 적용
     GemType nextColor = GetNextColorInCycle(bundle.GemType);
     GemBundle newBundle = GetNextBundleByColor(nextColor);
-    
+
         gameData.CurrentDisplayBundles[gridIndex] = newBundle;
         
         gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
@@ -1110,49 +1110,133 @@ private IEnumerator ExecuteUndoWithCancle()
         ShowTopNotification("이전 상태로 되돌아갔습니다카피!");
     }
     
-    public void ProcessRefresh()
-{
-    gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
+//     public void ProcessRefresh()
+// {
+//     gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
         
-    if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
-    {
-        ShowAdConfirmationPopup(() =>
-        {
-            AdManager.Instance.ShowRewardedAd((success) =>
-            {
-                if(success) ExecuteRefresh();
-                // ✅ Count 원복 없음
-            });
-        },
-        null); // ✅ Count 원복 없음
-    }
-    else
-    {
-        ExecuteRefresh();
-    }
-}
+//     if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
+//     {
+//         ShowAdConfirmationPopup(() =>
+//         {
+//             AdManager.Instance.ShowRewardedAd((success) =>
+//             {
+//                 if(success) ExecuteRefresh();
+//                 // ✅ Count 원복 없음
+//             });
+//         },
+//         null); // ✅ Count 원복 없음
+//     }
+//     else
+//     {
+//         ExecuteRefresh();
+//     }
+// }
 
     
-    private void ExecuteRefresh()
+    // private void ExecuteRefresh()
+    // {
+    //     foreach(var bundle in gameData.CurrentDisplayBundles)
+    //     {
+    //         if(!gameData.BundlePool.Contains(bundle))
+    //         {
+    //             gameData.BundlePool.Add(bundle);
+    //         }
+    //     }
+        
+    //     System.Random rng = new System.Random();
+    //     gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
+    //     UpdateAllItemUI();
+        
+    //     ExtractDisplayBundles();
+    //     RefreshUI();
+        
+    //     ShowTopNotification("카드가 재배열되었습니다카피!");
+    // }
+    // Assets/Scripts/Manager/GameManager.cs
+
+    public void Process1Undo()
     {
-        foreach(var bundle in gameData.CurrentDisplayBundles)
+        // 1. 현재 선택된 보석이 하나도 없다면 되돌릴 수 없음
+        if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
         {
-            if(!gameData.BundlePool.Contains(bundle))
-            {
-                gameData.BundlePool.Add(bundle);
-            }
+            ShowWarning("되돌릴 보석이 없습니다카피!");
+            return;
         }
+
+        // 2. 횟수 제한 체크 및 광고 로직
+        // 무료 횟수를 다 썼다면 광고 확인 팝업을 띄움
+        if (gameData.Undo1Count >= CurrentLevelConfig.MaxUndo1Count)
+        {
+            ShowAdConfirmationPopup(() =>
+            {
+                AdManager.Instance.ShowRewardedAd((success) =>
+                {
+                    if (success) Execute1Undo(); // 광고 성공 시 실행
+                });
+            }, null);
+        }
+        else
+        {
+            gameData.Undo1Count++; // 무료 사용 횟수 증가
+            Execute1Undo();
+        }
+    }
+
+    public void Execute1Undo()
+    {
+        // 1. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
+        int lastIndex = gameData.SelectedBundles.Count - 1;
+        GemBundle lastBundle = gameData.SelectedBundles[lastIndex];
+
+        // 2. 데이터 복구
+        gameData.SelectedBundles.RemoveAt(lastIndex); // 선택 리스트에서 제거
+        gameData.RemainingGems[lastBundle.GemType] += lastBundle.GemCount; // 보석 총량 복구
+
+        if (selectedBundleOriginalIndices.TryGetValue(lastBundle, out int originalGridIndex))
+        {
+            // 4. 상자 안의 가장 최근 보석 이미지 제거
+            if (UIManager != null && UIManager.SelectionPanel != null)
+            {
+                UIManager.SelectionPanel.RemoveLastGem();
+            }
+
+            // 5. 그리드 데이터 복구 (나머지 보석 유지)
+            gameData.CurrentDisplayBundles[originalGridIndex] = lastBundle;
+
+            // 6. 해당 칸만 시각적으로 복구 (isRestoring: true 사용)
+            if (GridManager != null)
+            {
+                GridManager.ReplaceBundleAtIndex(
+                    originalGridIndex,
+                    lastBundle,
+                    OnBundleClicked,
+                    isRestoring: true
+                );
+            }
+
+            // 사용한 인덱스 정보 삭제
+            selectedBundleOriginalIndices.Remove(lastBundle);
+        }
+
+        // B. 되돌리기 버튼의 남은 숫자 줄이기
+        UpdateAllItemUI(); // 아이템 카운트 텍스트 갱신 (UndoCount 반영)
         
-        System.Random rng = new System.Random();
-        gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
-        UpdateAllItemUI();
-        
-        ExtractDisplayBundles();
+        // D. 상자 진행도 텍스트(예: 3/5 -> 2/5) 및 기타 UI 갱신
         RefreshUI();
         
-        ShowTopNotification("카드가 재배열되었습니다카피!");
+        // 위험도 패널(GemCountPanel) 숫자 업데이트
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.UpdateGemCount(
+                lastBundle.GemType, 
+                gameData.RemainingGems[lastBundle.GemType], 
+                RemainingBoxes
+            );
+        }
+
+        ShowTopNotification("마지막 보석 선택을 취소했습니다카피!");
     }
-    // Assets/Scripts/Manager/GameManager.cs
+
 
 public void ProcessHint()
 {
@@ -1635,13 +1719,13 @@ private void UpdateAllItemUI()
   
     // Undo/Refresh는 기존 방식
     int undoLeft = Mathf.Max(0, CurrentLevelConfig.MaxUndoCount - gameData.UndoCount);
-    int refreshLeft = Mathf.Max(0, CurrentLevelConfig.MaxRefreshCount - gameData.RefreshCount);
+    int undo1Left = Mathf.Max(0, CurrentLevelConfig.MaxUndo1Count - gameData.Undo1Count);
     int hintLeft = Mathf.Max(0, CurrentLevelConfig.MaxHintCount - gameData.HintCount);
     
      // ✅ 수정: 최대 횟수도 함께 전달
     UIManager.UpdateHintAndItemUI(
         hintLeft, CurrentLevelConfig.MaxHintCount,
-        refreshLeft, CurrentLevelConfig.MaxRefreshCount,
+        undo1Left, CurrentLevelConfig.MaxUndo1Count,
         undoLeft, CurrentLevelConfig.MaxUndoCount
     );
 
