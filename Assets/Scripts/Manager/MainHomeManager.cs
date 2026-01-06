@@ -44,10 +44,11 @@ public class MainHomeManager : MonoBehaviour
         mainHomeUI.levelSelectButton.onClick.AddListener(OnClickLevelSelect);
         mainHomeUI.howToPlayButton.onClick.AddListener(OnClickHowToPlay);
         mainHomeUI.hallOfFameButton.onClick.AddListener(OnClickHallOfFame);
+        mainHomeUI.ChallengeButton.onClick.AddListener(OnClickChallengeMode);
 
         levelSelectUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
         howToPlayUI.closeButton.onClick.AddListener(mainHomeUI.ShowMain);
-        
+
         hallOfFameUI.closeButton.onClick.RemoveAllListeners();
         
         hallOfFameUI.closeButton.onClick.AddListener(() =>
@@ -105,5 +106,10 @@ public class MainHomeManager : MonoBehaviour
             BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
             popup.Setup("네트워크 연결이 필요합니다카피!", null);
         }
+    }
+
+    public void OnClickChallengeMode()
+    {
+        SceneManager.LoadScene("ChallengeMode");
     }
 }

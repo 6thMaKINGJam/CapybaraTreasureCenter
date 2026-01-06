@@ -112,7 +112,7 @@ public class LevelSelectPanel : MonoBehaviour
         {
             PlayerPrefs.SetInt(SelectedLevelKey, levelNum);
             PlayerPrefs.Save();
-            SceneManager.LoadScene("Game");
+            SceneManager.LoadScene("LevelMode");
         }
         else
         {
