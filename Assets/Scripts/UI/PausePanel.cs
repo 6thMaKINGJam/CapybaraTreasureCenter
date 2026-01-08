@@ -35,7 +35,7 @@ public class PausePanel : MonoBehaviour
         popup.Setup(
             "정말 새로 시작하시겠습니까?",
             () => {
-                GameManager.Instance.RestartLevel();
+                Core.SceneLoader.Instance.RestartCurrentLevel();
             },
             null 
         );
@@ -48,7 +48,7 @@ public class PausePanel : MonoBehaviour
         popup.Setup(
             "메인 홈으로 이동하시겠습니까?",
             () => {
-                GameManager.Instance.GoToMainHome();
+                Core.SceneLoader.Instance.GoToMainHome();
             },
             null
         );

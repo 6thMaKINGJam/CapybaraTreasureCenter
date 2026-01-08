@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d5eb2085c80e2d849a11a67ef4cc9251
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ChunkGenerator: {instanceID: 0}
+  - ChallengeConfig: {instanceID: 0}
+  - RequirementCardPrefab: {fileID: 6763445550043822803, guid: 2d2662e1070708c4a8357d3bbfef9d79, type: 3}
+  - RequirementParentPanel: {instanceID: 0}
+  - RequirementPopupObject: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

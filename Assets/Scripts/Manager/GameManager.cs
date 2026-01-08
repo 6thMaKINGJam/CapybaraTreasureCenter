@@ -742,8 +742,8 @@ public void ProcessBoxCompletion()
             // 3. 팝업에도 위에서 결정한 finalMessage를 전달
             popup.Setup(
                 finalMessage, 
-                () => RestartLevel(), // 다시하기
-                () => GoToMainHome()  // 메인으로
+                () => Core.SceneLoader.Instance.RestartCurrentLevel(), // 다시하기
+                () => Core.SceneLoader.Instance.GoToMainHome()  // 메인으로
             );
         }
         else
@@ -834,8 +834,8 @@ private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel
             starCount, 
             message,
             () => GoToNextLevel(), // ✅ 다음 레벨
-            () => RestartLevel(),  // ✅ 다시하기
-            () => GoToMainHome()   // ✅ 메인홈
+            () => Core.SceneLoader.Instance.RestartCurrentLevel(),  // ✅ 다시하기
+            () => Core.SceneLoader.Instance.GoToMainHome()   // ✅ 메인홈
         );
         
         // ✅ 레벨 4면 다음 레벨 버튼 비활성화
@@ -873,7 +873,7 @@ public void GoToNextLevel()
     {
         // 더 이상 다음 레벨이 없으면 메인 홈으로 이동
         Debug.Log("모든 레벨을 클리어했습니다! 메인으로 돌아갑니다.");
-        GoToMainHome();
+        Core.SceneLoader.Instance.GoToMainHome();
     }
 }
 
@@ -1026,8 +1026,8 @@ private void StopBackgroundMedia()
      SoundManager.Instance.PlayFX(SoundType.GameOver);
     popup.Setup(
         randomMsg,
-        () => RestartLevel(),
-        () => GoToMainHome()
+        () => Core.SceneLoader.Instance.RestartCurrentLevel(),
+        () => Core.SceneLoader.Instance.GoToMainHome()
     );
     
 }
@@ -1757,41 +1757,27 @@ private void UpdateAllItemUI()
     }
 }
     public void Resume()
-{
-    gameData.GameState = GameState.Playing;
-    Time.timeScale = 1f;
-    
-    if (UIManager.PausePopupPanel != null)
     {
-        UIManager.PausePopupPanel.transform.DOKill();
-        UIManager.PausePopupPanel.SetActive(false);
-    }
-    
-    // ===== 추가: VideoPlayer + BGM 재개 =====
-    if(backgroundVideoPlayer != null && !backgroundVideoPlayer.isPlaying)
-    {
-        backgroundVideoPlayer.Play();
-    }
-    
-    if(SoundManager.Instance != null)
-    {
-        SoundManager.Instance.ResumeBGM();
-    }
-        CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-}
-    
-    public void RestartLevel()
-    {
-        Time.timeScale = 1f; // 시간 흐름 복구
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void GoToMainHome()
-    {
-        Time.timeScale = 1f; // 시간 흐름 복구
- 
-        SceneManager.LoadScene("MainHome");
+        gameData.GameState = GameState.Playing;
+        Time.timeScale = 1f;
+        
+        if (UIManager.PausePopupPanel != null)
+        {
+            UIManager.PausePopupPanel.transform.DOKill();
+            UIManager.PausePopupPanel.SetActive(false);
+        }
+        
+        // ===== 추가: VideoPlayer + BGM 재개 =====
+        if(backgroundVideoPlayer != null && !backgroundVideoPlayer.isPlaying)
+        {
+            backgroundVideoPlayer.Play();
+        }
+        
+        if(SoundManager.Instance != null)
+        {
+            SoundManager.Instance.ResumeBGM();
+        }
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
     }
     
     // ========== 유틸리티 ==========

@@ -41,6 +41,11 @@ public class MainHomeManager : MonoBehaviour
 
     private void SetupButtons()
     {
+        mainHomeUI.levelSelectButton.onClick.RemoveAllListeners();
+        mainHomeUI.ChallengeButton.onClick.RemoveAllListeners();
+        mainHomeUI.hallOfFameButton.onClick.RemoveAllListeners();
+        mainHomeUI.howToPlayButton.onClick.RemoveAllListeners();
+
         mainHomeUI.levelSelectButton.onClick.AddListener(OnClickLevelSelect);
         mainHomeUI.howToPlayButton.onClick.AddListener(OnClickHowToPlay);
         mainHomeUI.hallOfFameButton.onClick.AddListener(OnClickHallOfFame);

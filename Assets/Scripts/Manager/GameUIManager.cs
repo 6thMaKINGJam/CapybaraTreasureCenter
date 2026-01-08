@@ -12,6 +12,7 @@ public class GameUIManager : MonoBehaviour
     [Header("세부 매니저 연결")]
     public BundleGridManager GridManager; // 하단 12개 그리드 관리
     public SelectedBundlesUIPanel SelectionPanel; // 선택된 묶음 패널 관리
+    public GemCountPanelManager GemCountStatusPanel;
 
     [Header("상자 정보")]
     public TMP_Text BoxIndexText; // 상자 #번호
