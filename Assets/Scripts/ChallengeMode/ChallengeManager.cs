@@ -55,6 +55,10 @@ public class ChallengeManager : MonoBehaviour
     private int currentReselectCount = 0;
     // UI에 남은 횟수를 표시하기 위한 텍스트
     public TextMeshProUGUI ReselectCountText;
+    [Header("Requirement Range Settings")]
+    // 오른쪽 항에 숫자가 들어갈 때의 범위
+    public int MinRequirementValue = 2;
+    public int MaxRequirementValue = 5;
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
 
@@ -444,16 +448,37 @@ public class ChallengeManager : MonoBehaviour
     private ChallengeRequirement GenerateRandomRequirement()
     {
         ChallengeRequirement req = new ChallengeRequirement();
+        
+        // 1. 왼쪽 항 보석 타입 결정 (0~4)
         req.LeftType = (GemType)UnityEngine.Random.Range(0, 5);
+        
+        // 2. 연산자 결정
         req.Op = (ComparisonOperator)UnityEngine.Random.Range(0, 3);
         
+        // 3. 오른쪽 항 결정 (보석 vs 숫자)
+        // 보석 종류가 하나씩 들어가는 것을 방지하기 위해 타입 설정 로직 변경
         req.IsValueComparison = UnityEngine.Random.value > 0.5f;
-        if (req.IsValueComparison)
-            req.RightValue = UnityEngine.Random.Range(1, 6); // 숫자 1~5 [요구사항 4]
-        else
-            req.RightType = (GemType)UnityEngine.Random.Range(0, 5);
 
-        // 시간 보상 설정 (성공 시 5초 추가 등)
+        if (req.IsValueComparison)
+        {
+            // [수정] 오른쪽 항이 숫자인 경우 인스펙터 설정 범위 사용 (2~5 등)
+            req.RightValue = UnityEngine.Random.Range(MinRequirementValue, MaxRequirementValue + 1);
+        }
+        else
+        {
+            // [수정] 오른쪽 항이 보석인 경우, 왼쪽 항과 무조건 다른 타입이 나오도록 처리
+            List<GemType> otherTypes = new List<GemType>();
+            for (int i = 0; i < 5; i++)
+            {
+                if ((GemType)i != req.LeftType)
+                {
+                    otherTypes.Add((GemType)i);
+                }
+            }
+            req.RightType = otherTypes[UnityEngine.Random.Range(0, otherTypes.Count)];
+        }
+
+        // 시간 보상 설정
         req.RewardTime = 5f;
         return req;
     }
