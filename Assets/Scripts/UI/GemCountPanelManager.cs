@@ -54,43 +54,67 @@ public class GemCountPanelManager : MonoBehaviour
 
     private void UpdateDangerUI(int remainingBoxes)
     {
-        if (remainingBoxes < 4)
+        // 1. 챌린지 모드 체크: ChallengeManager 인스턴스가 존재하면 챌린지 모드로 간주
+        // (또는 이전에 제안드린 대로 bool 플래그를 Init 시점에 저장해두고 쓰는 것이 더 성능에 좋습니다)
+        bool isChallenge = (ChallengeManager.Instance != null);
+
+        if (isChallenge)
         {
-            if(DangerSlider != null) DangerSlider.gameObject.SetActive(false);
+            if (!this.gameObject.activeSelf) 
+                this.gameObject.SetActive(true);
+
+            // 챌린지 모드: 슬라이더 비활성화, 보석 아이템 항상 표시
+            if (DangerSlider != null && DangerSlider.gameObject.activeSelf) 
+                DangerSlider.gameObject.SetActive(false);
+                
             SetGemItemsVisibility(true);
             return;
         }
 
-        if(DangerSlider != null) DangerSlider.gameObject.SetActive(true);
+        // 2. 레벨 모드: 남은 상자 개수에 따른 분기 로직
+        if (remainingBoxes < 4)
+        {
+            // 상자가 얼마 안 남았을 때: 슬라이더 끄고 보석 개수 상세 표시
+            if (DangerSlider != null && DangerSlider.gameObject.activeSelf) 
+                DangerSlider.gameObject.SetActive(false);
+                
+            SetGemItemsVisibility(true);
+            return;
+        }
+
+        // 상자가 많이 남았을 때: 슬라이더 켜고 보석 개수 상세 숨김
+        if (DangerSlider != null && !DangerSlider.gameObject.activeSelf) 
+            DangerSlider.gameObject.SetActive(true);
+            
         SetGemItemsVisibility(false);
 
-        int minGemCount = currentGems.Values.Count > 0 ? currentGems.Values.Min() : 0;
-        
-        // 1. 비율 계산 (0.0 ~ 1.0)
-        // 보석이 상자보다 많으면 1.0 이상이 나옵니다.
+        // 3. 위험도 슬라이더 값 계산 (레벨 모드 전용)
+        if (currentGems == null || currentGems.Count == 0) return;
+
+        int minGemCount = currentGems.Values.Min();
         float ratio = (remainingBoxes > 0) ? (float)minGemCount / remainingBoxes : 1f;
 
         float sliderValue = 0f;
         Color statusColor = Color.green;
 
-        // 2. 위험도 판정 (기획에 맞춰 조절하세요)
-        if (ratio < 0.5f) // 보석이 상자의 절반도 안 될 때 (위험)
+        // 위험도 판정 로직
+        if (ratio < 0.5f) // 위험 (빨강)
         {
             statusColor = Color.red;
             sliderValue = Mathf.Lerp(0f, 0.33f, ratio / 0.5f); 
         }
-        else if (ratio < 1.0f) // 보석이 상자보다 약간 적을 때 (경고)
+        else if (ratio < 1.0f) // 경고 (노랑)
         {
             statusColor = Color.yellow;
             sliderValue = Mathf.Lerp(0.33f, 0.66f, (ratio - 0.5f) / 0.5f);
         }
-        else // 보석이 충분할 때 (안전)
+        else // 안전 (초록)
         {
             statusColor = Color.green;
             sliderValue = Mathf.Lerp(0.66f, 1f, Mathf.Min(ratio - 1f, 1f));
         }
 
-        // 3. UI 적용
+        // UI 적용
         if (DangerSlider != null) DangerSlider.value = sliderValue;
         if (SliderFillImage != null) SliderFillImage.color = statusColor;
     }

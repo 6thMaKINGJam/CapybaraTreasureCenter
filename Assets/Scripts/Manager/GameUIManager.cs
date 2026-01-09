@@ -98,20 +98,42 @@ public void UpdateHintAndItemUI(
     
 
     // ========== 버튼 연결 ==========
-    private void SetupButtons()
-    {
-        PauseButton.onClick.AddListener(() => GameManager.Instance.TogglePause());
-        if(ResumeButton != null)
+    private void SetupButtons(){
+            // 1. 일시정지 및 재개 (Core.SceneLoader 활용)
+        PauseButton.onClick.RemoveAllListeners();
+        PauseButton.onClick.AddListener(() => {
+            Core.SceneLoader.Instance.TogglePause(true);
+            OpenPausePopup(); // 기존 팝업 열기 함수 호출
+        });
+
+        if (ResumeButton != null)
         {
-            ResumeButton.onClick.AddListener(() => GameManager.Instance.Resume());
-        }else{
-            Debug.LogError("<color=red>[UI]</color> ResumeButton이 인스펙터에 할당되지 않았습니다카피!");
+            ResumeButton.onClick.RemoveAllListeners();
+            ResumeButton.onClick.AddListener(() => {
+                Core.SceneLoader.Instance.TogglePause(false);
+                ClosePausePopup(); // 기존 팝업 닫기 함수 호출
+            });
         }
-        HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
-        CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
-        UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
-        CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
-        RefreshButton.onClick.AddListener(() => GameManager.Instance.Process1Undo());
+
+        // 2. 게임 플레이 관련 버튼 (Manager 존재 여부에 따라 분기)
+        CompleteButton.onClick.RemoveAllListeners();
+        RefreshButton.onClick.RemoveAllListeners();
+        RefreshButton.onClick.AddListener(() => Core.SceneLoader.Instance.ExecuteUndo1());
+
+        if (GameManager.Instance != null)
+        {
+            // 레벨 모드일 때
+            CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
+            RefreshButton.onClick.AddListener(() => GameManager.Instance.Process1Undo());
+        }
+        else if (ChallengeManager.Instance != null)
+        {
+            // 챌린지 모드일 때
+            CompleteButton.onClick.AddListener(() => ChallengeManager.Instance.OnClickComplete());
+            // 챌린지 모드에 Process1Undo가 있다면 연결
+            // RefreshButton.onClick.AddListener(() => ChallengeManager.Instance.Process1Undo());
+        }
+        
     }
 
 // ✅ 기존 UpdateItemUI() 대신 사용
