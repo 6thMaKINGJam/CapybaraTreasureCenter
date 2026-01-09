@@ -36,6 +36,7 @@ namespace Core
         {
             Time.timeScale = 1f; // 시간 흐름 복구
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Debug.Log("[Core] 현재 레벨 재시작");  
         }
 
         /// <summary>

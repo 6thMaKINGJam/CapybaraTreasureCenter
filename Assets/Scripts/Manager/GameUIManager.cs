@@ -26,6 +26,7 @@ public class GameUIManager : MonoBehaviour
     public Button UndoButton;
     public Button CompleteButton;
     public Button RefreshButton;
+    public Button ReselectReqButton;
 
     [Header("팝업 패널")]
     public GameObject PausePopupPanel;
@@ -37,6 +38,7 @@ public class GameUIManager : MonoBehaviour
     public TextMeshProUGUI HintCountText;
     public TextMeshProUGUI RefreshCountText; // 이미지의 RetryButton이 새로고침 역할이라면
     public TextMeshProUGUI UndoCountText;
+    
 
     [Header("카운트다운 연출")]
     public TextMeshProUGUI CountdownText;
@@ -153,7 +155,23 @@ public void UpdateHintAndItemUI(
             if (CancelSelectButton != null) {
                 CancelSelectButton.onClick.AddListener(() => ChallengeManager.Instance.CancelSelection());
             }
+            if (GridManager != null)
+            {
+                // ChallengeManager가 보관 중인 현재 디스플레이 데이터를 사용하여 클릭 이벤트를 연결합니다.
+                // (ChallengeManager.InitChallengeMode에서 수행하지만, UI 설정 시 확답을 위해 추가)
+            }
+            if (GridManager != null) {
+                // ChallengeManager가 이미 생성한 데이터를 사용하여 그리드를 다시 그려주며 콜백을 확실히 연결합니다.
+                ChallengeManager.Instance.Invoke("ExtractDisplayBundles", 0.05f); 
+            }
+            // [추가] 조건 재선택 버튼 연결
+            if (ReselectReqButton != null)
+            {
+                ReselectReqButton.onClick.RemoveAllListeners();
+                ReselectReqButton.onClick.AddListener(() => ChallengeManager.Instance.OnClickReselectRequirement());
+            }
         }
+        
         
     }
 

@@ -49,7 +49,12 @@ public class ChallengeManager : MonoBehaviour
     public float NotificationDuration = 2f; // 표시 시간
     [Header("선택된 조건 표시 UI")]
     public TextMeshProUGUI ActiveRequirementText; // 현재 화면에 떠 있는 조건 텍스트
-    
+    [Header("Requirement Settings")]
+    // 무료 조건 재선택 횟수
+    public int MaxFreeRequirementReselect = 2; 
+    private int currentReselectCount = 0;
+    // UI에 남은 횟수를 표시하기 위한 텍스트
+    public TextMeshProUGUI ReselectCountText;
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
 
@@ -117,6 +122,7 @@ public class ChallengeManager : MonoBehaviour
 
         // 3. 화면에 보석 그리드 표시
         ExtractDisplayBundles();
+        currentReselectCount = 0;
         UpdateAllItemUI();
 
         // 4. 첫 조건 선택 시작
@@ -158,7 +164,7 @@ public class ChallengeManager : MonoBehaviour
             GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
         }
     }
-    private void ExtractDisplayBundles()
+    public void ExtractDisplayBundles()
     {
         gameData.CurrentDisplayBundles.Clear();
         
@@ -419,8 +425,8 @@ public class ChallengeManager : MonoBehaviour
     // [요구사항 3, 4] 조건 카드 생성
     public void ShowRequirementSelection()
     {
+        Time.timeScale = 0f;
         // 선택 중에는 시간 정지 (필요 시)
-        Time.timeScale = 0f; 
         RequirementPopupObject.SetActive(true);
         
         // 기존 카드 제거
@@ -746,45 +752,42 @@ public class ChallengeManager : MonoBehaviour
 
     private void HandleTimeOver()
     {
-        Debug.Log("[HandleTimeOver] 1. 시작");
-        
         gameData.GameState = GameState.TimeOver;
-        Debug.Log("[HandleTimeOver] 2. GameState 변경 완료");
         
-        // ===== 추가: VideoPlayer + BGM 정지 =====
+        // 1. 게임 시간 정지 (UI 버튼은 눌려야 하므로 Canvas가 Screen Space - Overlay인지 확인 필요)
+        Time.timeScale = 0f; 
+
         StopBackgroundMedia();
-            CapyDialogue.StopDialogue(CapyDialogueText);
+        CapyDialogue.StopDialogue(CapyDialogueText);
         
         string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
-    
-        // PopupParentSetHelper 사용하는 경우
-        if(PopupParentSetHelper.Instance == null)
-        {
-            return;
-        }
+
+        if(PopupParentSetHelper.Instance == null) return;
         
+        // 2. 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
-        
-        if(popupObj == null)
-        {
-            Debug.LogError("[HandleTimeOver] popupObj 생성 실패!");
-            return;
-        }
-    
+        if(popupObj == null) return;
+
+        // 팝업이 다른 UI에 가려지지 않도록 최상단으로 올림
+        popupObj.transform.SetAsLastSibling();
+
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
-        
-        if(popup == null)
-        {
-            Debug.LogError("[HandleTimeOver] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
-            return;
-        }
+        if(popup == null) return;
+
         SoundManager.Instance.PlayFX(SoundType.GameOver);
+
+        // 3. 콜백 설정 (다시 시작할 때 반드시 TimeScale을 1로 복구해야 함)
         popup.Setup(
             randomMsg,
-            () => Core.SceneLoader.Instance.RestartCurrentLevel(),
-            () => Core.SceneLoader.Instance.GoToMainHome()
+            () => {
+                Time.timeScale = 1f; // 시간 복구
+                Core.SceneLoader.Instance.RestartCurrentLevel();
+            },
+            () => {
+                Time.timeScale = 1f; // 시간 복구
+                Core.SceneLoader.Instance.GoToMainHome();
+            }
         );
-        
     }
 
     private void StopBackgroundMedia()
@@ -800,6 +803,46 @@ public class ChallengeManager : MonoBehaviour
         if(SoundManager.Instance != null)
         {
             SoundManager.Instance.StopBGM();
+        }
+    }
+
+    // [추가] 조건 재선택 버튼 클릭 시 호출될 함수
+    public void OnClickReselectRequirement()
+    {
+        // 1. 무료 횟수 체크
+        if (currentReselectCount < MaxFreeRequirementReselect)
+        {
+            currentReselectCount++;
+            ExecuteReselect();
+        }
+        else
+        {
+            // 2. 무료 횟수 초과 시 광고 팝업
+            ShowAdConfirmationPopup(() =>
+            {
+                AdManager.Instance.ShowRewardedAd((success) =>
+                {
+                    if (success) ExecuteReselect();
+                });
+            }, null);
+        }
+    }
+
+    // [추가] 실제 재선택 실행 로직
+    private void ExecuteReselect()
+    {
+        UpdateReselectUI();
+        ShowRequirementSelection(); // 기존에 만든 팝업 띄우기 함수 호출
+        ShowTopNotification("조건을 다시 선택합니다카피!");
+    }
+
+    // [추가] UI 업데이트 로직
+    private void UpdateReselectUI()
+    {
+        if (ReselectCountText != null)
+        {
+            int leftCount = Mathf.Max(0, MaxFreeRequirementReselect - currentReselectCount);
+            ReselectCountText.text = $"{leftCount}";
         }
     }
 

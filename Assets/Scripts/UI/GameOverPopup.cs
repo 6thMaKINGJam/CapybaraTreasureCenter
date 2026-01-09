@@ -34,6 +34,7 @@ public class GameOverPopup : MonoBehaviour
     private void OnClickRestart()
     {
         onRestartAction?.Invoke();
+        Debug.Log("GameOverPopup: Restart button clicked.");
         Destroy(gameObject);
     }
     

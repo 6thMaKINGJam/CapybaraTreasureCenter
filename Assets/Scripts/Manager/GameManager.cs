@@ -737,6 +737,7 @@ public void ProcessBoxCompletion()
         
         // 2. 게임오버 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
+        Debug.Log("[GameManager] 게임오버 팝업 생성");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         SoundManager.Instance.PlayFX(SoundType.GameOver);
         
