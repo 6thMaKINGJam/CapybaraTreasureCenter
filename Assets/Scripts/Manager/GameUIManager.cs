@@ -119,19 +119,40 @@ public void UpdateHintAndItemUI(
         CompleteButton.onClick.RemoveAllListeners();
         RefreshButton.onClick.RemoveAllListeners();
         RefreshButton.onClick.AddListener(() => Core.SceneLoader.Instance.ExecuteUndo1());
+        // 선택 취소 버튼 리스너 초기화
+        if (CancelSelectButton != null) {
+            CancelSelectButton.onClick.RemoveAllListeners();
+        }
 
         if (GameManager.Instance != null)
         {
             // 레벨 모드일 때
             CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
+            // 상자 전체 되돌리기 버튼 연결
+            if (UndoButton != null) {
+                UndoButton.onClick.RemoveAllListeners();
+                UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
+            }
+
+            // 힌트 버튼 연결
+            if (HintButton != null) {
+                HintButton.onClick.RemoveAllListeners();
+                HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
+            }
             RefreshButton.onClick.AddListener(() => GameManager.Instance.Process1Undo());
+            // 레벨 모드 선택 취소 연결
+            if (CancelSelectButton != null) {
+                CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
+            }
         }
         else if (ChallengeManager.Instance != null)
         {
             // 챌린지 모드일 때
             CompleteButton.onClick.AddListener(() => ChallengeManager.Instance.OnClickComplete());
-            // 챌린지 모드에 Process1Undo가 있다면 연결
-            // RefreshButton.onClick.AddListener(() => ChallengeManager.Instance.Process1Undo());
+
+            if (CancelSelectButton != null) {
+                CancelSelectButton.onClick.AddListener(() => ChallengeManager.Instance.CancelSelection());
+            }
         }
         
     }

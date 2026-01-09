@@ -160,18 +160,21 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     
     chunkData = ChunkGenerator.GenerateAllChunks(CurrentLevelConfig);
 
-Debug.Log(GemCountStatusPanel);
-    // ===== 수정: GemCountPanelManager 초기화 =====
     if(GemCountStatusPanel != null)
     {
-        Debug.Log("[GameManager] GemCountStatusPanel 초기화 시작");
+        // 1. 패널 내부 데이터 및 UI 초기화
         GemCountStatusPanel.InitLevelGemStatus(
             chunkData.TotalRemainingGems, 
             CurrentLevelConfig.GemTypeCount
         );
-        // 초기화 시 현재 남은 상자 수도 고려하도록 업데이트 호출
+
+        // 2. 현재 남은 상자 수를 전달하여 슬라이더/상세 표시 여부를 결정하게 함
         int remainingBoxes = gameData.Boxes.Count - gameData.CurrentBoxIndex;
-        GemCountStatusPanel.UpdateGemCount((GemType)0, chunkData.TotalRemainingGems[(GemType)0], remainingBoxes);
+        GemCountStatusPanel.UpdateGemCount(
+            (GemType)0, 
+            chunkData.TotalRemainingGems[(GemType)0], 
+            remainingBoxes
+        );
     }
     
     gameData.Boxes = new List<Box>(chunkData.AllBoxes);

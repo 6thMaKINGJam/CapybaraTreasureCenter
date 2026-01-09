@@ -47,6 +47,8 @@ public class ChallengeManager : MonoBehaviour
     public GameObject NotificationPanel; // Inspector 할당
     public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
     public float NotificationDuration = 2f; // 표시 시간
+    [Header("선택된 조건 표시 UI")]
+    public TextMeshProUGUI ActiveRequirementText; // 현재 화면에 떠 있는 조건 텍스트
     
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
@@ -106,6 +108,11 @@ public class ChallengeManager : MonoBehaviour
         {
             UIManager.CancelSelectButton.onClick.RemoveAllListeners();
             UIManager.CancelSelectButton.onClick.AddListener(() => CancelSelection());
+        }
+        if (GemCountStatusPanel != null)
+        {
+            // 보석 개수 전체 다시 그리기
+            GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
         }
 
         // 3. 화면에 보석 그리드 표시
@@ -412,12 +419,14 @@ public class ChallengeManager : MonoBehaviour
     // [요구사항 3, 4] 조건 카드 생성
     public void ShowRequirementSelection()
     {
-        // 팝업 열기 전 게임 일시정지 (선택 중 시간 흐름 방지 시)
-        // Time.timeScale = 0f; 
+        // 선택 중에는 시간 정지 (필요 시)
+        Time.timeScale = 0f; 
         RequirementPopupObject.SetActive(true);
         
+        // 기존 카드 제거
         foreach (Transform child in RequirementParentPanel) Destroy(child.gameObject);
 
+        // 카드 3개 생성
         for (int i = 0; i < 3; i++)
         {
             var req = GenerateRandomRequirement();
@@ -447,27 +456,79 @@ public class ChallengeManager : MonoBehaviour
     {
         currentActiveRequirement = selectedReq;
         RequirementPopupObject.SetActive(false);
-        Time.timeScale = 1f; // 선택 완료 후 재개
+        Time.timeScale = 1f; // 게임 재개
+
+        // 선택한 조건을 화면 UI에 업데이트
+        if (ActiveRequirementText != null)
+        {
+            ActiveRequirementText.text = $"현재 조건: {selectedReq.GetDescription()}";
+        }
+        
+        ShowTopNotification("새로운 조건이 적용되었습니다카피!");
     }
 
     public void OnClickComplete()
     {
         if (currentActiveRequirement == null) return;
 
-        bool isSuccess = currentActiveRequirement.Validate(currentSelectedBundles);
+        Box currentBox = GetCurrentBox();
+        int selectedTotal = CalculateSelectedTotal();
 
-        if (isSuccess)
+        // 1. 상자 수량 확인
+        if (selectedTotal != currentBox.RequiredAmount)
         {
-            // 시간 보상 추가 [요구사항 1]
+            VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+            ShowTopNotification("보석 수량이 맞지 않습니다카피!");
+            return;
+        }
+
+        // 2. 조건(Requirement) 검사
+        if (currentActiveRequirement.Validate(gameData.SelectedBundles))
+        {
+            // 성공: 시간 보상 및 다음 단계
             currentRemainingTime += currentActiveRequirement.RewardTime;
-            
-            // 상자 교체 및 다음 조건 선택
             ProcessBoxSuccess();
         }
         else
         {
+            // 실패: 진동 및 알림
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
-            // 실패 시 처리 (보석 초기화 등)
+            ShowTopNotification("조건에 맞지 않습니다카피!");
+            CancelSelection(); 
+        }
+    }
+    // 조건 검사 로직 예시
+    private bool CheckRequirementMet()
+    {
+        if (currentActiveRequirement == null) return true; // 조건이 없으면 통과
+
+        // 현재 상자에 담긴 보석들의 색상별 개수 합산
+        Dictionary<GemType, int> counts = new Dictionary<GemType, int>();
+        foreach (var bundle in gameData.SelectedBundles)
+        {
+            if (!counts.ContainsKey(bundle.GemType)) counts[bundle.GemType] = 0;
+            counts[bundle.GemType] += bundle.GemCount;
+        }
+
+        int leftVal = counts.ContainsKey(currentActiveRequirement.LeftType) ? counts[currentActiveRequirement.LeftType] : 0;
+        int rightVal = 0;
+
+        if (currentActiveRequirement.IsValueComparison)
+        {
+            rightVal = currentActiveRequirement.RightValue;
+        }
+        else
+        {
+            rightVal = counts.ContainsKey(currentActiveRequirement.RightType) ? counts[currentActiveRequirement.RightType] : 0;
+        }
+
+        // 부등호 판별
+        switch (currentActiveRequirement.Op)
+        {
+            case ComparisonOperator.Equal: return leftVal == rightVal;
+            case ComparisonOperator.LessThan: return leftVal < rightVal;
+            case ComparisonOperator.GreaterThan: return leftVal > rightVal;
+            default: return false;
         }
     }
     private void ShowWarning(string message)
@@ -673,9 +734,14 @@ public class ChallengeManager : MonoBehaviour
 
     private void ProcessBoxSuccess()
     {
-        currentSelectedBundles.Clear();
-        // 묶음 리필 및 그리드 갱신 로직...
-        ShowRequirementSelection();
+        // 데이터 처리 (상자 인덱스 증가 등)
+        gameData.CurrentBoxIndex++;
+        
+        // 시각적 연출 후 다음 조건 선택
+        UIManager.AnimateBoxChange(() => {
+            CancelSelection(); // 선택 리스트 비우기
+            ShowRequirementSelection(); // 다시 조건 팝업 띄움
+        });
     }
 
     private void HandleTimeOver()

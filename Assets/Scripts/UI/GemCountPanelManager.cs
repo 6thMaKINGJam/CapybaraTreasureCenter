@@ -26,7 +26,29 @@ public class GemCountPanelManager : MonoBehaviour
         
         // UI 생성 (처음엔 숨겨져 있을 수 있음)
         CreateGemItems();
-        UpdateDangerUI(0); // 초기 업데이트
+        ResetUIState();
+    }
+
+    // UI 상태를 위험도 슬라이더 모드로 강제 리셋하는 메서드
+    private void ResetUIState()
+    {
+        bool isChallenge = (ChallengeManager.Instance != null);
+
+        if (isChallenge)
+        {
+            if (DangerSlider != null) DangerSlider.gameObject.SetActive(false);
+            SetGemItemsVisibility(true);
+        }
+        else
+        {
+            // 레벨 모드에서는 시작 시 무조건 슬라이더를 켜고 상세 항목을 숨깁니다.
+            if (DangerSlider != null) DangerSlider.gameObject.SetActive(true);
+            SetGemItemsVisibility(false);
+            
+            // 슬라이더 값도 안전(초록) 상태로 초기화
+            if (DangerSlider != null) DangerSlider.value = 1f;
+            if (SliderFillImage != null) SliderFillImage.color = Color.green;
+        }
     }
 
     private void CreateGemItems()
