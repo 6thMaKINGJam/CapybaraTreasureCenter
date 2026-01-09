@@ -21,7 +21,7 @@ public class RequirementCard : MonoBehaviour
 
         RequirementText.text = req.GetDescription();
         RewardTimeText.text = $"+{req.RewardTime}s";
-        RewardGemText.text = $"+{req.RewardGemCount}";
+        RewardGemText.text = req.GetRewardGemDescription();
 
         SelectButton.onClick.RemoveAllListeners();
         SelectButton.onClick.AddListener(() => onSelect?.Invoke(data));

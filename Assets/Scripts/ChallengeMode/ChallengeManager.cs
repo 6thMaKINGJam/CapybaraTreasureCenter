@@ -59,6 +59,11 @@ public class ChallengeManager : MonoBehaviour
     // 오른쪽 항에 숫자가 들어갈 때의 범위
     public int MinRequirementValue = 2;
     public int MaxRequirementValue = 5;
+    [Header("Challenge Reward Settings")]
+    public float SuccessRewardTime = 10f; // 성공 시 보상 시간
+
+    [Header("Initial Gem Settings")]
+    public int InitialGemCountPerType = 10; // 타입별 초기 보석 개수
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
 
@@ -90,14 +95,15 @@ public class ChallengeManager : MonoBehaviour
         var chunkData = ChunkGenerator.GenerateAllChunks(tempConfig);
         gameData.Boxes = new List<Box>(chunkData.AllBoxes);
         gameData.BundlePool = new List<GemBundle>(chunkData.MergedBundlePool);
-        gameData.RemainingGems = new Dictionary<GemType, int>(chunkData.TotalRemainingGems);
-
-        // 2. 보석 개수 UI 상시 노출 설정
-        // GemCountPanelManager에서 챌린지 모드 플래그를 확인하여 DangerSlider를 끄고 아이템을 항상 켭니다
+        gameData.RemainingGems = new Dictionary<GemType, int>();
+        for (int i = 0; i < 5; i++)
+        {
+            gameData.RemainingGems[(GemType)i] = InitialGemCountPerType;
+        }
+        GenerateInitialBundlesFromGems();
         if (GameUIManager.Instance.GemCountStatusPanel != null)
         {
             GameUIManager.Instance.GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
-            GameUIManager.Instance.GemCountStatusPanel.UpdateGemCount((GemType)0, gameData.RemainingGems[(GemType)0], RemainingBoxes);
         }
 
         if (GameUIManager.Instance != null)
@@ -133,6 +139,41 @@ public class ChallengeManager : MonoBehaviour
         ShowRequirementSelection();
         
         StartCoroutine(ChallengeTimerRoutine());
+    }
+
+    // [추가] 초기 보석 데이터를 바탕으로 그리드용 번들 생성
+    private void GenerateInitialBundlesFromGems()
+    {
+        gameData.BundlePool.Clear();
+        gameData.CurrentDisplayBundles.Clear();
+
+        // 현재 가진 보석 총량을 바탕으로 랜덤한 크기(1~4)의 번들을 생성하여 풀에 채움
+        foreach (GemType type in Enum.GetValues(typeof(GemType)))
+        {
+            int total = gameData.RemainingGems[type];
+            int allocated = 0;
+            while (allocated < total)
+            {
+                int size = UnityEngine.Random.Range(1, Mathf.Min(5, total - allocated + 1));
+                GemBundle newBundle = new GemBundle {
+                    BundleID = Guid.NewGuid().ToString(),
+                    GemType = type,
+                    GemCount = size
+                };
+                gameData.BundlePool.Add(newBundle);
+                allocated += size;
+            }
+        }
+        
+        // 번들 풀 섞기
+        gameData.BundlePool = gameData.BundlePool.OrderBy(x => UnityEngine.Random.value).ToList();
+        
+        // 상위 12개를 그리드에 표시
+        int displayCount = Mathf.Min(12, gameData.BundlePool.Count);
+        for (int i = 0; i < displayCount; i++)
+        {
+            gameData.CurrentDisplayBundles.Add(gameData.BundlePool[i]);
+        }
     }
 
     // 비우기(선택 취소) 기능 구현
@@ -448,6 +489,7 @@ public class ChallengeManager : MonoBehaviour
     private ChallengeRequirement GenerateRandomRequirement()
     {
         ChallengeRequirement req = new ChallengeRequirement();
+        Box targetBox = GetCurrentBox();
         
         // 1. 왼쪽 항 보석 타입 결정 (0~4)
         req.LeftType = (GemType)UnityEngine.Random.Range(0, 5);
@@ -479,7 +521,40 @@ public class ChallengeManager : MonoBehaviour
         }
 
         // 시간 보상 설정
-        req.RewardTime = 5f;
+        req.RewardTime = SuccessRewardTime;
+        // [추가] 보석 보상을 여러 종류로 랜덤 배분
+        if (targetBox != null)
+        {
+            int totalToGive = targetBox.RequiredAmount;
+            // 1~3가지 종류의 보석으로 배분
+            int typeCount = UnityEngine.Random.Range(1, 4);
+            req.RewardGemTypes = new GemType[typeCount];
+            req.RewardGemCounts = new int[typeCount];
+
+            int allocated = 0;
+            List<GemType> availableTypes = Enum.GetValues(typeof(GemType)).Cast<GemType>().ToList();
+            
+            for (int i = 0; i < typeCount; i++)
+            {
+                // 랜덤 타입 선택
+                int typeIdx = UnityEngine.Random.Range(0, availableTypes.Count);
+                req.RewardGemTypes[i] = availableTypes[typeIdx];
+                availableTypes.RemoveAt(typeIdx);
+
+                // 마지막 루프면 남은 거 다 몰아줌
+                if (i == typeCount - 1)
+                {
+                    req.RewardGemCounts[i] = totalToGive - allocated;
+                }
+                else
+                {
+                    int maxPiece = (totalToGive - allocated) - (typeCount - 1 - i);
+                    int piece = UnityEngine.Random.Range(1, maxPiece + 1);
+                    req.RewardGemCounts[i] = piece;
+                    allocated += piece;
+                }
+            }
+        }
         return req;
     }
 
@@ -763,15 +838,73 @@ public class ChallengeManager : MonoBehaviour
         NotificationPanel.SetActive(false);
     }
 
+    // [수정] 상자 완료 시 보상 로직
     private void ProcessBoxSuccess()
     {
-        // 데이터 처리 (상자 인덱스 증가 등)
+            // 1. 시간 보상 (설정된 10초 등 반영)
+        currentRemainingTime += currentActiveRequirement.RewardTime;
+
+        // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
+        int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
+        int currentCount = 0;
+
+        // 총 개수를 채울 때까지 랜덤하게 번들을 생성합니다.
+        if (currentActiveRequirement.RewardGemCounts != null)
+        {
+            for (int i = 0; i < currentActiveRequirement.RewardGemCounts.Length; i++)
+            {
+                GemType type = currentActiveRequirement.RewardGemTypes[i];
+                int count = currentActiveRequirement.RewardGemCounts[i];
+                
+                gameData.RemainingGems[type] += count;
+
+                // 번들 풀에 추가
+                int allocated = 0;
+                while (allocated < count)
+                {
+                    int size = UnityEngine.Random.Range(1, Mathf.Min(5, count - allocated + 1));
+                    gameData.BundlePool.Add(new GemBundle {
+                        BundleID = Guid.NewGuid().ToString(),
+                        GemType = type,
+                        GemCount = size
+                    });
+                    allocated += size;
+                }
+            }
+        }
+
+        // 3. UI 갱신
+        if (GemCountStatusPanel != null)
+        {
+            GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
+        }
+
         gameData.CurrentBoxIndex++;
         
-        // 시각적 연출 후 다음 조건 선택
+        // [수정] 애니메이션 종료 후 다음 상자 정보를 명시적으로 업데이트
         UIManager.AnimateBoxChange(() => {
-            CancelSelection(); // 선택 리스트 비우기
-            ShowRequirementSelection(); // 다시 조건 팝업 띄움
+            gameData.SelectedBundles.Clear();
+            selectedBundleOriginalIndices.Clear();
+            UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+            
+            // 다음 상자 정보 UI 즉시 반영
+            Box nextBox = GetCurrentBox();
+            if (nextBox != null)
+            {
+                UIManager.UpdateBoxUI(
+                    gameData.CurrentBoxIndex, 
+                    0, 
+                    nextBox.RequiredAmount, 
+                    gameData.Boxes.Count
+                );
+            }
+
+            if (GemCountStatusPanel != null)
+                GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
+
+            gameData.BundlePool = gameData.BundlePool.OrderBy(x => UnityEngine.Random.value).ToList();
+            ExtractDisplayBundles();
+            ShowRequirementSelection();
         });
     }
 
@@ -887,13 +1020,27 @@ public class ChallengeRequirement
     public int RightValue;
 
     public float RewardTime;
-    public int RewardGemCount;
+    public int[] RewardGemCounts;
+    public GemType[] RewardGemTypes;
 
     public string GetDescription()
     {
         string opStr = Op == ComparisonOperator.Equal ? "==" : (Op == ComparisonOperator.LessThan ? "<" : ">");
         string rightStr = IsValueComparison ? RightValue.ToString() : RightType.ToString();
         return $"{LeftType} {opStr} {rightStr}";
+    }
+    public string GetRewardGemDescription()
+    {
+        if (RewardGemCounts == null || RewardGemTypes == null || RewardGemCounts.Length == 0) 
+            return "No Gems";
+
+        List<string> rewards = new List<string>();
+        for (int i = 0; i < RewardGemCounts.Length; i++)
+        {
+            // 예: Red+2
+            rewards.Add($"{RewardGemTypes[i].ToString().Substring(0, 1)}+{RewardGemCounts[i]}");
+        }
+        return string.Join(", ", rewards);
     }
 
     public bool Validate(List<GemBundle> selected)
