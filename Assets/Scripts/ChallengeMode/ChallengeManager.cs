@@ -90,13 +90,16 @@ public class ChallengeManager : MonoBehaviour
         // 초기 제한 시간 설정
         currentRemainingTime = startingTimeLimit;
 
-        // 1. 맵 생성 데이터 준비 (임시 LevelConfig 생성)
-        LevelConfig tempConfig = ScriptableObject.CreateInstance<LevelConfig>();
-        tempConfig.BoxCount = totalChallengeBoxes;
-        tempConfig.MaxRequiredPerBox = challengeMaxRequired;
-        tempConfig.GemTypeCount = 5; // 챌린지는 모든 색상 사용
+       
 
-        var chunkData = ChunkGenerator.GenerateAllChunks(tempConfig);
+       
+        ChunkData chunkData = ChunkGenerator.GenerateAllChunks(
+        totalChallengeBoxes,                                    // 계산된 상자 개수
+        5,             // Config에서
+        challengeMaxRequired         // Config에서
+    );
+    
+
         gameData.Boxes = new List<Box>(chunkData.AllBoxes);
         gameData.BundlePool = new List<GemBundle>(chunkData.MergedBundlePool);
         gameData.RemainingGems = new Dictionary<GemType, int>();
@@ -856,8 +859,8 @@ public class ChallengeManager : MonoBehaviour
 
         // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
         int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
-        int currentCount = 0;
-
+       // int currentCount = 0;
+       
         // 총 개수를 채울 때까지 랜덤하게 번들을 생성합니다.
         if (currentActiveRequirement.RewardGemCounts != null)
         {
