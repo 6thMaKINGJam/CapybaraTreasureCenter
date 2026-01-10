@@ -1459,53 +1459,61 @@ private IEnumerator ExecuteUndoWithCancle()
             ShowWarning("되돌릴 보석이 없습니다카피!");
             return;
         }
-        // 1. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
+
+        // 2. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
         int lastIndex = gameData.SelectedBundles.Count - 1;
         GemBundle lastBundle = gameData.SelectedBundles[lastIndex];
 
-        // 2. 데이터 복구
+        // 3. 데이터 복구
         gameData.SelectedBundles.RemoveAt(lastIndex); // 선택 리스트에서 제거
-        gameData.RemainingGems[lastBundle.GemType] += lastBundle.GemCount; // 보석 총량 복구
+        gameData.RemainingGems[lastBundle.GemType] += lastBundle.GemCount; // 보석 총량 복구 (GemCountPanel용)
 
+        // 4. 그리드 위치(Index) 정보 확인 및 복구
         if (selectedBundleOriginalIndices.TryGetValue(lastBundle, out int originalGridIndex))
         {
-            // 4. 상자 안의 가장 최근 보석 이미지 제거
+            // A. 상자(선택창) UI에서 이미지 제거
             if (UIManager != null && UIManager.SelectionPanel != null)
             {
                 UIManager.SelectionPanel.RemoveLastGem();
             }
 
+            // B. 현재 그리드 칸에 있는 데이터(보통 빈 칸/Placeholder일 것임)를 다시 Pool로 반환
             GemBundle currentOccupant = gameData.CurrentDisplayBundles[originalGridIndex];
             if (currentOccupant != null && !gameData.BundlePool.Contains(currentOccupant))
             {
                 gameData.BundlePool.Add(currentOccupant);
             }
 
-            // 5. 그리드 데이터 복구 (나머지 보석 유지)
+            // C. 그리드 데이터 리스트에 원래 보석 데이터 복구
             gameData.CurrentDisplayBundles[originalGridIndex] = lastBundle;
 
-            // 6. 해당 칸만 시각적으로 복구 (isRestoring: true 사용)
+            // D. [핵심] GridManager를 통해 실제 UI 프리팹을 다시 보이게 함
             if (GridManager != null)
             {
+                // isRestoring: true를 전달하여 투명도와 인터랙션을 즉시 복구함
                 GridManager.ReplaceBundleAtIndex(
                     originalGridIndex,
                     lastBundle,
                     OnBundleClicked,
-                    isRestoring: true
+                    isRestoring: true 
                 );
             }
 
-            // 사용한 인덱스 정보 삭제
+            // 사용한 인덱스 정보 삭제 (중복 방지)
             selectedBundleOriginalIndices.Remove(lastBundle);
         }
+        else
+        {
+            // 만약 인덱스 정보를 잃어버렸다면 전체 그리드를 다시 그림 (강제 동기화)
+            Debug.LogWarning($"[Execute1Undo] {lastBundle.BundleID}의 인덱스 정보를 찾지 못해 그리드를 전체 갱신합니다.");
+            ExtractDisplayBundles();
+        }
 
-        // B. 되돌리기 버튼의 남은 숫자 줄이기
-        UpdateAllItemUI(); // 아이템 카운트 텍스트 갱신 (UndoCount 반영)
-        
-        // D. 상자 진행도 텍스트(예: 3/5 -> 2/5) 및 기타 UI 갱신
+        // 5. 기타 UI 및 아이템 카운트 갱신
+        UpdateAllItemUI();
         RefreshUI();
         
-        // 위험도 패널(GemCountPanel) 숫자 업데이트
+        // GemCountPanel(위험도/보석개수) 숫자 업데이트
         if (GemCountStatusPanel != null)
         {
             GemCountStatusPanel.UpdateGemCount(
