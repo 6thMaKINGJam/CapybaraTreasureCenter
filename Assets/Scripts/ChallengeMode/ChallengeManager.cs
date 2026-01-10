@@ -474,7 +474,6 @@ public class ChallengeManager : MonoBehaviour
     // [요구사항 3, 4] 조건 카드 생성
     public void ShowRequirementSelection()
     {
-        Time.timeScale = 0f;
         // 선택 중에는 시간 정지 (필요 시)
         RequirementPopupObject.SetActive(true);
         
