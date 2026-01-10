@@ -67,6 +67,10 @@ public class ChallengeManager : MonoBehaviour
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
 
+    [Header("Challenge Score")]
+    private int currentTotalScore = 0; // 현재 총 점수
+    private int timeBonus = 0; // 시간 보너스 점수
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -841,7 +845,14 @@ public class ChallengeManager : MonoBehaviour
     // [수정] 상자 완료 시 보상 로직
     private void ProcessBoxSuccess()
     {
-            // 1. 시간 보상 (설정된 10초 등 반영)
+        // 점수 계산 (상자 완료 점수 100 + 현재 남은 시간 * 10)
+        // 남은 시간은 소수점이 있을 수 있으므로 반올림(Mathf.RoundToInt)하여 자연수로 만듭니다.
+        int boxScore = 100;
+        timeBonus = Mathf.RoundToInt(currentRemainingTime * 10f);
+        currentTotalScore += (boxScore);
+
+        Debug.Log($"[Challenge] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
+        // 1. 시간 보상 (설정된 10초 등 반영)
         currentRemainingTime += currentActiveRequirement.RewardTime;
 
         // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
@@ -918,7 +929,12 @@ public class ChallengeManager : MonoBehaviour
         StopBackgroundMedia();
         CapyDialogue.StopDialogue(CapyDialogueText);
         
-        string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+        // string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+
+        // 점수를 포함한 결과 메시지 생성
+        string scoreMessage = $"\n\n최종 점수: {currentTotalScore + timeBonus}점!";
+        string capyMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+        string finalDisplayMsg = capyMsg + scoreMessage;
 
         if(PopupParentSetHelper.Instance == null) return;
         
@@ -936,7 +952,7 @@ public class ChallengeManager : MonoBehaviour
 
         // 3. 콜백 설정 (다시 시작할 때 반드시 TimeScale을 1로 복구해야 함)
         popup.Setup(
-            randomMsg,
+            finalDisplayMsg,
             () => {
                 Time.timeScale = 1f; // 시간 복구
                 Core.SceneLoader.Instance.RestartCurrentLevel();
