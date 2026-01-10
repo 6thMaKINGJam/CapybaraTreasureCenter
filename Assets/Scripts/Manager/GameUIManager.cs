@@ -25,7 +25,7 @@ public class GameUIManager : MonoBehaviour
     public Button CancelSelectButton;
     public Button UndoButton;
     public Button CompleteButton;
-    public Button RefreshButton;
+    public Button Undo1Button;
     public Button ReselectReqButton;
 
     [Header("팝업 패널")]
@@ -36,7 +36,7 @@ public class GameUIManager : MonoBehaviour
 
     [Header("아이템 남은 횟수 텍스트")]
     public TextMeshProUGUI HintCountText;
-    public TextMeshProUGUI RefreshCountText; // 이미지의 RetryButton이 새로고침 역할이라면
+    public TextMeshProUGUI Undo1CountText; // 이미지의 RetryButton이 새로고침 역할이라면
     public TextMeshProUGUI UndoCountText;
     
 
@@ -91,8 +91,8 @@ public void UpdateHintAndItemUI(
     if (HintCountText != null) 
         HintCountText.text = $"{hintLeft}";
     
-    if (RefreshCountText != null) 
-        RefreshCountText.text = $"{refreshLeft}";
+    if (Undo1CountText != null) 
+        Undo1CountText.text = $"{refreshLeft}";
     
     if (UndoCountText != null) 
         UndoCountText.text = $"{undoLeft}";
@@ -119,8 +119,8 @@ public void UpdateHintAndItemUI(
 
         // 2. 게임 플레이 관련 버튼 (Manager 존재 여부에 따라 분기)
         CompleteButton.onClick.RemoveAllListeners();
-        RefreshButton.onClick.RemoveAllListeners();
-        RefreshButton.onClick.AddListener(() => Core.SceneLoader.Instance.ExecuteUndo1());
+        Undo1Button.onClick.RemoveAllListeners();
+        Undo1Button.onClick.AddListener(() => Core.SceneLoader.Instance.ExecuteUndo1());
         // 선택 취소 버튼 리스너 초기화
         if (CancelSelectButton != null) {
             CancelSelectButton.onClick.RemoveAllListeners();
@@ -141,7 +141,7 @@ public void UpdateHintAndItemUI(
                 HintButton.onClick.RemoveAllListeners();
                 HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
             }
-            RefreshButton.onClick.AddListener(() => GameManager.Instance.Process1Undo());
+            Undo1Button.onClick.AddListener(() => GameManager.Instance.Process1Undo());
             // 레벨 모드 선택 취소 연결
             if (CancelSelectButton != null) {
                 CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
@@ -181,8 +181,8 @@ public void UpdateHintAndItemUI(int hintLeft, int refreshLeft, int undoLeft)
     if (HintCountText != null) 
         HintCountText.text = hintLeft.ToString();
     
-    if (RefreshCountText != null) 
-        RefreshCountText.text = refreshLeft.ToString();
+    if (Undo1CountText != null) 
+        Undo1CountText.text = refreshLeft.ToString();
     
     if (UndoCountText != null) 
         UndoCountText.text = undoLeft.ToString();

@@ -3,46 +3,44 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    // BoxCount 기반으로 여러 청크 생성 후 병합된 bundlePool 반환
-    public ChunkData GenerateAllChunks(LevelConfig config)
+    /// <summary>
+    /// 계산된 난이도 값으로 청크 생성
+    /// </summary>
+    /// <param name="boxCount">생성할 상자 개수</param>
+    /// <param name="gemTypeCount">사용할 보석 종류 수 (1~5)</param>
+    /// <param name="maxRequiredPerBox">상자당 최대 요구량</param>
+    public ChunkData GenerateAllChunks(int boxCount, int gemTypeCount, int maxRequiredPerBox)
     {
-        int totalBoxCount = config.BoxCount;
-        int chunkCount = Mathf.CeilToInt(totalBoxCount / 10f); // 10개 단위로 청크 나눔
+        int totalBoxCount = boxCount;
+        int chunkCount = Mathf.CeilToInt(totalBoxCount / 10f);
         
         ChunkData chunkData = new ChunkData();
         chunkData.AllBoxes = new List<Box>();
         chunkData.MergedBundlePool = new List<GemBundle>();
         chunkData.TotalRemainingGems = new Dictionary<GemType, int>();
         
-        // 각 보석 종류별 초기화
-        for(int i = 0; i < config.GemTypeCount; i++)
+        for(int i = 0; i < gemTypeCount; i++)
         {
             chunkData.TotalRemainingGems[(GemType)i] = 0;
         }
         
-        // 청크별 생성
         for(int chunkIdx = 0; chunkIdx < chunkCount; chunkIdx++)
         {
             int startBoxIndex = chunkIdx * 10;
             int endBoxIndex = Mathf.Min(startBoxIndex + 10, totalBoxCount);
             int boxesInThisChunk = endBoxIndex - startBoxIndex;
             
-            Chunk chunk = GenerateSingleChunk(config, chunkIdx, boxesInThisChunk, startBoxIndex);
+            Chunk chunk = GenerateSingleChunk(gemTypeCount, maxRequiredPerBox, chunkIdx, boxesInThisChunk, startBoxIndex);
             
-            // 상자들 추가
             chunkData.AllBoxes.AddRange(chunk.Boxes);
-            
-            // bundlePool 병합
             chunkData.MergedBundlePool.AddRange(chunk.BundlePool);
             
-            // 보석 총량 합산
             foreach(var kvp in chunk.RemainingGems)
             {
                 chunkData.TotalRemainingGems[kvp.Key] += kvp.Value;
             }
         }
         
-        // bundlePool 셔플
         ShuffleList(chunkData.MergedBundlePool);
         
         Debug.Log($"[ChunkGenerator] 총 {chunkCount}개 청크 생성 완료. 총 상자: {totalBoxCount}개, 총 묶음: {chunkData.MergedBundlePool.Count}개");
@@ -50,16 +48,14 @@ public class ChunkGenerator : MonoBehaviour
         return chunkData;
     }
     
-    // 단일 청크 생성 (10개 이하 상자)
-    private Chunk GenerateSingleChunk(LevelConfig config, int chunkIndex, int boxCount, int startBoxIndex)
+    private Chunk GenerateSingleChunk(int gemTypeCount, int maxRequiredPerBox, int chunkIndex, int boxCount, int startBoxIndex)
     {
         Chunk chunk = new Chunk();
         chunk.Boxes = new List<Box>();
         chunk.BundlePool = new List<GemBundle>();
         chunk.RemainingGems = new Dictionary<GemType, int>();
         
-        // 각 보석 종류별 초기화
-        for(int i = 0; i < config.GemTypeCount; i++)
+        for(int i = 0; i < gemTypeCount; i++)
         {
             chunk.RemainingGems[(GemType)i] = 0;
         }
@@ -68,12 +64,10 @@ public class ChunkGenerator : MonoBehaviour
         for(int i = 0; i < boxCount; i++)
         {
             Box box = new Box();
-            box.TargetType = (GemType)Random.Range(0, config.GemTypeCount); // 일단 랜덤 (나중에 로직 개선 가능)
+            box.TargetType = (GemType)Random.Range(0, gemTypeCount);
             
-            // 요구량: 최소값은 보석 종류 수 이상, 최대값은 설정값
-            int minRequired = config.GemTypeCount;
-            int maxRequired = config.MaxRequiredPerBox;
-            box.RequiredAmount = Random.Range(minRequired, maxRequired + 1);
+            int minRequired = gemTypeCount;
+            box.RequiredAmount = Random.Range(minRequired, maxRequiredPerBox + 1);
             
             box.CurrentAmount = 0;
             box.isCompletedBox = false;
@@ -84,17 +78,17 @@ public class ChunkGenerator : MonoBehaviour
         // 2단계: 각 상자에 보석 역산 배정
         foreach(Box box in chunk.Boxes)
         {
-            box.SolutionBundles = new List<GemBundle>(); // 정답 묶음 저장
+            box.SolutionBundles = new List<GemBundle>();
             
             Dictionary<GemType, int> boxGemCount = new Dictionary<GemType, int>();
-            for(int i = 0; i < config.GemTypeCount; i++)
+            for(int i = 0; i < gemTypeCount; i++)
             {
                 boxGemCount[(GemType)i] = 0;
             }
             
             // 2-1: 모든 종류 1개씩 필수
             int allocated = 0;
-            for(int i = 0; i < config.GemTypeCount; i++)
+            for(int i = 0; i < gemTypeCount; i++)
             {
                 boxGemCount[(GemType)i] = 1;
                 allocated++;
@@ -104,7 +98,7 @@ public class ChunkGenerator : MonoBehaviour
             int remaining = box.RequiredAmount - allocated;
             for(int i = 0; i < remaining; i++)
             {
-                GemType randomType = (GemType)Random.Range(0, config.GemTypeCount);
+                GemType randomType = (GemType)Random.Range(0, gemTypeCount);
                 boxGemCount[randomType]++;
             }
             
@@ -122,7 +116,7 @@ public class ChunkGenerator : MonoBehaviour
                 
                 while(gemCount > 0)
                 {
-                    int pieceSize = Random.Range(1, Mathf.Min(6, gemCount + 1)); // 1~5개로 쪼갬
+                    int pieceSize = Random.Range(1, Mathf.Min(6, gemCount + 1));
                     
                     GemBundle bundle = new GemBundle();
                     bundle.BundleID = System.Guid.NewGuid().ToString();
@@ -130,7 +124,7 @@ public class ChunkGenerator : MonoBehaviour
                     bundle.GemCount = pieceSize;
                     
                     chunk.BundlePool.Add(bundle);
-                    box.SolutionBundles.Add(bundle); // 정답에 추가
+                    box.SolutionBundles.Add(bundle);
                     
                     gemCount -= pieceSize;
                 }
@@ -140,7 +134,6 @@ public class ChunkGenerator : MonoBehaviour
         return chunk;
     }
     
-    // List 셔플
     private void ShuffleList<T>(List<T> list)
     {
         System.Random rng = new System.Random();
@@ -156,7 +149,6 @@ public class ChunkGenerator : MonoBehaviour
     }
 }
 
-// ChunkData: 모든 청크 병합 결과
 [System.Serializable]
 public class ChunkData
 {
@@ -165,7 +157,6 @@ public class ChunkData
     public Dictionary<GemType, int> TotalRemainingGems;
 }
 
-// Chunk: 단일 청크 (10개 이하 상자)
 [System.Serializable]
 public class Chunk
 {

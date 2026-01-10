@@ -1,122 +1,78 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelSelectPanel : MonoBehaviour
 {
-    [Header("Level Buttons")]
-    [SerializeField] private Button[] levelButtons;
-    [SerializeField] private GameObject[] lockVisuals;
+    [Header("챕터 버튼")]
+    public Button Chapter1Button;
+    public Button Chapter2Button;
+    public Button Chapter3Button;
+    public Button Level100Button;
     
-    // ✅ 변경: Image 컴포넌트 배열 (각 레벨의 별 표시 이미지)
-    [SerializeField] private Image[] starImages; 
-    
-    // ✅ 추가: 별 개수별 스프라이트
-    [Header("Star Sprites")]
-    [SerializeField] private Sprite star1Sprite; // 별 1개 이미지
-    [SerializeField] private Sprite star2Sprite; // 별 2개 이미지
-    [SerializeField] private Sprite star3Sprite; // 별 3개 이미지
+    [Header("챕터 잠금 표시")]
+    public GameObject Chapter2Lock;
+    public GameObject Chapter3Lock;
+    public GameObject Level100Lock;
     
     [Header("Common UI")]
     public Button closeButton;
+    
+    [Header("챕터 레벨 리스트 팝업 프리팹")]
+    public GameObject ChapterLevelListPopupPrefab;
     
     private const string SelectedLevelKey = "SelectedLevel";
     
     private void Awake()
     {
-        for (int i = 0; i < levelButtons.Length; i++)
-        {
-            int levelIndex = i + 1;
-            levelButtons[i].onClick.AddListener(() => OnLevelClick(levelIndex));
-        }
-
-        closeButton.onClick.AddListener(() => 
-        {
-            gameObject.SetActive(false);
-        });
+        Chapter1Button.onClick.AddListener(() => OnChapterClick(1));
+        Chapter2Button.onClick.AddListener(() => OnChapterClick(2));
+        Chapter3Button.onClick.AddListener(() => OnChapterClick(3));
+        Level100Button.onClick.AddListener(() => OnChapterClick(100));
+        
+        closeButton.onClick.AddListener(() => gameObject.SetActive(false));
     }
     
-    // ✅ 변경: OnEnable에서 자동 갱신
     private void OnEnable()
     {
         RefreshUI();
     }
     
-    // ✅ 이름 변경 및 내부 구현 수정
     private void RefreshUI()
     {
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
         int lastClearedLevel = progressData.LastClearedLevel;
         
-        for (int i = 0; i < levelButtons.Length; i++)
-        {
-            int currentLevelNum = i + 1;
-            
-            // 1. 해금 여부
-            bool isUnlocked = (currentLevelNum == 1) || (lastClearedLevel >= currentLevelNum - 1);
-            
-            // 2. 자물쇠 표시 (해금되면 숨김)
-            if (lockVisuals.Length > i && lockVisuals[i] != null)
-            {
-                lockVisuals[i].SetActive(!isUnlocked);
-            }
-            
-           // 3. 별 표시 (✅ 헬퍼 메서드 사용)
-        if (starImages.Length > i && starImages[i] != null)
-        {
-            bool isCleared = progressData.HasCleared(currentLevelNum);
-            
-            if (isCleared)
-            {
-                int stars = progressData.GetStars(currentLevelNum);
-                UpdateStarDisplay(starImages[i], stars);
-            }
-            else
-            {
-                starImages[i].gameObject.SetActive(false);
-            }
-        }
-        }
+        // 챕터 2 잠금 (레벨 33 클리어 필요)
+        bool chapter2Unlocked = lastClearedLevel >= 33;
+        if(Chapter2Lock != null) Chapter2Lock.SetActive(!chapter2Unlocked);
+        Chapter2Button.interactable = chapter2Unlocked;
+        
+        // 챕터 3 잠금 (레벨 66 클리어 필요)
+        bool chapter3Unlocked = lastClearedLevel >= 66;
+        if(Chapter3Lock != null) Chapter3Lock.SetActive(!chapter3Unlocked);
+        Chapter3Button.interactable = chapter3Unlocked;
+        
+        // 레벨 100 잠금 (레벨 99 클리어 필요)
+        bool level100Unlocked = lastClearedLevel >= 99;
+        if(Level100Lock != null) Level100Lock.SetActive(!level100Unlocked);
+        Level100Button.interactable = level100Unlocked;
     }
     
-    // ✅ 새 메서드: 별 개수에 따라 스프라이트 교체
-    private void UpdateStarDisplay(Image starImage, int starCount)
+    private void OnChapterClick(int chapterNumber)
     {
-        starImage.gameObject.SetActive(true);
-        
-        switch(starCount)
+        if(ChapterLevelListPopupPrefab == null)
         {
-            case 1:
-                starImage.sprite = star1Sprite;
-                break;
-            case 2:
-                starImage.sprite = star2Sprite;
-                break;
-            case 3:
-                starImage.sprite = star3Sprite;
-                break;
-            default:
-                Debug.LogWarning($"[LevelSelectPanel] 잘못된 별 개수: {starCount}");
-                starImage.gameObject.SetActive(false);
-                break;
+            Debug.LogError("[LevelSelectPanel] ChapterLevelListPopupPrefab이 없습니다!");
+            return;
         }
-    }
-    
-    private void OnLevelClick(int levelNum)
-    {
-        ProgressData data = SaveManager.LoadData<ProgressData>("ProgressData");
-        bool isUnlocked = (levelNum == 1) || (data.LastClearedLevel >= levelNum - 1);
         
-        if (isUnlocked)
+        GameObject popupObj = Instantiate(ChapterLevelListPopupPrefab, transform.parent);
+        ChapterLevelListPopup popup = popupObj.GetComponent<ChapterLevelListPopup>();
+        
+        if(popup != null)
         {
-            PlayerPrefs.SetInt(SelectedLevelKey, levelNum);
-            PlayerPrefs.Save();
-            SceneManager.LoadScene("LevelMode");
-        }
-        else
-        {
-            Debug.Log($"{levelNum - 1} 레벨을 먼저 클리어해야 합니다.");
+            popup.Setup(chapterNumber);
         }
     }
 }

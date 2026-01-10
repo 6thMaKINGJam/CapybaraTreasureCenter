@@ -25,6 +25,9 @@ public class ProgressData
     
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     
+    // ✅ 추가: 사과 개수
+    public int TotalApples = 0;
+    
     public ProgressData()
     {
         LastClearedLevel = 0;
@@ -33,6 +36,7 @@ public class ProgressData
         EndingCompleted = false;
         isLevel4Completed = false;
         LevelStars = new List<LevelStarData>();
+        TotalApples = 0;
     }
     
     // 별 개수 가져오기
@@ -48,7 +52,6 @@ public class ProgressData
         var existing = LevelStars.Find(x => x.LevelNumber == level);
         if (existing != null)
         {
-            // 기존 기록보다 높으면 갱신
             if (stars > existing.Stars)
             {
                 existing.Stars = stars;
@@ -64,5 +67,21 @@ public class ProgressData
     public bool HasCleared(int level)
     {
         return LevelStars.Exists(x => x.LevelNumber == level);
+    }
+    
+    // ✅ 사과 추가
+    public void AddApples(int amount)
+    {
+        TotalApples += amount;
+        SaveManager.Save(this, "ProgressData");
+    }
+    
+    // ✅ 사과 차감
+    public bool SpendApples(int amount)
+    {
+        if(TotalApples < amount) return false;
+        TotalApples -= amount;
+        SaveManager.Save(this, "ProgressData");
+        return true;
     }
 }

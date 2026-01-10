@@ -7,28 +7,39 @@ public class GameOverPopup : MonoBehaviour
 {
     [Header("UI 요소")]
     public TMP_Text MessageText;
-    public Button RestartButton;   // 다시하기
-
-    public Button MainHomeButton;  // 메인으로
+    public Button RestartButton;
+    public Button MainHomeButton;
+    public Button TimeAddButton; // ✅ 추가
     
     private Action onRestartAction;
-
     private Action onMainHomeAction;
+    private Action onTimeAddAction; // ✅ 추가
     
-    public void Setup(string message, Action restartCallback, Action mainHomeCallback)
+    public void Setup(string message, Action restartCallback, Action mainHomeCallback, Action timeAddCallback = null)
     {
         MessageText.text = message;
         
         onRestartAction = restartCallback;
-
         onMainHomeAction = mainHomeCallback;
+        onTimeAddAction = timeAddCallback;
         
         RestartButton.onClick.RemoveAllListeners();
         RestartButton.onClick.AddListener(OnClickRestart);
-    
         
         MainHomeButton.onClick.RemoveAllListeners();
         MainHomeButton.onClick.AddListener(OnClickMainHome);
+        
+        // ✅ 시간추가 버튼
+        if(TimeAddButton != null && timeAddCallback != null)
+        {
+            TimeAddButton.gameObject.SetActive(true);
+            TimeAddButton.onClick.RemoveAllListeners();
+            TimeAddButton.onClick.AddListener(OnClickTimeAdd);
+        }
+        else if(TimeAddButton != null)
+        {
+            TimeAddButton.gameObject.SetActive(false);
+        }
     }
     
     private void OnClickRestart()
@@ -38,11 +49,15 @@ public class GameOverPopup : MonoBehaviour
         Destroy(gameObject);
     }
     
-
-    
     private void OnClickMainHome()
     {
         onMainHomeAction?.Invoke();
         Destroy(gameObject);
+    }
+    
+    private void OnClickTimeAdd()
+    {
+        onTimeAddAction?.Invoke();
+        Destroy(gameObject); // ✅ 팝업 닫기 (게임 재개)
     }
 }

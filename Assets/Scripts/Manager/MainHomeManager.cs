@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Scripts.UI;
+using TMPro;
 
 public class MainHomeManager : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class MainHomeManager : MonoBehaviour
 
     [SerializeField] private CanvasGroup mainCanvasGroup;
 
+    // ✅ 추가: 사과 UI
+    [Header("사과 UI")]
+    [SerializeField] private TextMeshProUGUI AppleCountText;
+
+
+
     private ProgressData currentProgress;
     private const string SaveKey = "ProgressData";
 
@@ -22,6 +29,15 @@ public class MainHomeManager : MonoBehaviour
         
         // 2. UI 버튼들에 기능 연결
         SetupButtons();
+
+ // ✅ 사과 UI 초기화
+        UpdateAppleUI();
+        
+        // ✅ 사과 변경 이벤트 구독
+        if(AppleManager.Instance != null)
+        {
+            AppleManager.Instance.OnAppleCountChanged += OnAppleCountChanged;
+        }
 
         // 3. 초기 화면 설정
         mainHomeUI.ShowMain();
@@ -38,6 +54,31 @@ public class MainHomeManager : MonoBehaviour
             CheckAndRunEndingSequence();
         }
     }
+     
+    void OnDestroy()
+    {
+        // ✅ 이벤트 구독 해제
+        if(AppleManager.Instance != null)
+        {
+            AppleManager.Instance.OnAppleCountChanged -= OnAppleCountChanged;
+        }
+    }
+
+ // ✅ 사과 개수 변경 시 UI 업데이트
+    private void OnAppleCountChanged(int newCount)
+    {
+        UpdateAppleUI();
+    }
+    
+    // ✅ 사과 UI 갱신
+    private void UpdateAppleUI()
+    {
+        if(AppleCountText != null && AppleManager.Instance != null)
+        {
+            AppleCountText.text = AppleManager.Instance.GetAppleCount().ToString();
+        }
+    }
+
 
     private void SetupButtons()
     {
@@ -74,7 +115,7 @@ public class MainHomeManager : MonoBehaviour
                 if(mainCanvasGroup != null) mainCanvasGroup.interactable = false;
                 
                 Debug.Log("엔딩 시퀀스로 진입합니다.");
-                SceneManager.LoadScene("EndingScene"); 
+                //d=엔딩 시퀸스 실행
             }
             else
             {
