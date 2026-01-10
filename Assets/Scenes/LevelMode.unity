@@ -12650,8 +12650,8 @@ MonoBehaviour:
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
-  Undo1Button: {fileID: 1648687989}
-  ReselectReqButton: {fileID: 1648687989}
+  Undo1Button: {fileID: 0}
+  ReselectReqButton: {fileID: 0}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
   HintCountText: {fileID: 181118262}
@@ -13541,7 +13541,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -124, y: 602}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 418.12, y: 229.1423}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &804415968
@@ -19309,7 +19309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2060334394
 RectTransform:
   m_ObjectHideFlags: 0
