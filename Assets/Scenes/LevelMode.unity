@@ -12641,6 +12641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridManager: {fileID: 347816904}
   SelectionPanel: {fileID: 302145879}
+  GemCountStatusPanel: {fileID: 0}
   BoxIndexText: {fileID: 868503436}
   BoxProgressText: {fileID: 1724088621}
   PauseButton: {fileID: 592469689}
@@ -12649,11 +12650,12 @@ MonoBehaviour:
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
-  RefreshButton: {fileID: 1768813380}
+  Undo1Button: {fileID: 1648687989}
+  ReselectReqButton: {fileID: 1648687989}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
   HintCountText: {fileID: 181118262}
-  RefreshCountText: {fileID: 1183863307}
+  Undo1CountText: {fileID: 0}
   UndoCountText: {fileID: 145250752}
   CountdownText: {fileID: 1899612949}
   BoxVisual: {fileID: 252433823}
@@ -13539,7 +13541,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -124, y: 602}
   m_SizeDelta: {x: 418.12, y: 229.1423}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &804415968
@@ -14245,6 +14247,11 @@ MonoBehaviour:
   NotificationPanel: {fileID: 263552383}
   NotificationText: {fileID: 314398620}
   NotificationDuration: 0.5
+  Costume_Chapter1: {fileID: 0}
+  Costume_Chapter2_A: {fileID: 0}
+  Costume_Chapter2_B: {fileID: 0}
+  Costume_Chapter3: {fileID: 0}
+  Costume_Level100: {fileID: 0}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
@@ -19302,7 +19309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2060334394
 RectTransform:
   m_ObjectHideFlags: 0

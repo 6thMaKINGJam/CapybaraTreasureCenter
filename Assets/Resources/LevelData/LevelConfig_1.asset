@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f060972f81309794897e74ba9bdb7039, type: 3}
   m_Name: LevelConfig_1
   m_EditorClassIdentifier: 
-  LevelID: 1
-  BoxCount: 5
-  MaxRequiredPerBox: 10
+  ChapterNumber: 0
+  MinBox: 5
+  MaxBox: 15
+  MaxTime: 120
+  MinTime: 60
   GemTypeCount: 5
-  TimeLimit: 60
-  MaxUndoCount: 3
-  MaxRefreshCount: 2
+  MaxRequiredPerBox: 10
   MaxHintCount: 1
+  MaxUndoCount: 3
+  MaxUndo1Count: 3
+  TimeAddAmount: 10
+  BackgroundVideoFileName: gamescreen_challangeMode.mp4
+  AdditionalBGMLayer: {fileID: 0}
