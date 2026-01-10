@@ -7058,15 +7058,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6beb1a6c02ca0cb4da5bcb37997247e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Chapter1Button: {fileID: 0}
-  Chapter2Button: {fileID: 0}
-  Chapter3Button: {fileID: 0}
-  Level100Button: {fileID: 0}
-  Chapter2Lock: {fileID: 0}
-  Chapter3Lock: {fileID: 0}
-  Level100Lock: {fileID: 0}
+  Chapter1Button: {fileID: 268327385}
+  Chapter2Button: {fileID: 934649005}
+  Chapter3Button: {fileID: 290593245}
+  Level100Button: {fileID: 1802287742}
+  Chapter2Lock: {fileID: 909356500}
+  Chapter3Lock: {fileID: 526642961}
+  Level100Lock: {fileID: 1027667767}
   closeButton: {fileID: 1892577746}
-  ChapterLevelListPopupPrefab: {fileID: 0}
+  ChapterLevelListPopupPrefab: {fileID: 6473561952965326656, guid: b26a90f3a42992549a1947d8e2fbf7c5, type: 3}
 --- !u!1 &1717236390
 GameObject:
   m_ObjectHideFlags: 0

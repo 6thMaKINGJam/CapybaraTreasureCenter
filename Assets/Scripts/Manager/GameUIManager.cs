@@ -141,7 +141,7 @@ public void UpdateHintAndItemUI(
                 HintButton.onClick.RemoveAllListeners();
                 HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
             }
-            Undo1Button.onClick.AddListener(() => GameManager.Instance.Process1Undo());
+            
             // 레벨 모드 선택 취소 연결
             if (CancelSelectButton != null) {
                 CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());

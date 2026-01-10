@@ -49,9 +49,9 @@ public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 시간 관련
 
     [Header("알림")]
-    public GameObject NotificationPanel; // Inspector 할당
-    public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
-    public float NotificationDuration = 2f; // 표시 시간
+public GameObject NotificationPanel; // Inspector 할당
+public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
+public float NotificationDuration = 2f; // 표시 시간
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
     
@@ -77,8 +77,8 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     
  // ✅ 시간추가 관련
     private bool isWaitingForTimeAdd = false;
-   
-   
+    
+
     
     void Awake()
     {
@@ -99,17 +99,18 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         InitGame();
     }
 
-
     void Update()
     {
+        // gameData가 생성된 상태이고 게임 상태가 Playing일 때만 작동
         if (gameData != null && gameData.GameState == GameState.Playing)
         {
             float remainingTime = GetDynamicTimeLimit() - gameData.ElapsedTime;
-            
+
+            // 5.5초 이하일 때 카운트다운 시작
             if (remainingTime <= 5.5f && remainingTime > 0)
             {
                 int currentSecond = Mathf.CeilToInt(remainingTime);
-                
+
                 if (currentSecond != lastCountedSecond)
                 {
                     lastCountedSecond = currentSecond;
@@ -187,14 +188,16 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         levelStartTime = Time.time;
         timeCheckCoroutine = StartCoroutine(CheckTimeOver());
         
+        // UI 초기화
         RefreshUI();
         
+        // ===== CapyDialogue 연결: 게임 시작 =====
         if(CapyDialogue != null && CapyDialogueText != null)
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
         }
     }
-
+    
 // ✅ 난이도 적용된 게임 설정
    // SetupNewGameWithDifficulty() 메서드 내부
 private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
@@ -214,7 +217,7 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         CurrentLevelConfig.GemTypeCount,             // Config에서
         CurrentLevelConfig.MaxRequiredPerBox         // Config에서
     );
-    
+
     if(GemCountStatusPanel != null)
     {
         GemCountStatusPanel.InitLevelGemStatus(
@@ -327,9 +330,9 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
     
   
     
-  
+
     
-     private void ExtractDisplayBundles()
+    private void ExtractDisplayBundles()
     {
         gameData.CurrentDisplayBundles.Clear();
         
@@ -857,23 +860,30 @@ public void ProcessBoxCompletion()
     {
         gameData.GameState = GameState.GameOver;
         StopCoroutine(timeCheckCoroutine);
-        
-        StopBackgroundMedia();
-        CapyDialogue.StopDialogue(CapyDialogueText);
-        CapyDialogueBUbble.SetActive(false);
-        
+        // ===== 추가: VideoPlayer + BGM 정지 =====
+    StopBackgroundMedia();
+    CapyDialogue.StopDialogue(CapyDialogueText);
+    CapyDialogueBUbble.SetActive(false);
+    
+        // 1. 표시할 최종 메시지 결정 (기본값: reason)
         string finalMessage = reason;
-        
+
+        // CapyDialogue에서 'GemDepletedGameOver' 타입의 랜덤 대사를 가져옴
         if(CapyDialogue != null)
         {
+            // 아까 만든 함수 호출
             string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.GemDepletedGameOver);
             
+            // 가져온 대사가 비어있지 않다면 최종 메시지로 채택
             if (!string.IsNullOrEmpty(randomMsg))
             {
                 finalMessage = randomMsg;
             }
+            
+
         }
         
+        // 2. 게임오버 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         Debug.Log("[GameManager] 게임오버 팝업 생성");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
@@ -881,16 +891,19 @@ public void ProcessBoxCompletion()
         
         if(popup != null)
         {
+            // 3. 팝업에도 위에서 결정한 finalMessage를 전달
             popup.Setup(
                 finalMessage, 
-                () => RestartLevel(),
-                () => GoToMainHome()
+                () => Core.SceneLoader.Instance.RestartCurrentLevel(), // 다시하기
+                () => Core.SceneLoader.Instance.GoToMainHome()  // 메인으로
             );
         }
+        else
+        {
+            // fallback
+            Debug.LogError("[GameManager] GameOverPopup을 찾을 수 없습니다!");
+        }
     }
-    
-
-
 private void HandleLevelClear()
 {
     gameData.GameState = GameState.Win;
@@ -916,8 +929,8 @@ private void HandleLevelClear()
     int currentLevel = gameData.CurrentLevelIndex;
     // ✅ 사과 지급
         int oldStars = progressData.GetStars(currentLevel);
-        progressData.SetStars(currentLevel, starCount);
-        
+     progressData.SetStars(currentLevel, starCount);
+
         if(AppleManager.Instance != null)
         {
             AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
@@ -969,37 +982,39 @@ private void HandleLevelClear()
 }
 
 // ✅ 팝업 생성 함수 수정
- private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel)
+private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel)
+{
+    GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
+    LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
+    
+    if (popup != null)
     {
-        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
-        LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
-        
-        if (popup != null)
-        {
-            popup.Setup(
-                starCount, 
-                message,
+        popup.Setup(
+            starCount, 
+            message,
                 () => GoToNextLevel(),
                 () => RestartLevel(),
                 () => GoToMainHome()
-            );
-            
-            if (isLastLevel && popup.NextLevelButton != null)
-            {
-                popup.NextLevelButton.interactable = false;
-            }
+        );
+        
+        // ✅ 레벨 4면 다음 레벨 버튼 비활성화
+        if (isLastLevel && popup.NextLevelButton != null)
+        {
+            popup.NextLevelButton.interactable = false;
         }
     }
-
+}
 
 // ✅ 다음 레벨로 이동 함수 추가
- public void GoToNextLevel()
-    {
-        Time.timeScale = 1f;
-        
-        int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
-        int nextLevel = currentLevel + 1;
-        
+public void GoToNextLevel()
+{
+    // 1. 시간 흐름 초기화
+    Time.timeScale = 1f;
+
+    // 2. 현재 레벨 번호 가져오기 (기본값 1)
+    int currentLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+    int nextLevel = currentLevel + 1;
+
         // ✅ 다음 챕터 LevelConfig 확인
         int nextChapter;
         if(nextLevel == 100)
@@ -1020,21 +1035,23 @@ private void HandleLevelClear()
         }
         
         LevelConfig nextConfig = Resources.Load<LevelConfig>($"LevelData/LevelConfig_{nextChapter}");
-        
-        if (nextConfig != null)
-        {
-            PlayerPrefs.SetInt("SelectedLevel", nextLevel);
-            PlayerPrefs.Save();
-            
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-        else
-        {
-            Debug.Log("모든 레벨을 클리어했습니다! 메인으로 돌아갑니다.");
-            GoToMainHome();
-        }
+
+    if (nextConfig != null)
+    {
+        // 다음 레벨이 존재하면 정보 갱신 및 저장
+        PlayerPrefs.SetInt("SelectedLevel", nextLevel);
+        PlayerPrefs.Save();
+
+        // 현재 게임 씬 다시 로드 (InitGame에서 새 SelectedLevel을 읽어옴)
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    
+    else
+    {
+        // 더 이상 다음 레벨이 없으면 메인 홈으로 이동
+        Debug.Log("모든 레벨을 클리어했습니다! 메인으로 돌아갑니다.");
+        Core.SceneLoader.Instance.GoToMainHome();
+    }
+}
 
 /// <summary>
 /// 배경 Video Player와 BGM을 즉시 정지
@@ -1055,23 +1072,30 @@ private void StopBackgroundMedia()
     }
 }
 
-   private string GetClearMessage(float clearTime)
+  private string GetClearMessage(float clearTime)
     {
         float maxTime = GetDynamicTimeLimit();
         
-        float fastCutoff = maxTime * 0.5f;
-        float normalCutoff = maxTime * (2f / 3f);
-        
+        // 2. 비율 기준 계산
+        // - 절반 (50%)
+        float fastCutoff = maxTime * 0.5f; 
+        // - 3분의 2 (약 66%) - '3/2'는 오타로 보고 '2/3' 지점으로 설정했습니다.
+        float normalCutoff = maxTime * (2f / 3f); 
+
+        // 3. 메시지 분기 처리
         if(clearTime <= fastCutoff)
         {
+            // 제한시간의 절반보다 빨리 깸 (매우 빠름)
             return $"대단하다카피! 소요시간: {clearTime:F1}초\n제한시간의 절반도 안 썼어카피!";
         }
         else if(clearTime <= normalCutoff)
         {
+            // 제한시간의 2/3 안쪽으로 깸 (적당함)
             return $"잘했다카피! 소요시간: {clearTime:F1}초\n다음 레벨도 화이팅카피!";
         }
         else
         {
+            // 제한시간이 거의 다 되어서 깸 (느림)
             return $"클리어카피! 소요시간: {clearTime:F1}초\n 조금 느리지만.. 괜찮다카피~";
         }
     }
@@ -1142,12 +1166,12 @@ private void StopBackgroundMedia()
     
  // ✅ 타임오버 처리 (시간추가 버튼 포함)
     private void HandleTimeOver()
-    {
+{
         Debug.Log("[HandleTimeOver] 타임오버 발생!");
-        
-        gameData.GameState = GameState.TimeOver;
+    
+    gameData.GameState = GameState.TimeOver;
         isWaitingForTimeAdd = true;
-        
+     
         // 음악/영상 일시정지 (시간추가 가능성)
         if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
         {
@@ -1159,16 +1183,16 @@ private void StopBackgroundMedia()
         }
         
         CapyDialogue.StopDialogue(CapyDialogueText);
-        
-        string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
-        
+    
+    string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+   
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         
         SoundManager.Instance.PlayFX(SoundType.GameOver);
         
         if(popup != null)
-        {
+    {
             // ✅ 시간추가 콜백 전달
             popup.Setup(
                 randomMsg,
@@ -1204,11 +1228,11 @@ private void StopBackgroundMedia()
     private void OnTimeAddRequested()
     {
         if(AppleManager.Instance == null)
-        {
+    {
             Debug.LogError("[GameManager] AppleManager가 없습니다!");
-            return;
-        }
-        
+        return;
+    }
+   
         AppleManager.Instance.TryPurchaseTimeAdd(
             onSuccess: () => {
                 ExecuteTimeAdd();
@@ -1286,11 +1310,22 @@ private void StopBackgroundMedia()
         return;
     }
     
-    gameData.UndoCount++;
+    gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
+    
     
     if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
     {
-        ShowItemPurchasePopup("되돌리기", () => StartCoroutine(ExecuteUndoWithCancle()));
+        // [수정됨] 확인 팝업 먼저 표시
+        ShowAdConfirmationPopup(() =>
+        {
+            // Yes 클릭 시에만 광고 호출
+            AdManager.Instance.ShowRewardedAd((success) =>
+            {
+                if(success)  StartCoroutine(ExecuteUndoWithCancle());
+                // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
+            });
+        }, 
+        null); // ✅ No 버튼도 Count 원복 안 함
     }
     else
     {
@@ -1418,6 +1453,12 @@ private IEnumerator ExecuteUndoWithCancle()
 
     public void Execute1Undo()
     {
+        // 1. 안전 장치: 선택된 보석이 없는 경우
+        if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
+        {
+            ShowWarning("되돌릴 보석이 없습니다카피!");
+            return;
+        }
         // 1. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
         int lastIndex = gameData.SelectedBundles.Count - 1;
         GemBundle lastBundle = gameData.SelectedBundles[lastIndex];
@@ -1432,6 +1473,12 @@ private IEnumerator ExecuteUndoWithCancle()
             if (UIManager != null && UIManager.SelectionPanel != null)
             {
                 UIManager.SelectionPanel.RemoveLastGem();
+            }
+
+            GemBundle currentOccupant = gameData.CurrentDisplayBundles[originalGridIndex];
+            if (currentOccupant != null && !gameData.BundlePool.Contains(currentOccupant))
+            {
+                gameData.BundlePool.Add(currentOccupant);
             }
 
             // 5. 그리드 데이터 복구 (나머지 보석 유지)
@@ -1477,20 +1524,27 @@ public void ProcessHint()
     // 게임당 1회 제한
     if(gameData.HintCount >= CurrentLevelConfig.MaxHintCount)
     {
-        ShowItemPurchasePopup("힌트", () => StartCoroutine(ExecuteHintWithLoading()));
-    }
-    else
-    {
-        StartCoroutine(ExecuteHintWithLoading());
+        ShowAdConfirmationPopup(() =>
+        {
+            AdManager.Instance.ShowRewardedAd((success) =>
+            {
+                if(success)
+                {
+                    
+                   StartCoroutine(ExecuteHintWithLoading());
+                }
+            });
+        },
+        null);
     }
 }
 
 // ✅ 아이템 구매 팝업 표시
 private void ShowItemPurchasePopup(string itemName, Action onPurchaseSuccess)
-{
+    {
     GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/ItemPurchasePopup");
     ItemPurchasePopup popup = popupObj.GetComponent<ItemPurchasePopup>();
-    
+       
     if(popup != null)
     {
         popup.Setup(itemName, onPurchaseSuccess);

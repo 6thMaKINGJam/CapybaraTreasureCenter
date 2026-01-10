@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f060972f81309794897e74ba9bdb7039, type: 3}
   m_Name: Level_2
   m_EditorClassIdentifier: 
-  LevelID: 2
-  BoxCount: 30
-  MaxRequiredPerBox: 12
+  ChapterNumber: 2
+  MinBox: 5
+  MaxBox: 15
+  MaxTime: 120
+  MinTime: 60
   GemTypeCount: 4
-  TimeLimit: 120
-  MaxUndoCount: 4
-  MaxRefreshCount: 4
+  MaxRequiredPerBox: 12
   MaxHintCount: 2
+  MaxUndoCount: 4
+  MaxUndo1Count: 3
+  TimeAddAmount: 10
+  BackgroundVideoFileName: bg_chapter1.mp4
+  AdditionalBGMLayer: {fileID: 0}

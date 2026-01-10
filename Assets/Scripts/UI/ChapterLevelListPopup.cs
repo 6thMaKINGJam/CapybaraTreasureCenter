@@ -8,7 +8,9 @@ public class ChapterLevelListPopup : MonoBehaviour
 {
     [Header("UI 요소")]
     public TextMeshProUGUI TitleText;
-    public Transform LevelListContent;
+    public Transform LevelListContent
+    
+    ;
     public Button CloseButton;
     
     [Header("레벨 버튼 프리팹")]
@@ -47,7 +49,9 @@ public class ChapterLevelListPopup : MonoBehaviour
     private void CreateLevelButtons()
     {
         // 기존 버튼 정리
-        foreach(Transform child in LevelListContent)
+        foreach(Transform child in LevelListContent
+        
+        )
         {
             Destroy(child.gameObject);
         }

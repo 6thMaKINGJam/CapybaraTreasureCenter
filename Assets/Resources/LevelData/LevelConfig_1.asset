@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f060972f81309794897e74ba9bdb7039, type: 3}
   m_Name: LevelConfig_1
   m_EditorClassIdentifier: 
-  ChapterNumber: 0
+  ChapterNumber: 1
   MinBox: 5
   MaxBox: 15
   MaxTime: 120

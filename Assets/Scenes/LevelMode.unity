@@ -12641,7 +12641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridManager: {fileID: 347816904}
   SelectionPanel: {fileID: 302145879}
-  GemCountStatusPanel: {fileID: 0}
+  GemCountStatusPanel: {fileID: 1006858061}
   BoxIndexText: {fileID: 868503436}
   BoxProgressText: {fileID: 1724088621}
   PauseButton: {fileID: 592469689}
@@ -12650,12 +12650,12 @@ MonoBehaviour:
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
-  Undo1Button: {fileID: 0}
+  Undo1Button: {fileID: 1768813380}
   ReselectReqButton: {fileID: 0}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
   HintCountText: {fileID: 181118262}
-  Undo1CountText: {fileID: 0}
+  Undo1CountText: {fileID: 1183863307}
   UndoCountText: {fileID: 145250752}
   CountdownText: {fileID: 1899612949}
   BoxVisual: {fileID: 252433823}
@@ -13315,7 +13315,6 @@ GameObject:
   m_Component:
   - component: {fileID: 764039765}
   - component: {fileID: 764039764}
-  - component: {fileID: 764039763}
   m_Layer: 0
   m_Name: spriteToUICamera
   m_TagString: MainCamera
@@ -13323,14 +13322,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &764039763
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 764039762}
-  m_Enabled: 1
 --- !u!20 &764039764
 Camera:
   m_ObjectHideFlags: 0
@@ -17613,7 +17604,7 @@ GameObject:
   - component: {fileID: 1768813383}
   - component: {fileID: 1768813385}
   m_Layer: 5
-  m_Name: RetryButton
+  m_Name: Undo1Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
