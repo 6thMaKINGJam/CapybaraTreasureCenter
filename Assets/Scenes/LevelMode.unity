@@ -12641,6 +12641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GridManager: {fileID: 347816904}
   SelectionPanel: {fileID: 302145879}
+  GemCountStatusPanel: {fileID: 0}
   BoxIndexText: {fileID: 868503436}
   BoxProgressText: {fileID: 1724088621}
   PauseButton: {fileID: 592469689}
@@ -12649,11 +12650,12 @@ MonoBehaviour:
   CancelSelectButton: {fileID: 519796864}
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
-  RefreshButton: {fileID: 1768813380}
+  Undo1Button: {fileID: 0}
+  ReselectReqButton: {fileID: 0}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
   HintCountText: {fileID: 181118262}
-  RefreshCountText: {fileID: 1183863307}
+  Undo1CountText: {fileID: 0}
   UndoCountText: {fileID: 145250752}
   CountdownText: {fileID: 1899612949}
   BoxVisual: {fileID: 252433823}
@@ -14245,6 +14247,11 @@ MonoBehaviour:
   NotificationPanel: {fileID: 263552383}
   NotificationText: {fileID: 314398620}
   NotificationDuration: 0.5
+  Costume_Chapter1: {fileID: 0}
+  Costume_Chapter2_A: {fileID: 0}
+  Costume_Chapter2_B: {fileID: 0}
+  Costume_Chapter3: {fileID: 0}
+  Costume_Level100: {fileID: 0}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
