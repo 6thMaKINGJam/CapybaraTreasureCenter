@@ -914,11 +914,11 @@ private void HandleLevelClear()
     CapyDialogue.StopDialogue(CapyDialogueText);
 
     // 1. 시간 및 별 계산
-    float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
+    float clearTime = gameData.ElapsedTime;
     float maxTime = GetDynamicTimeLimit();
     int starCount = 1;
-    if (clearTime <= maxTime * 0.5f) starCount = 3;
-    else if (clearTime <= maxTime * 0.66f) starCount = 2;
+    if (clearTime <= maxTime * 0.6f) starCount = 3;
+    else if (clearTime <= maxTime * 0.8f) starCount = 2;
 
     string clearMessage = GetClearMessage(clearTime);
 

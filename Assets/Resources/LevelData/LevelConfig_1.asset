@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LevelConfig_1
   m_EditorClassIdentifier: 
   ChapterNumber: 1
-  MinBox: 5
-  MaxBox: 15
+  MinBox: 1
+  MaxBox: 10
   MaxTime: 180
   MinTime: 60
   GemTypeCount: 3
