@@ -74,10 +74,15 @@ public class ChallengeManager : MonoBehaviour
     [Header("조건 선택 타이머 설정")]
     [Tooltip("조건 선택 제한 시간 (초)")]
     public float selectionLimitTime = 10f;
+
+    [Header("조건 선택 UI")]
+    public UnityEngine.UI.Slider SelectionTimerSlider;
     
     private float currentSelectionTimer;
     private bool isSelectionActive = false;
     private Coroutine selectionTimerCoroutine;
+    private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
+    
 
     void Awake()
     {
@@ -102,10 +107,10 @@ public class ChallengeManager : MonoBehaviour
 
        
         ChunkData chunkData = ChunkGenerator.GenerateAllChunks(
-        totalChallengeBoxes,                                    // 계산된 상자 개수
-        5,             // Config에서
-        challengeMaxRequired         // Config에서
-    );
+            totalChallengeBoxes,                           
+            5,           
+            challengeMaxRequired 
+        );
     
 
         gameData.Boxes = new List<Box>(chunkData.AllBoxes);
@@ -150,10 +155,9 @@ public class ChallengeManager : MonoBehaviour
         currentReselectCount = 0;
         UpdateAllItemUI();
 
+        StartCoroutine(ChallengeTimerRoutine());
         // 4. 첫 조건 선택 시작
         ShowRequirementSelection();
-        
-        StartCoroutine(ChallengeTimerRoutine());
     }
 
     // [추가] 초기 보석 데이터를 바탕으로 그리드용 번들 생성
@@ -481,23 +485,84 @@ public class ChallengeManager : MonoBehaviour
         }
     }
 
-
-    // [요구사항 3, 4] 조건 카드 생성
     public void ShowRequirementSelection()
     {
-        // 선택 중에는 시간 정지 (필요 시)
+        // 1. 게임 메인 시간 정지
+        Time.timeScale = 0f;
+        gameData.GameState = GameState.Paused; 
+        isSelectionActive = true;
+
         RequirementPopupObject.SetActive(true);
         
-        // 기존 카드 제거
+        // 기존 카드 제거 및 데이터 초기화
         foreach (Transform child in RequirementParentPanel) Destroy(child.gameObject);
+        generatedRequirements.Clear();
 
         // 카드 3개 생성
         for (int i = 0; i < 3; i++)
         {
             var req = GenerateRandomRequirement();
+            generatedRequirements.Add(req); // 랜덤 선택을 위해 저장
             GameObject cardObj = Instantiate(RequirementCardPrefab, RequirementParentPanel);
             cardObj.GetComponent<RequirementCard>().Setup(req, OnRequirementSelected);
         }
+
+        // 2. 선택 전용 타이머 코루틴 시작 (UnscaledTime 사용 필수)
+        if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
+        selectionTimerCoroutine = StartCoroutine(SelectionTimerRoutine());
+    }
+    private IEnumerator SelectionTimerRoutine()
+    {
+        currentSelectionTimer = selectionLimitTime;
+
+        while (currentSelectionTimer > 0)
+        {
+            // Time.timeScale이 0이므로 Time.unscaledDeltaTime을 사용해야 합니다.
+            currentSelectionTimer -= Time.unscaledDeltaTime;
+
+            // UI 슬라이더가 있다면 업데이트
+            if (SelectionTimerSlider != null)
+                SelectionTimerSlider.value = currentSelectionTimer / selectionLimitTime;
+
+            yield return null;
+        }
+
+        // 시간 초과 시 랜덤 선택
+        if (isSelectionActive)
+        {
+            Debug.Log("조건 선택 시간 초과! 랜덤으로 선택합니다.");
+            SelectRandomRequirement();
+        }
+    }
+
+    // 사용자가 직접 클릭했을 때 호출
+    public void OnRequirementClicked(int index)
+    {
+        if (!isSelectionActive) return;
+        
+        StopSelectionAndResumeGame(index);
+    }
+
+    private void SelectRandomRequirement()
+    {
+        if (generatedRequirements.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, generatedRequirements.Count);
+            OnRequirementSelected(generatedRequirements[randomIndex]);
+        }
+    }
+
+    private void StopSelectionAndResumeGame(int selectedIndex)
+    {
+        isSelectionActive = false;
+        if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
+
+        // 1. 선택된 조건 적용 로직 (기존 ApplyRequirement(selectedIndex))
+        
+        // 2. 게임 메인 타이머 재개
+        // ResumeMainTimer();
+        
+        // 3. 선택 UI 닫기
     }
 
     private ChallengeRequirement GenerateRandomRequirement()
@@ -574,17 +639,26 @@ public class ChallengeManager : MonoBehaviour
 
     private void OnRequirementSelected(ChallengeRequirement selectedReq)
     {
+        isSelectionActive = false;
+        if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
+
         currentActiveRequirement = selectedReq;
         RequirementPopupObject.SetActive(false);
-        Time.timeScale = 1f; // 게임 재개
+        
+        // 게임 재개
+        Time.timeScale = 1f; 
+        gameData.GameState = GameState.Playing;
 
-        // 선택한 조건을 화면 UI에 업데이트
+        // 메인 타이머가 아직 안돌고 있다면 시작 (이미 돌고 있다면 무시됨)
+        StopCoroutine(nameof(ChallengeTimerRoutine));
+        StartCoroutine(ChallengeTimerRoutine());
+
         if (ActiveRequirementText != null)
         {
             ActiveRequirementText.text = $"현재 조건: {selectedReq.GetDescription()}";
         }
         
-        ShowTopNotification("새로운 조건이 적용되었습니다카피!");
+        ShowTopNotification("조건이 결정되었습니다카피!");
     }
 
     public void OnClickComplete()
