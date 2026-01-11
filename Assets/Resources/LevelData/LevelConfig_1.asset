@@ -24,4 +24,4 @@ MonoBehaviour:
   MaxUndo1Count: 3
   TimeAddAmount: 10
   BackgroundVideoFileName: gamescreen_challangeMode.mp4
-  AdditionalBGMLayer: {fileID: 0}
+  AdditionalBGMLayer: {fileID: 8300000, guid: f674f9de95e60451db31d6a4f04171db, type: 3}

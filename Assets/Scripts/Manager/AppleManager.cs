@@ -60,7 +60,8 @@ public class AppleManager : MonoBehaviour
         if(earnedApples > 0)
         {
             progressData.AddApples(earnedApples);
-            OnAppleCountChanged?.Invoke(progressData.TotalApples);
+            SaveManager.Save(progressData, "ProgressData"); 
+    OnAppleCountChanged?.Invoke(progressData.TotalApples);
             
             Debug.Log($"[AppleManager] 사과 +{earnedApples}개 획득! (별 {oldStars}→{newStars}, 총 {progressData.TotalApples}개)");
         }
