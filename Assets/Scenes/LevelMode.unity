@@ -15065,6 +15065,7 @@ MonoBehaviour:
   SliderFillImage: {fileID: 225639895}
   GemCountItemPrefab: {fileID: 2273705045484454930, guid: 250755b41ab46d144b4fa3bf378e1fb7, type: 3}
   SpriteDatabase: {fileID: 11400000, guid: 383b110ef0be59247b645b2218c51e12, type: 2}
+  sliderExposureRange: 10
 --- !u!1 &1024102763
 GameObject:
   m_ObjectHideFlags: 0

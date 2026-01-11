@@ -946,15 +946,15 @@ private void HandleLevelClear()
     
     SoundManager.Instance.PlayFX(SoundType.GameClear);
 
-    // 3. 레벨별 분기 처리
-    if (gameData.CurrentLevelIndex == 4)
+    // 3. 레벨별 분기 처리 //수정필요 엔딩프리팹으로 연결해야함
+    if (gameData.CurrentLevelIndex == 100)
     {
         int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
 
-        if (!progressData.isLevel4Completed)
+        if (!progressData.isLevel100Completed)
         {
             // 최초 클리어
-            progressData.isLevel4Completed = true;
+            progressData.isLevel100Completed = true;
             progressData.BestTime = clearTimeMs;
             
             SaveManager.Save(progressData, "ProgressData");

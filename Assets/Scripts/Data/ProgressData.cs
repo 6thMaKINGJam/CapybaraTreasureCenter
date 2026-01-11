@@ -21,7 +21,7 @@ public class ProgressData
     public int BestTime;
     public bool TutorialCompleted;
     public bool EndingCompleted;
-    public bool isLevel4Completed;
+    public bool isLevel100Completed;
     
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     
@@ -34,7 +34,7 @@ public class ProgressData
         BestTime = 0;
         TutorialCompleted = false;
         EndingCompleted = false;
-        isLevel4Completed = false;
+        isLevel100Completed = false;
         LevelStars = new List<LevelStarData>();
         TotalApples = 0;
     }

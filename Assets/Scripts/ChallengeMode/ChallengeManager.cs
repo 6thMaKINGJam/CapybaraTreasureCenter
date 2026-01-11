@@ -70,6 +70,14 @@ public class ChallengeManager : MonoBehaviour
     [Header("Challenge Score")]
     private int currentTotalScore = 0; // 현재 총 점수
     private int timeBonus = 0; // 시간 보너스 점수
+    
+    [Header("조건 선택 타이머 설정")]
+    [Tooltip("조건 선택 제한 시간 (초)")]
+    public float selectionLimitTime = 10f;
+    
+    private float currentSelectionTimer;
+    private bool isSelectionActive = false;
+    private Coroutine selectionTimerCoroutine;
 
     void Awake()
     {

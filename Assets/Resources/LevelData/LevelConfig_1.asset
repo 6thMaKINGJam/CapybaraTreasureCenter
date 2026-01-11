@@ -15,9 +15,9 @@ MonoBehaviour:
   ChapterNumber: 1
   MinBox: 5
   MaxBox: 15
-  MaxTime: 120
+  MaxTime: 180
   MinTime: 60
-  GemTypeCount: 5
+  GemTypeCount: 3
   MaxRequiredPerBox: 10
   MaxHintCount: 1
   MaxUndoCount: 3

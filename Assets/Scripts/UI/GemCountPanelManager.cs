@@ -13,6 +13,10 @@ public class GemCountPanelManager : MonoBehaviour
     public GameObject GemCountItemPrefab;
     public GemSpriteDatabase SpriteDatabase;
 
+    [Header("슬라이더 노출 설정")]
+    [Tooltip("해당 챕터(LevelConfig)의 마지막 레벨부터 몇 번째 레벨까지 슬라이더를 보여줄지 설정합니다.")]
+    public int sliderExposureRange = 5;
+
     private Dictionary<GemType, GemCountItem> gemItemDict = new Dictionary<GemType, GemCountItem>();
     private Dictionary<GemType, int> currentGems = new Dictionary<GemType, int>();
     private int totalBoxesInLevel;
@@ -76,69 +80,60 @@ public class GemCountPanelManager : MonoBehaviour
 
     private void UpdateDangerUI(int remainingBoxes)
     {
-        // 1. 챌린지 모드 체크: ChallengeManager 인스턴스가 존재하면 챌린지 모드로 간주
-        // (또는 이전에 제안드린 대로 bool 플래그를 Init 시점에 저장해두고 쓰는 것이 더 성능에 좋습니다)
         bool isChallenge = (ChallengeManager.Instance != null);
 
         if (isChallenge)
         {
-            if (!this.gameObject.activeSelf) 
-                this.gameObject.SetActive(true);
-
-            // 챌린지 모드: 슬라이더 비활성화, 보석 아이템 항상 표시
-            if (DangerSlider != null && DangerSlider.gameObject.activeSelf) 
-                DangerSlider.gameObject.SetActive(false);
-                
+            if (DangerSlider != null) DangerSlider.gameObject.SetActive(false);
             SetGemItemsVisibility(true);
             return;
         }
 
-        // 2. 레벨 모드: 남은 상자 개수에 따른 분기 로직
-        if (remainingBoxes < 4)
+        // 1. 현재 레벨 정보 및 설정 가져오기
+        int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+        var gm = GameManager.Instance;
+
+        if (gm == null || gm.CurrentLevelConfig == null) return;
+
+        // 2. 현재 챕터의 최대 레벨 계산 (예: 1챕터는 33, 2챕터는 66 등)
+        // LevelConfig의 구조에 따라 다르지만, 일반적으로 다음 챕터 시작 전까지가 최대 레벨입니다.
+        int chapterMaxLevel = GetChapterMaxLevel(gm.CurrentLevelConfig.ChapterNumber);
+        
+        // 3. 슬라이더 노출 범위 체크 (뒤에서 N번째 레벨부터 마지막 레벨까지)
+        // 예: Max가 33이고 Range가 5라면, 29, 30, 31, 32, 33레벨에서 true
+        bool isInSliderRange = selectedLevel > (chapterMaxLevel - sliderExposureRange) && selectedLevel <= chapterMaxLevel;
+
+        // 4. UI 표시 분기 (범위 안이면서 상자가 4개 이상 남았을 때 슬라이더 표시)
+        if (isInSliderRange && remainingBoxes >= 4)
         {
-            // 상자가 얼마 안 남았을 때: 슬라이더 끄고 보석 개수 상세 표시
-            if (DangerSlider != null && DangerSlider.gameObject.activeSelf) 
-                DangerSlider.gameObject.SetActive(false);
-                
-            SetGemItemsVisibility(true);
-            return;
-        }
-
-        // 상자가 많이 남았을 때: 슬라이더 켜고 보석 개수 상세 숨김
-        if (DangerSlider != null && !DangerSlider.gameObject.activeSelf) 
-            DangerSlider.gameObject.SetActive(true);
+            if (DangerSlider != null && !DangerSlider.gameObject.activeSelf) 
+                DangerSlider.gameObject.SetActive(true);
             
-        SetGemItemsVisibility(false);
+            SetGemItemsVisibility(false);
 
-        // 3. 위험도 슬라이더 값 계산 (레벨 모드 전용)
-        if (currentGems == null || currentGems.Count == 0) return;
+            // 위험도 계산 로직 (기존 유지)
+            if (currentGems == null || currentGems.Count == 0) return;
+            int minGemCount = currentGems.Values.Min();
+            float ratio = (remainingBoxes > 0) ? (float)minGemCount / remainingBoxes : 1f;
 
-        int minGemCount = currentGems.Values.Min();
-        float ratio = (remainingBoxes > 0) ? (float)minGemCount / remainingBoxes : 1f;
+            float sliderValue = 0f;
+            Color statusColor = Color.green;
 
-        float sliderValue = 0f;
-        Color statusColor = Color.green;
+            if (ratio < 0.5f) { statusColor = Color.red; sliderValue = Mathf.Lerp(0f, 0.33f, ratio / 0.5f); }
+            else if (ratio < 1.0f) { statusColor = Color.yellow; sliderValue = Mathf.Lerp(0.33f, 0.66f, (ratio - 0.5f) / 0.5f); }
+            else { statusColor = Color.green; sliderValue = Mathf.Lerp(0.66f, 1f, Mathf.Min(ratio - 1f, 1f)); }
 
-        // 위험도 판정 로직
-        if (ratio < 0.5f) // 위험 (빨강)
-        {
-            statusColor = Color.red;
-            sliderValue = Mathf.Lerp(0f, 0.33f, ratio / 0.5f); 
+            if (DangerSlider != null) DangerSlider.value = sliderValue;
+            if (SliderFillImage != null) SliderFillImage.color = statusColor;
         }
-        else if (ratio < 1.0f) // 경고 (노랑)
+        else
         {
-            statusColor = Color.yellow;
-            sliderValue = Mathf.Lerp(0.33f, 0.66f, (ratio - 0.5f) / 0.5f);
+            // 그 외의 경우 상세 항목 표시
+            if (DangerSlider != null && DangerSlider.gameObject.activeSelf) 
+                DangerSlider.gameObject.SetActive(false);
+            
+            SetGemItemsVisibility(true);
         }
-        else // 안전 (초록)
-        {
-            statusColor = Color.green;
-            sliderValue = Mathf.Lerp(0.66f, 1f, Mathf.Min(ratio - 1f, 1f));
-        }
-
-        // UI 적용
-        if (DangerSlider != null) DangerSlider.value = sliderValue;
-        if (SliderFillImage != null) SliderFillImage.color = statusColor;
     }
 
     private void SetGemItemsVisibility(bool visible)
@@ -153,5 +148,17 @@ public class GemCountPanelManager : MonoBehaviour
     {
         gemItemDict.Clear();
         foreach (Transform child in transform) Destroy(child.gameObject);
+    }
+
+    private int GetChapterMaxLevel(int chapterNumber)
+    {
+        switch (chapterNumber)
+        {
+            case 1: return 33;
+            case 2: return 66;
+            case 3: return 99;
+            case 100: return 100;
+            default: return 33;
+        }
     }
 }
