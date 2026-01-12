@@ -111,7 +111,7 @@ public class SoundManager : MonoBehaviour {
         {
             PlayBGMForScene(scene.name);
         }
-        // Game Scene은 GameManager가 직접 PlayBGMWithLayer 호출
+        // Game Scene은 LevelModeManager가 직접 PlayBGMWithLayer 호출
     }
     
     // ==================== BGM (기존 방식) ====================

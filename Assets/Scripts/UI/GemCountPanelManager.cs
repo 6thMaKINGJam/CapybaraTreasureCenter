@@ -36,7 +36,7 @@ public class GemCountPanelManager : MonoBehaviour
     // UI 상태를 위험도 슬라이더 모드로 강제 리셋하는 메서드
     private void ResetUIState()
     {
-        bool isChallenge = (ChallengeManager.Instance != null);
+        bool isChallenge = (ChallengeModeManager.Instance != null);
 
         if (isChallenge)
         {
@@ -80,7 +80,7 @@ public class GemCountPanelManager : MonoBehaviour
 
     private void UpdateDangerUI(int remainingBoxes)
     {
-        bool isChallenge = (ChallengeManager.Instance != null);
+        bool isChallenge = (ChallengeModeManager.Instance != null);
 
         if (isChallenge)
         {
@@ -91,7 +91,7 @@ public class GemCountPanelManager : MonoBehaviour
 
         // 1. 현재 레벨 정보 및 설정 가져오기
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
-        var gm = GameManager.Instance;
+        var gm = LevelModeManager.Instance;
 
         if (gm == null || gm.CurrentLevelConfig == null) return;
 

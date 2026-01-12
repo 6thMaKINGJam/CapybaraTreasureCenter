@@ -49,16 +49,16 @@ namespace Core
         }
         public void ExecuteUndo1()
         {
-            // 현재 씬에 GameManager가 있으면 실행
-            if (GameManager.Instance != null)
+            // 현재 씬에 levelModeManager 있으면 실행
+            if (LevelModeManager.Instance != null)
             {
-                GameManager.Instance.Process1Undo();
+                LevelModeManager.Instance.Process1Undo();
                 Debug.Log("[Core] 레벨 모드 Undo1 실행");
             }
-            // 없으면 ChallengeManager가 있는지 확인 후 실행
-            else if (ChallengeManager.Instance != null)
+            // 없으면 ChallengeModeManager가 있는지 확인 후 실행
+            else if (ChallengeModeManager.Instance != null)
             {
-                ChallengeManager.Instance.Process1Undo();
+                ChallengeModeManager.Instance.Process1Undo();
                 Debug.Log("[Core] 챌린지 모드 Undo1 실행");
             }
         }

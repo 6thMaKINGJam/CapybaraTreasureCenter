@@ -7,9 +7,9 @@ using TMPro;
 using UnityEngine.Video;
 using DG.Tweening;
 
-public class ChallengeManager : MonoBehaviour
+public class ChallengeModeManager : MonoBehaviour
 {
-    public static ChallengeManager Instance;
+    public static ChallengeModeManager Instance;
 
     [Header("Managers & Config")]
     public ChunkGenerator ChunkGenerator;
@@ -242,7 +242,7 @@ public class ChallengeManager : MonoBehaviour
         // UI 매니저를 통해 그리드 갱신 (중요!)
         if (GameUIManager.Instance != null && GameUIManager.Instance.GridManager != null)
         {
-            // OnBundleClicked는 ChallengeManager 내부에 구현된 클릭 이벤트를 연결합니다.
+            // OnBundleClicked는 ChallengeModeManager 내부에 구현된 클릭 이벤트를 연결합니다.
             GameUIManager.Instance.GridManager.RefreshGrid(gameData.CurrentDisplayBundles, OnBundleClicked);
         }
     }
@@ -742,14 +742,14 @@ public class ChallengeManager : MonoBehaviour
     
         }
         
-        Debug.LogWarning($"[GameManager] {message}");
+        Debug.LogWarning($"[ChallengeModeManager] {message}");
     }
 
     private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     {
         if(PopupParentSetHelper.Instance == null)
         {
-            Debug.LogError("[GameManager] PopupParentSetHelper가 없습니다!");
+            Debug.LogError("[ChallengeModeManager] PopupParentSetHelper가 없습니다!");
             return;
         }
         
@@ -757,7 +757,7 @@ public class ChallengeManager : MonoBehaviour
         
         if(popupObj == null)
         {
-            Debug.LogError("[GameManager] BaseConfirmationPopup 생성 실패!");
+            Debug.LogError("[ChallengeModeManager] BaseConfirmationPopup 생성 실패!");
             return;
         }
         
@@ -765,7 +765,7 @@ public class ChallengeManager : MonoBehaviour
         
         if(popup == null)
         {
-            Debug.LogError("[GameManager] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
+            Debug.LogError("[ChallengeModeManager] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
             return;
         }
         
@@ -881,7 +881,7 @@ public class ChallengeManager : MonoBehaviour
     {
         if(NotificationPanel == null || NotificationText == null)
         {
-            Debug.LogWarning("[GameManager] NotificationPanel이 할당되지 않았습니다!");
+            Debug.LogWarning("[ChallengeModeManager] NotificationPanel이 할당되지 않았습니다!");
             return;
         }
         
@@ -935,7 +935,7 @@ public class ChallengeManager : MonoBehaviour
         timeBonus = Mathf.RoundToInt(currentRemainingTime * 10f);
         currentTotalScore += (boxScore);
 
-        Debug.Log($"[Challenge] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
+        Debug.Log($"[ChallengeModeManager] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
         // 1. 시간 보상 (설정된 10초 등 반영)
         currentRemainingTime += currentActiveRequirement.RewardTime;
 
@@ -1056,7 +1056,7 @@ public class ChallengeManager : MonoBehaviour
         if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
         {
             backgroundVideoPlayer.Stop();
-            Debug.Log("[GameManager] VideoPlayer 정지");
+            Debug.Log("[ChallengeModeManager] VideoPlayer 정지");
         }
         
         // BGM 정지

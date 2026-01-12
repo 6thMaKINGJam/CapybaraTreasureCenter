@@ -106,7 +106,7 @@ public class GameUIManager : MonoBehaviour
 
     public void SetupStarMarkers(float maxTime)
     {
-        // GameManager의 기준: 3개(0.6), 2개(0.8)
+        // LevelModeManager의 기준: 3개(0.6), 2개(0.8)
         // 슬라이더가 오른쪽에서 왼쪽으로 줄어든다면 (1 -> 0), 
         // 시간이 60% 남았을 때가 아니라 '전체 시간의 40% 지점'에 별이 있어야 합니다.
         // 하지만 보통 클리어 시간 기준이므로, 남은 시간 슬라이더 기준으로는 반대로 계산합니다.
@@ -148,49 +148,49 @@ public class GameUIManager : MonoBehaviour
             CancelSelectButton.onClick.RemoveAllListeners();
         }
 
-        if (GameManager.Instance != null)
+        if (LevelModeManager.Instance != null)
         {
             // 레벨 모드일 때
-            CompleteButton.onClick.AddListener(() => GameManager.Instance.OnClickComplete());
+            CompleteButton.onClick.AddListener(() => LevelModeManager.Instance.OnClickComplete());
             // 상자 전체 되돌리기 버튼 연결
             if (UndoButton != null) {
                 UndoButton.onClick.RemoveAllListeners();
-                UndoButton.onClick.AddListener(() => GameManager.Instance.ProcessUndo());
+                UndoButton.onClick.AddListener(() => LevelModeManager.Instance.ProcessUndo());
             }
 
             // 힌트 버튼 연결
             if (RefreshButton != null) {
                 RefreshButton.onClick.RemoveAllListeners();
-                RefreshButton.onClick.AddListener(() => GameManager.Instance.ProcessRefresh());
+                RefreshButton.onClick.AddListener(() => LevelModeManager.Instance.ProcessRefresh());
             }
             
             // 레벨 모드 선택 취소 연결
             if (CancelSelectButton != null) {
-                CancelSelectButton.onClick.AddListener(() => GameManager.Instance.CancelSelection());
+                CancelSelectButton.onClick.AddListener(() => LevelModeManager.Instance.CancelSelection());
             }
         }
-        else if (ChallengeManager.Instance != null)
+        else if (ChallengeModeManager.Instance != null)
         {
             // 챌린지 모드일 때
-            CompleteButton.onClick.AddListener(() => ChallengeManager.Instance.OnClickComplete());
+            CompleteButton.onClick.AddListener(() => ChallengeModeManager.Instance.OnClickComplete());
 
             if (CancelSelectButton != null) {
-                CancelSelectButton.onClick.AddListener(() => ChallengeManager.Instance.CancelSelection());
+                CancelSelectButton.onClick.AddListener(() => ChallengeModeManager.Instance.CancelSelection());
             }
             if (GridManager != null)
             {
-                // ChallengeManager가 보관 중인 현재 디스플레이 데이터를 사용하여 클릭 이벤트를 연결합니다.
-                // (ChallengeManager.InitChallengeMode에서 수행하지만, UI 설정 시 확답을 위해 추가)
+                // ChallengeModeManager가 보관 중인 현재 디스플레이 데이터를 사용하여 클릭 이벤트를 연결합니다.
+                // (ChallengeModeManager.InitChallengeMode에서 수행하지만, UI 설정 시 확답을 위해 추가)
             }
             if (GridManager != null) {
-                // ChallengeManager가 이미 생성한 데이터를 사용하여 그리드를 다시 그려주며 콜백을 확실히 연결합니다.
-                ChallengeManager.Instance.Invoke("ExtractDisplayBundles", 0.05f); 
+                // ChallengeModeManager가 이미 생성한 데이터를 사용하여 그리드를 다시 그려주며 콜백을 확실히 연결합니다.
+                ChallengeModeManager.Instance.Invoke("ExtractDisplayBundles", 0.05f); 
             }
             // [추가] 조건 재선택 버튼 연결
             if (ReselectReqButton != null)
             {
                 ReselectReqButton.onClick.RemoveAllListeners();
-                ReselectReqButton.onClick.AddListener(() => ChallengeManager.Instance.OnClickReselectRequirement());
+                ReselectReqButton.onClick.AddListener(() => ChallengeModeManager.Instance.OnClickReselectRequirement());
             }
         }
         

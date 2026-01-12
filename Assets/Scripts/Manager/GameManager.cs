@@ -11,9 +11,9 @@ using System;
 using UnityEngine.Video;
 using System.IO;
 
-public class GameManager : MonoBehaviour
+public class LevelModeManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static LevelModeManager Instance;
     
     [Header("매니저 참조")]
     public ChunkGenerator ChunkGenerator;
@@ -159,7 +159,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
             UIManager.SetupStarMarkers(timeLimit);
         }
         
-        Debug.Log($"[GameManager] 레벨 {selectedLevel} (챕터 {CurrentLevelConfig.ChapterNumber}, 챕터 내 {levelInChapter}) - 상자 {boxCount}개, 시간 {timeLimit}초");
+        Debug.Log($"[levelmodeManager] 레벨 {selectedLevel} (챕터 {CurrentLevelConfig.ChapterNumber}, 챕터 내 {levelInChapter}) - 상자 {boxCount}개, 시간 {timeLimit}초");
         
         // ✅ BGM + 레이어 재생
         if(SoundManager.Instance != null)
@@ -181,7 +181,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
             backgroundVideoPlayer.Prepare();
             backgroundVideoPlayer.Play();
             
-            Debug.Log($"[GameManager] Video 재생: {videoPath}");
+            Debug.Log($"[LevelModeManager] Video 재생: {videoPath}");
         }
         
         // ✅ 카피바라 의상 전환
@@ -246,7 +246,7 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
     
     ExtractDisplayBundles();
     
-    Debug.Log($"[GameManager] 게임 설정 완료: 상자 {boxCount}개, 제한시간 {timeLimit}초");
+    Debug.Log($"[LevelModeManager] 게임 설정 완료: 상자 {boxCount}개, 제한시간 {timeLimit}초");
 }
 
     
@@ -266,21 +266,21 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         {
             case 1:
                 if(Costume_Chapter1 != null) Costume_Chapter1.SetActive(true);
-                Debug.Log("[GameManager] 의상: Chapter1");
+                Debug.Log("[LevelModeManager] 의상: Chapter1");
                 break;
             case 2:
                 // 챕터2는 A, B 둘 다 활성화
                 if(Costume_Chapter2_A != null) Costume_Chapter2_A.SetActive(true);
                 if(Costume_Chapter2_B != null) Costume_Chapter2_B.SetActive(true);
-                Debug.Log("[GameManager] 의상: Chapter2 (A + B)");
+                Debug.Log("[LevelModeManager] 의상: Chapter2 (A + B)");
                 break;
             case 3:
                 if(Costume_Chapter3 != null) Costume_Chapter3.SetActive(true);
-                Debug.Log("[GameManager] 의상: Chapter3");
+                Debug.Log("[LevelModeManager] 의상: Chapter3");
                 break;
             case 100:
                 if(Costume_Level100 != null) Costume_Level100.SetActive(true);
-                Debug.Log("[GameManager] 의상: Level100");
+                Debug.Log("[LevelModeManager] 의상: Level100");
                 break;
         }
     }
@@ -324,11 +324,11 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         
         if(CurrentLevelConfig == null)
         {
-            Debug.LogError($"[GameManager] LevelConfig_{chapterNumber}를 찾을 수 없습니다!");
+            Debug.LogError($"[LevelModeManager] LevelConfig_{chapterNumber}를 찾을 수 없습니다!");
         }
         else
         {
-            Debug.Log($"[GameManager] LevelConfig_{chapterNumber} 로드 완료");
+            Debug.Log($"[LevelModeManager] LevelConfig_{chapterNumber} 로드 완료");
         }
     }
     
@@ -739,7 +739,7 @@ private class BundleRestoreInfo
         return true;
     }
     
- // GameManager.cs 내부
+ // LevelModeManager.cs 내부
 
 public void ProcessBoxCompletion()
 {
@@ -891,7 +891,7 @@ public void ProcessBoxCompletion()
         
         // 2. 게임오버 팝업 생성
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
-        Debug.Log("[GameManager] 게임오버 팝업 생성");
+        Debug.Log("[LevelModeManager] 게임오버 팝업 생성");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         SoundManager.Instance.PlayFX(SoundType.GameOver);
         
@@ -907,7 +907,7 @@ public void ProcessBoxCompletion()
         else
         {
             // fallback
-            Debug.LogError("[GameManager] GameOverPopup을 찾을 수 없습니다!");
+            Debug.LogError("[LevelModeManager] GameOverPopup을 찾을 수 없습니다!");
         }
     }
 private void HandleLevelClear()
@@ -1068,7 +1068,7 @@ private void StopBackgroundMedia()
     if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
     {
         backgroundVideoPlayer.Stop();
-        Debug.Log("[GameManager] VideoPlayer 정지");
+        Debug.Log("[LevelModeManager] VideoPlayer 정지");
     }
     
     // BGM 정지
@@ -1110,7 +1110,7 @@ private void StopBackgroundMedia()
     {
         if(EndingPrefab == null)
         {
-            Debug.LogError("[GameManager] EndingPrefab이 할당되지 않았습니다!");
+            Debug.LogError("[LevelModeManager] EndingPrefab이 할당되지 않았습니다!");
             SceneManager.LoadScene("MainHome");
             return;
         }
@@ -1235,7 +1235,7 @@ private void StopBackgroundMedia()
     {
         if(AppleManager.Instance == null)
     {
-            Debug.LogError("[GameManager] AppleManager가 없습니다!");
+            Debug.LogError("[LevelModeManager] AppleManager가 없습니다!");
         return;
     }
    
@@ -1320,7 +1320,7 @@ private void StopBackgroundMedia()
         }
         
         ShowTopNotification($"시간 +{addTime}초 추가되었습니다카피!");
-        Debug.Log($"[GameManager] 시간추가 완료! 현재 경과시간: {gameData.ElapsedTime} / 제한시간: {timeLimit}");
+        Debug.Log($"[LevelModeManager] 시간추가 완료! 현재 경과시간: {gameData.ElapsedTime} / 제한시간: {timeLimit}");
     }
     
 
@@ -1639,7 +1639,7 @@ private void ShowItemPurchasePopup(string itemName, Action onPurchaseSuccess)
 // }
 
 
-// Assets/Scripts/Manager/GameManager.cs
+// Assets/Scripts/Manager/LevelModeManager.cs
 
 // private void ExecuteHint()
 // {
@@ -2002,7 +2002,7 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
 {
     if(PopupParentSetHelper.Instance == null)
     {
-        Debug.LogError("[GameManager] PopupParentSetHelper가 없습니다!");
+        Debug.LogError("[LevelModeManager] PopupParentSetHelper가 없습니다!");
         return;
     }
     
@@ -2010,7 +2010,7 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
     if(popupObj == null)
     {
-        Debug.LogError("[GameManager] BaseConfirmationPopup 생성 실패!");
+        Debug.LogError("[LevelModeManager] BaseConfirmationPopup 생성 실패!");
         return;
     }
     
@@ -2018,7 +2018,7 @@ private void ShowAdConfirmationPopup(Action onYes, Action onNo)
     
     if(popup == null)
     {
-        Debug.LogError("[GameManager] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
+        Debug.LogError("[LevelModeManager] BaseConfirmationPopup 컴포넌트를 찾을 수 없습니다!");
         return;
     }
     
@@ -2166,7 +2166,7 @@ private void UpdateAllItemUI()
     
         }
         
-        Debug.LogWarning($"[GameManager] {message}");
+        Debug.LogWarning($"[LevelModeManager] {message}");
     }
     
     private void FlashRedScreen()
@@ -2191,7 +2191,7 @@ private void UpdateAllItemUI()
 {
     if(NotificationPanel == null || NotificationText == null)
     {
-        Debug.LogWarning("[GameManager] NotificationPanel이 할당되지 않았습니다!");
+        Debug.LogWarning("[LevelModeManager] NotificationPanel이 할당되지 않았습니다!");
         return;
     }
     
