@@ -19,9 +19,9 @@ MonoBehaviour:
   MinTime: 60
   GemTypeCount: 4
   MaxRequiredPerBox: 12
-  MaxHintCount: 2
+  MaxRefreshCount: 1
   MaxUndoCount: 4
   MaxUndo1Count: 3
   TimeAddAmount: 10
-  BackgroundVideoFileName: bg_chapter1.mp4
-  AdditionalBGMLayer: {fileID: 0}
+  BackgroundVideoFileName: gamescreen_beach.mp4
+  AdditionalBGMLayer: {fileID: 8300000, guid: f0efedc13ebf245a8a27418c07413264, type: 3}

@@ -19,9 +19,9 @@ MonoBehaviour:
   MinTime: 60
   GemTypeCount: 3
   MaxRequiredPerBox: 10
-  MaxHintCount: 1
+  MaxRefreshCount: 1
   MaxUndoCount: 3
   MaxUndo1Count: 3
   TimeAddAmount: 10
-  BackgroundVideoFileName: gamescreen_challangeMode.mp4
+  BackgroundVideoFileName: gamescreen_jungle.mp4
   AdditionalBGMLayer: {fileID: 8300000, guid: f674f9de95e60451db31d6a4f04171db, type: 3}

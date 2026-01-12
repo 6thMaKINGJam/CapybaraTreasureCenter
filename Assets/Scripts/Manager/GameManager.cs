@@ -56,13 +56,10 @@ public float NotificationDuration = 2f; // 표시 시간
     private Coroutine timeCheckCoroutine;
     
 
-// ✅ 카피바라 의상 오브젝트들 (Inspector 할당)
-    [Header("카피바라 의상")]
-    public GameObject Costume_Chapter1;
-    public GameObject Costume_Chapter2_A;
-    public GameObject Costume_Chapter2_B;
-    public GameObject Costume_Chapter3;
-    public GameObject Costume_Level100;
+
+
+[Header("Visual Management")]
+[SerializeField] private ChapterVisualController chapterVisualController;
 
     // 연속 성공 카운트
     private int consecutiveSuccessCount = 0;
@@ -184,9 +181,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
             Debug.Log($"[LevelModeManager] Video 재생: {videoPath}");
         }
         
-        // ✅ 카피바라 의상 전환
-        SetCapybaraCostume(CurrentLevelConfig.ChapterNumber);
-        
+        // ✅ 카피바라 의상 전환 
         // 게임 설정 (계산된 난이도 적용)
         SetupNewGameWithDifficulty(boxCount, timeLimit);
         
@@ -251,40 +246,6 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
 
     
 
-// ✅ 카피바라 의상 전환
-    private void SetCapybaraCostume(int chapterNumber)
-    {
-        // 모든 의상 비활성화
-        if(Costume_Chapter1 != null) Costume_Chapter1.SetActive(false);
-        if(Costume_Chapter2_A != null) Costume_Chapter2_A.SetActive(false);
-        if(Costume_Chapter2_B != null) Costume_Chapter2_B.SetActive(false);
-        if(Costume_Chapter3 != null) Costume_Chapter3.SetActive(false);
-        if(Costume_Level100 != null) Costume_Level100.SetActive(false);
-        
-        // 챕터별 활성화
-        switch(chapterNumber)
-        {
-            case 1:
-                if(Costume_Chapter1 != null) Costume_Chapter1.SetActive(true);
-                Debug.Log("[LevelModeManager] 의상: Chapter1");
-                break;
-            case 2:
-                // 챕터2는 A, B 둘 다 활성화
-                if(Costume_Chapter2_A != null) Costume_Chapter2_A.SetActive(true);
-                if(Costume_Chapter2_B != null) Costume_Chapter2_B.SetActive(true);
-                Debug.Log("[LevelModeManager] 의상: Chapter2 (A + B)");
-                break;
-            case 3:
-                if(Costume_Chapter3 != null) Costume_Chapter3.SetActive(true);
-                Debug.Log("[LevelModeManager] 의상: Chapter3");
-                break;
-            case 100:
-                if(Costume_Level100 != null) Costume_Level100.SetActive(true);
-                Debug.Log("[LevelModeManager] 의상: Level100");
-                break;
-        }
-    }
-
      // ✅ 챕터별 시작 레벨 반환
     private int GetChapterStartLevel(int chapterNumber)
     {
@@ -328,6 +289,11 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         }
         else
         {
+             // ✅ Visual 적용
+        if(chapterVisualController != null)
+        {
+            chapterVisualController.ApplyVisuals(CurrentLevelConfig);
+        }
             Debug.Log($"[LevelModeManager] LevelConfig_{chapterNumber} 로드 완료");
         }
     }
