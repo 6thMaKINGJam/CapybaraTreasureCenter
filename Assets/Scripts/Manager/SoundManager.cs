@@ -274,26 +274,39 @@ public class SoundManager : MonoBehaviour {
     }
     
     // ✅ 모든 BGM 즉시 정리 (씬 전환 시)
-    public void StopAllBGM()
+   // ✅ null 체크 추가
+public void StopAllBGM()
+{
+    if(currentBGMSource != null)
     {
         currentBGMSource.DOKill();
         currentBGMSource.Stop();
         currentBGMSource.clip = null;
-        
+    }
+    
+    if(nextBGMSource != null)
+    {
         nextBGMSource.DOKill();
         nextBGMSource.Stop();
         nextBGMSource.clip = null;
-        
+    }
+    
+    if(currentBGMLayer != null)
+    {
         currentBGMLayer.DOKill();
         currentBGMLayer.Stop();
         currentBGMLayer.clip = null;
-        
+    }
+    
+    if(nextBGMLayer != null)
+    {
         nextBGMLayer.DOKill();
         nextBGMLayer.Stop();
         nextBGMLayer.clip = null;
-        
-        Debug.Log("[SoundManager] 모든 BGM 정리 완료");
     }
+    
+    Debug.Log("[SoundManager] 모든 BGM 정리 완료");
+}
     
     // ==================== FX ====================
     
