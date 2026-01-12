@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0561db5b777cf41d287ede4d4ed07fe5
+guid: 3a244ac41ab9a48a8ac2af4c39a85faf
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,85 +136,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_0
+      name: ui_infopanel_0
       rect:
         serializedVersion: 2
-        x: 131
-        y: 4707
-        width: 2845
-        height: 417
+        x: 48
+        y: 89
+        width: 931
+        height: 682
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 290, y: 337, z: 339, w: 246}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7654f760dddf54938b1851ffd97642fd
-      internalID: -1952702205
+      spriteID: edf8224b39f914f9b82143e472f0ffcd
+      internalID: 852705589
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_1
+      name: ui_infopanel_1
       rect:
         serializedVersion: 2
-        x: 450
-        y: 4468
-        width: 2500
-        height: 275
+        x: 1029
+        y: 403
+        width: 626
+        height: 322
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 160, y: 133, z: 215, w: 166}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b170b01419994d149b3a3e01ad96343
-      internalID: -367766475
+      spriteID: b6feaa6c3988d42748eb51b96720255e
+      internalID: 2088656478
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_2
+      name: ui_infopanel_2
       rect:
         serializedVersion: 2
-        x: 433
-        y: 4140
-        width: 2526
-        height: 266
+        x: 1038
+        y: 129
+        width: 533
+        height: 242
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 147, y: 118, z: 110, w: 124}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 614c48f635f4c4cd6a81a9b9225166f8
-      internalID: 1793212449
+      spriteID: 4c478c7cbc07a4ae2a8914ac4e7be2e8
+      internalID: 465599929
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_3
+      name: ui_infopanel_3
       rect:
         serializedVersion: 2
-        x: 96
-        y: 444
-        width: 2898
-        height: 2189
+        x: 1701
+        y: 500
+        width: 177
+        height: 164
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e190636685bab47f1baf78297964cf6d
-      internalID: -1990871140
+      spriteID: 97e2d27c9ac02447a838a56b7b0d8f1d
+      internalID: 1937889961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui_infopanel_4
+      rect:
+        serializedVersion: 2
+        x: 1727
+        y: 287
+        width: 166
+        height: 145
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de2055a3699ab44199d07d79e2737e1c
+      internalID: -1940867028
       vertices: []
       indices: 
       edges: []
@@ -230,10 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      gamescreen_tang_pann_dangerbar_0: -1952702205
-      gamescreen_tang_pann_dangerbar_1: -367766475
-      gamescreen_tang_pann_dangerbar_2: 1793212449
-      gamescreen_tang_pann_dangerbar_3: -1990871140
+      ui_infopanel_0: 852705589
+      ui_infopanel_1: 2088656478
+      ui_infopanel_2: 465599929
+      ui_infopanel_3: 1937889961
+      ui_infopanel_4: -1940867028
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

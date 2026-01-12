@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0561db5b777cf41d287ede4d4ed07fe5
+guid: e7618ba80cc14426ba5015eb34aff888
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -134,91 +134,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_0
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 4707
-        width: 2845
-        height: 417
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7654f760dddf54938b1851ffd97642fd
-      internalID: -1952702205
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_1
-      rect:
-        serializedVersion: 2
-        x: 450
-        y: 4468
-        width: 2500
-        height: 275
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4b170b01419994d149b3a3e01ad96343
-      internalID: -367766475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_2
-      rect:
-        serializedVersion: 2
-        x: 433
-        y: 4140
-        width: 2526
-        height: 266
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 614c48f635f4c4cd6a81a9b9225166f8
-      internalID: 1793212449
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 444
-        width: 2898
-        height: 2189
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e190636685bab47f1baf78297964cf6d
-      internalID: -1990871140
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -229,11 +145,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      gamescreen_tang_pann_dangerbar_0: -1952702205
-      gamescreen_tang_pann_dangerbar_1: -367766475
-      gamescreen_tang_pann_dangerbar_2: 1793212449
-      gamescreen_tang_pann_dangerbar_3: -1990871140
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

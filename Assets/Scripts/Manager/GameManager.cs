@@ -214,7 +214,8 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
     gameData.StartTime = Time.time;
     gameData.ElapsedTime = 0f;
     gameData.UndoCount = 0;
-    gameData.HintCount = 0;
+    gameData.Undo1Count = 0;
+    gameData.RefreshCount = 0;
     
     // ✅ 임시 Config 생성 제거! 직접 파라미터 전달
     chunkData = ChunkGenerator.GenerateAllChunks(
@@ -1402,49 +1403,49 @@ private IEnumerator ExecuteUndoWithCancle()
         ShowTopNotification("이전 상태로 되돌아갔습니다카피!");
     }
     
-//     public void ProcessRefresh()
-// {
-//     gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
+    public void ProcessRefresh()
+{
+    gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
         
-//     if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
-//     {
-//         ShowAdConfirmationPopup(() =>
-//         {
-//             AdManager.Instance.ShowRewardedAd((success) =>
-//             {
-//                 if(success) ExecuteRefresh();
-//                 // ✅ Count 원복 없음
-//             });
-//         },
-//         null); // ✅ Count 원복 없음
-//     }
-//     else
-//     {
-//         ExecuteRefresh();
-//     }
-// }
+    if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
+    {
+        ShowAdConfirmationPopup(() =>
+        {
+            AdManager.Instance.ShowRewardedAd((success) =>
+            {
+                if(success) ExecuteRefresh();
+                // ✅ Count 원복 없음
+            });
+        },
+        null); // ✅ Count 원복 없음
+    }
+    else
+    {
+        ExecuteRefresh();
+    }
+}
 
     
-    // private void ExecuteRefresh()
-    // {
-    //     foreach(var bundle in gameData.CurrentDisplayBundles)
-    //     {
-    //         if(!gameData.BundlePool.Contains(bundle))
-    //         {
-    //             gameData.BundlePool.Add(bundle);
-    //         }
-    //     }
+    private void ExecuteRefresh()
+    {
+        foreach(var bundle in gameData.CurrentDisplayBundles)
+        {
+            if(!gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
         
-    //     System.Random rng = new System.Random();
-    //     gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
-    //     UpdateAllItemUI();
+        System.Random rng = new System.Random();
+        gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
+        UpdateAllItemUI();
         
-    //     ExtractDisplayBundles();
-    //     RefreshUI();
+        ExtractDisplayBundles();
+        RefreshUI();
         
-    //     ShowTopNotification("카드가 재배열되었습니다카피!");
-    // }
-    // Assets/Scripts/Manager/GameManager.cs
+        ShowTopNotification("카드가 재배열되었습니다카피!");
+    }
+   
 
     public void Process1Undo()
     {
@@ -1550,25 +1551,25 @@ private IEnumerator ExecuteUndoWithCancle()
     }
 
 
-public void ProcessHint()
-{
-    // 게임당 1회 제한
-    if(gameData.HintCount >= CurrentLevelConfig.MaxHintCount)
-    {
-        ShowAdConfirmationPopup(() =>
-        {
-            AdManager.Instance.ShowRewardedAd((success) =>
-            {
-                if(success)
-                {
+// public void ProcessHint()
+// {
+//     // 게임당 1회 제한
+//     if(gameData.HintCount >= CurrentLevelConfig.MaxHintCount)
+//     {
+//         ShowAdConfirmationPopup(() =>
+//         {
+//             AdManager.Instance.ShowRewardedAd((success) =>
+//             {
+//                 if(success)
+//                 {
                     
-                   StartCoroutine(ExecuteHintWithLoading());
-                }
-            });
-        },
-        null);
-    }
-}
+//                    StartCoroutine(ExecuteHintWithLoading());
+//                 }
+//             });
+//         },
+//         null);
+//     }
+// }
 
 // ✅ 아이템 구매 팝업 표시
 private void ShowItemPurchasePopup(string itemName, Action onPurchaseSuccess)
@@ -1583,95 +1584,95 @@ private void ShowItemPurchasePopup(string itemName, Action onPurchaseSuccess)
 }
 
 
-// ✅ 새 메서드: 로딩 UI 포함 힌트 실행
-// ✅ ExecuteHintWithLoading() 수정 - HintManager 사용
-private IEnumerator ExecuteHintWithLoading()
-{
-    // 1. 로딩 UI 표시
-    if(HintLoadingUI != null)
-    {
-        HintLoadingUI.SetActive(true);
-    }
+// // ✅ 새 메서드: 로딩 UI 포함 힌트 실행
+// // ✅ ExecuteHintWithLoading() 수정 - HintManager 사용
+// private IEnumerator ExecuteHintWithLoading()
+// {
+//     // 1. 로딩 UI 표시
+//     if(HintLoadingUI != null)
+//     {
+//         HintLoadingUI.SetActive(true);
+//     }
     
-    // 2. 선택 강제 비우기
-    if(gameData.SelectedBundles.Count > 0)
-    {
-        CancelSelection();
-        yield return new WaitForSeconds(0.6f);
-    }
+//     // 2. 선택 강제 비우기
+//     if(gameData.SelectedBundles.Count > 0)
+//     {
+//         CancelSelection();
+//         yield return new WaitForSeconds(0.6f);
+//     }
     
-    // 3. 한 프레임 대기 (백트래킹 시간 확보)
-    yield return null;
+//     // 3. 한 프레임 대기 (백트래킹 시간 확보)
+//     yield return null;
     
-    // 4. ✅ HintManager에 위임
-    List<GemBundle> hintBundles = hintManager.FindHintCombination(
-        GetCurrentBox(),
-        gameData.BundlePool,
-        gameData.CurrentDisplayBundles,
-        gameData.Boxes.Count - gameData.CurrentBoxIndex,
-        CurrentLevelConfig.GemTypeCount
-    );
+//     // 4. ✅ HintManager에 위임
+//     List<GemBundle> hintBundles = hintManager.FindHintCombination(
+//         GetCurrentBox(),
+//         gameData.BundlePool,
+//         gameData.CurrentDisplayBundles,
+//         gameData.Boxes.Count - gameData.CurrentBoxIndex,
+//         CurrentLevelConfig.GemTypeCount
+//     );
     
-    // 5. 로딩 UI 숨김
-    if(HintLoadingUI != null)
-    {
-        HintLoadingUI.SetActive(false);
-    }
+//     // 5. 로딩 UI 숨김
+//     if(HintLoadingUI != null)
+//     {
+//         HintLoadingUI.SetActive(false);
+//     }
     
-    // 6. 결과 처리
-    if(hintBundles != null && hintBundles.Count > 0)
-    {
-        gameData.HintCount++;
-        GridManager.ShakeBundles(hintBundles);
-        ShowTopNotification("힌트를 확인하세요카피!");
-    }
-    else
-    {
-        // 모든 전략 실패 → 이미 글렀음
-        if(CapyDialogue != null && CapyDialogueText != null)
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
-        }
-    }
+//     // 6. 결과 처리
+//     if(hintBundles != null && hintBundles.Count > 0)
+//     {
+//         gameData.HintCount++;
+//         GridManager.ShakeBundles(hintBundles);
+//         ShowTopNotification("힌트를 확인하세요카피!");
+//     }
+//     else
+//     {
+//         // 모든 전략 실패 → 이미 글렀음
+//         if(CapyDialogue != null && CapyDialogueText != null)
+//         {
+//             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
+//         }
+//     }
     
-    UpdateAllItemUI();
-}
+//     UpdateAllItemUI();
+// }
 
 
 // Assets/Scripts/Manager/GameManager.cs
 
-private void ExecuteHint()
-{
-    // 1단계: 글렀는지 빠른 판정
-    if(!CheckIfSolvable())
-    {
-        if(CapyDialogue != null && CapyDialogueText != null)
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
-        }
-        return;
-    }
+// private void ExecuteHint()
+// {
+//     // 1단계: 글렀는지 빠른 판정
+//     if(!CheckIfSolvable())
+//     {
+//         if(CapyDialogue != null && CapyDialogueText != null)
+//         {
+//             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.AlreadyFailed);
+//         }
+//         return;
+//     }
     
-    // 2~3단계: 힌트 조합 찾기
-    List<GemBundle> hintBundles = FindHintCombination();
+//     // 2~3단계: 힌트 조합 찾기
+//     List<GemBundle> hintBundles = FindHintCombination();
     
-    if(hintBundles != null && hintBundles.Count > 0)
-    {
-        gameData.HintCount++;
-        // 힌트 표시 (흔들림)
-        GridManager.ShakeBundles(hintBundles);
+//     if(hintBundles != null && hintBundles.Count > 0)
+//     {
+//         gameData.HintCount++;
+//         // 힌트 표시 (흔들림)
+//         GridManager.ShakeBundles(hintBundles);
         
-        ShowTopNotification("힌트를 확인하세요카피!");
+//         ShowTopNotification("힌트를 확인하세요카피!");
             
-    }
-    else
-    {
-        // 조합 실패 (현재 화면에서 불가능)
-        ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침을 추천합니다카피!");
-    }
+//     }
+//     else
+//     {
+//         // 조합 실패 (현재 화면에서 불가능)
+//         ShowWarning("현재 화면에서 조합을 찾을 수 없습니다카피! 새로고침을 추천합니다카피!");
+//     }
     
-    UpdateAllItemUI();
-}
+//     UpdateAllItemUI();
+// }
 
 // ========== 1단계: 빠른 글렀는지 판정 ==========
 private bool CheckIfSolvable()
@@ -2039,13 +2040,13 @@ private void UpdateAllItemUI()
     // Undo/Refresh는 기존 방식
     int undoLeft = Mathf.Max(0, CurrentLevelConfig.MaxUndoCount - gameData.UndoCount);
     int undo1Left = Mathf.Max(0, CurrentLevelConfig.MaxUndo1Count - gameData.Undo1Count);
-    int hintLeft = Mathf.Max(0, CurrentLevelConfig.MaxHintCount - gameData.HintCount);
+    int refreshLeft = Mathf.Max(0, CurrentLevelConfig.MaxRefreshCount - gameData.RefreshCount);
     
      // ✅ 수정: 최대 횟수도 함께 전달
     UIManager.UpdateHintAndItemUI(
-        hintLeft, CurrentLevelConfig.MaxHintCount,
-        undo1Left, CurrentLevelConfig.MaxUndo1Count,
-        undoLeft, CurrentLevelConfig.MaxUndoCount
+        refreshLeft,
+        undo1Left,
+        undoLeft
     );
 
 }

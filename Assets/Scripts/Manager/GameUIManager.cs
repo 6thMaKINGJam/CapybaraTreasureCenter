@@ -21,7 +21,8 @@ public class GameUIManager : MonoBehaviour
     [Header("상단/하단 버튼들")]
     public Button PauseButton;
     public Button ResumeButton;
-    public Button HintButton;
+    public Button RefreshButton;
+    
     public Button CancelSelectButton;
     public Button UndoButton;
     public Button CompleteButton;
@@ -35,7 +36,7 @@ public class GameUIManager : MonoBehaviour
     public Slider TimerSlider;
 
     [Header("아이템 남은 횟수 텍스트")]
-    public TextMeshProUGUI HintCountText;
+    public TextMeshProUGUI RefreshCountText;
     public TextMeshProUGUI Undo1CountText; // 이미지의 RetryButton이 새로고침 역할이라면
     public TextMeshProUGUI UndoCountText;
     
@@ -118,22 +119,7 @@ public class GameUIManager : MonoBehaviour
         // 별 2개 위치 (남은 시간 20% 지점 = 0.2)
         star2Marker.anchoredPosition = new Vector2(sliderWidth * 0.2f, 0);
     }
-// ✅ 수정: 최대 횟수 파라미터 추가
-public void UpdateHintAndItemUI(
-    int hintLeft, int maxHint,
-    int refreshLeft, int maxRefresh,
-    int undoLeft, int maxUndo)
-{
-    if (HintCountText != null) 
-        HintCountText.text = $"{hintLeft}";
-    
-    if (Undo1CountText != null) 
-        Undo1CountText.text = $"{refreshLeft}";
-    
-    if (UndoCountText != null) 
-        UndoCountText.text = $"{undoLeft}";
-}
-    
+
 
     // ========== 버튼 연결 ==========
     private void SetupButtons(){
@@ -173,9 +159,9 @@ public void UpdateHintAndItemUI(
             }
 
             // 힌트 버튼 연결
-            if (HintButton != null) {
-                HintButton.onClick.RemoveAllListeners();
-                HintButton.onClick.AddListener(() => GameManager.Instance.ProcessHint());
+            if (RefreshButton != null) {
+                RefreshButton.onClick.RemoveAllListeners();
+                RefreshButton.onClick.AddListener(() => GameManager.Instance.ProcessRefresh());
             }
             
             // 레벨 모드 선택 취소 연결
@@ -212,13 +198,13 @@ public void UpdateHintAndItemUI(
     }
 
 // ✅ 기존 UpdateItemUI() 대신 사용
-public void UpdateHintAndItemUI(int hintLeft, int refreshLeft, int undoLeft)
+public void UpdateHintAndItemUI(int refreshLeft, int undo1Left, int undoLeft)
 {
-    if (HintCountText != null) 
-        HintCountText.text = hintLeft.ToString();
+    if (RefreshCountText != null) 
+        RefreshCountText.text = refreshLeft.ToString();
     
     if (Undo1CountText != null) 
-        Undo1CountText.text = refreshLeft.ToString();
+        Undo1CountText.text = undo1Left.ToString();
     
     if (UndoCountText != null) 
         UndoCountText.text = undoLeft.ToString();

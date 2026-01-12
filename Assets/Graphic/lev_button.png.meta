@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0561db5b777cf41d287ede4d4ed07fe5
+guid: 845f37d7a10564b9fa211bea36b09f93
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,85 +136,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_0
+      name: lev_button_0
       rect:
         serializedVersion: 2
-        x: 131
-        y: 4707
-        width: 2845
-        height: 417
+        x: 463
+        y: 4605
+        width: 349
+        height: 403
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 94, y: 142, z: 105, w: 152}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7654f760dddf54938b1851ffd97642fd
-      internalID: -1952702205
+      spriteID: 0428a29d79a084683b38cc6b27558a09
+      internalID: 1347139722
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_1
+      name: lev_button_1
       rect:
         serializedVersion: 2
-        x: 450
-        y: 4468
-        width: 2500
-        height: 275
+        x: 871
+        y: 3090
+        width: 2116
+        height: 1257
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b170b01419994d149b3a3e01ad96343
-      internalID: -367766475
+      spriteID: ebba2763860e74356a7696cf9fa36af7
+      internalID: -1707714711
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_2
+      name: lev_button_2
       rect:
         serializedVersion: 2
-        x: 433
-        y: 4140
-        width: 2526
-        height: 266
+        x: 103
+        y: 1828
+        width: 1982
+        height: 1004
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 614c48f635f4c4cd6a81a9b9225166f8
-      internalID: 1793212449
+      spriteID: 63fcf9bddf3714d2babfa62c2ffedb8f
+      internalID: -44932306
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: gamescreen_tang_pann_dangerbar_3
+      name: lev_button_3
       rect:
         serializedVersion: 2
-        x: 96
-        y: 444
-        width: 2898
-        height: 2189
+        x: 799
+        y: 369
+        width: 2172
+        height: 980
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e190636685bab47f1baf78297964cf6d
-      internalID: -1990871140
+      spriteID: 8ad4b2d3a24d64d51afee867ecfd1e98
+      internalID: 617868433
       vertices: []
       indices: 
       edges: []
@@ -230,10 +230,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      gamescreen_tang_pann_dangerbar_0: -1952702205
-      gamescreen_tang_pann_dangerbar_1: -367766475
-      gamescreen_tang_pann_dangerbar_2: 1793212449
-      gamescreen_tang_pann_dangerbar_3: -1990871140
+      lev_button_0: 1347139722
+      lev_button_1: -1707714711
+      lev_button_2: -44932306
+      lev_button_3: 617868433
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

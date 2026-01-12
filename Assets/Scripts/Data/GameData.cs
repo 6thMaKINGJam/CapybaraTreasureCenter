@@ -66,7 +66,7 @@ public class GameData
     [Header("아이템 사용 정보")]
     public int UndoCount;
     public int Undo1Count;
-    public int HintCount;   
+    public int RefreshCount;   
     
     [Header("시간 기록")]
     public float StartTime; // 레벨 시작 시간
