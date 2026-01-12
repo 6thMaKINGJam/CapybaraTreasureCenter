@@ -144,6 +144,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
             SoundManager.Instance.StopAllBGM();
         }
         
+        
         // 레벨 선택 정보 로드
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
         LoadLevelConfig(selectedLevel);

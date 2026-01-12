@@ -860,7 +860,7 @@ public class ChallengeManager : MonoBehaviour
         // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
         int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
        // int currentCount = 0;
-       
+
         // 총 개수를 채울 때까지 랜덤하게 번들을 생성합니다.
         if (currentActiveRequirement.RewardGemCounts != null)
         {
@@ -951,6 +951,8 @@ public class ChallengeManager : MonoBehaviour
         if(popup == null) return;
 
         SoundManager.Instance.PlayFX(SoundType.GameOver);
+
+        
 
         // 3. 콜백 설정 (다시 시작할 때 반드시 TimeScale을 1로 복구해야 함)
         popup.Setup(
