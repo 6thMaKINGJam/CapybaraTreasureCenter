@@ -783,13 +783,13 @@ public class ChallengeManager : MonoBehaviour
         // Undo/Refresh는 기존 방식
     int undoLeft = Mathf.Max(0, 3 - gameData.UndoCount);
     int undo1Left = Mathf.Max(0, Undo1Current - gameData.Undo1Count);
-    int hintLeft = Mathf.Max(0, 3 - gameData.HintCount);
+    int refreshLeft = Mathf.Max(0, 3 - gameData.RefreshCount);
     
      // ✅ 수정: 최대 횟수도 함께 전달
     UIManager.UpdateHintAndItemUI(
-        hintLeft, 0,
-        undo1Left, Undo1Current,
-        undoLeft, 0
+        refreshLeft,
+        undo1Left,
+        undoLeft
     );
 
     }
