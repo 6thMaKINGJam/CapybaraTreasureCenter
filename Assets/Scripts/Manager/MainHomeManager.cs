@@ -156,6 +156,61 @@ public class MainHomeManager : MonoBehaviour
 
     public void OnClickChallengeMode()
     {
-        SceneManager.LoadScene("ChallengeMode");
+        if (AppleManager.Instance != null)
+        {
+            // 1. 사과 1개 소모 시도
+            if (currentProgress.SpendApples(1))
+            {
+                // 성공 시 바로 챌린지 씬으로 이동
+                EnterChallengeScene();
+            }
+            else
+            {
+                // 2. 사과 부족 시 광고 제안 팝업 표시
+                ShowChallengeAdOffer();
+            }
+        }
+    }
+    private void ShowChallengeAdOffer()
+    {
+        // BaseConfirmationPopup을 사용하여 유저에게 의사를 묻습니다.
+        if (PopupParentSetHelper.Instance != null)
+        {
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+
+            if (popup != null)
+            {
+                popup.Setup(
+                    "사과가 부족합니다카피!\n광고를 보고 챌린지에 도전하시겠습니까?",
+                    () => {
+                        // 확인 클릭 시 광고 실행
+                        StartChallengeAd();
+                    },
+                    null // 취소 시에는 그냥 팝업이 닫힙니다.
+                );
+            }
+        }
+    }
+
+    private void StartChallengeAd()
+    {
+        if (AdManager.Instance != null)
+        {
+            // 보상형 광고 시청 완료 시 보상으로 챌린지 씬 입장
+            AdManager.Instance.ShowRewardedAd((success) => {
+                if (success)
+                {
+                    Debug.Log("[MainHome] 광고 시청 완료! 챌린지 모드로 진입합니다.");
+                    EnterChallengeScene();
+                }
+            });
+        }
+    }
+
+    private void EnterChallengeScene()
+    {
+        // 씬 전환 로직
+        UnityEngine.SceneManagement.SceneManager.LoadScene("ChallengeMode");
     }
 }

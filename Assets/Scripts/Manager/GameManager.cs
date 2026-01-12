@@ -154,6 +154,10 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         int levelInChapter = selectedLevel - chapterStartLevel + 1;
         
         var (boxCount, timeLimit) = CurrentLevelConfig.CalculateDifficulty(levelInChapter);
+        if (UIManager != null)
+        {
+            UIManager.SetupStarMarkers(timeLimit);
+        }
         
         Debug.Log($"[GameManager] 레벨 {selectedLevel} (챕터 {CurrentLevelConfig.ChapterNumber}, 챕터 내 {levelInChapter}) - 상자 {boxCount}개, 시간 {timeLimit}초");
         
@@ -915,11 +919,11 @@ private void HandleLevelClear()
     CapyDialogue.StopDialogue(CapyDialogueText);
 
     // 1. 시간 및 별 계산
-    float clearTime = Time.time - levelStartTime + gameData.ElapsedTime;
+    float clearTime = gameData.ElapsedTime;
     float maxTime = GetDynamicTimeLimit();
     int starCount = 1;
-    if (clearTime <= maxTime * 0.5f) starCount = 3;
-    else if (clearTime <= maxTime * 0.66f) starCount = 2;
+    if (clearTime <= maxTime * 0.6f) starCount = 3;
+    else if (clearTime <= maxTime * 0.8f) starCount = 2;
 
     string clearMessage = GetClearMessage(clearTime);
 
@@ -947,15 +951,15 @@ private void HandleLevelClear()
     
     SoundManager.Instance.PlayFX(SoundType.GameClear);
 
-    // 3. 레벨별 분기 처리
-    if (gameData.CurrentLevelIndex == 4)
+    // 3. 레벨별 분기 처리 //수정필요 엔딩프리팹으로 연결해야함
+    if (gameData.CurrentLevelIndex == 100)
     {
         int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
 
-        if (!progressData.isLevel4Completed)
+        if (!progressData.isLevel100Completed)
         {
             // 최초 클리어
-            progressData.isLevel4Completed = true;
+            progressData.isLevel100Completed = true;
             progressData.BestTime = clearTimeMs;
             
             SaveManager.Save(progressData, "ProgressData");
@@ -1242,6 +1246,7 @@ private void StopBackgroundMedia()
                 ShowTimeAddAdPopup();
             }
         );
+
     }
      // ✅ 광고 시청 팝업
     private void ShowTimeAddAdPopup()
@@ -1269,16 +1274,31 @@ private void StopBackgroundMedia()
     // ✅ 시간추가 실행
     private void ExecuteTimeAdd()
     {
+        Time.timeScale = 1f;
         float addTime = CurrentLevelConfig.TimeAddAmount;
+        float timeLimit = GetDynamicTimeLimit();
+
+        if(timeCheckCoroutine != null)
+        {
+            StopCoroutine(timeCheckCoroutine);
+        }
         
-        // ElapsedTime 감소 (실질적으로 시간 추가)
+        // 1. 데이터 수정: ElapsedTime을 감소시켜 남은 시간을 늘림
+        // (예: 60초 제한에 60초 다 썼을 때 10초 추가하면 ElapsedTime을 50초로 만듦)
         gameData.ElapsedTime = Mathf.Max(0, gameData.ElapsedTime - addTime);
         
-        // 게임 재개
+        // 2. 게임 상태 복구
         gameData.GameState = GameState.Playing;
         isWaitingForTimeAdd = false;
         
-        // 음악/영상 재개
+        // 3. UI 즉시 갱신 (슬라이더가 즉시 늘어나는 것을 보여줌)
+        if (UIManager.TimerSlider != null)
+        {
+            float remaining = timeLimit - gameData.ElapsedTime;
+            UIManager.TimerSlider.value = Mathf.Clamp01(remaining / timeLimit);
+        }
+
+        // 4. 음악/영상 재개
         if(backgroundVideoPlayer != null)
         {
             backgroundVideoPlayer.Play();
@@ -1288,16 +1308,18 @@ private void StopBackgroundMedia()
             SoundManager.Instance.ResumeBGM();
         }
         
-        // 타이머 코루틴 재시작
-        if(timeCheckCoroutine != null)
-        {
-            StopCoroutine(timeCheckCoroutine);
-        }
+        // 5. 타이머 코루틴 관리
+        // 이미 CheckTimeOver가 돌고 있다면 중복 생성하지 않도록 처리
         timeCheckCoroutine = StartCoroutine(CheckTimeOver());
         
-        ShowTopNotification($"시간 +{addTime}초 추가되었습니다카피!");
+        // 6. 대사창 복구
+        if(CapyDialogue != null && CapyDialogueText != null)
+        {
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+        }
         
-        Debug.Log($"[GameManager] 시간추가 완료! (+{addTime}초)");
+        ShowTopNotification($"시간 +{addTime}초 추가되었습니다카피!");
+        Debug.Log($"[GameManager] 시간추가 완료! 현재 경과시간: {gameData.ElapsedTime} / 제한시간: {timeLimit}");
     }
     
 
@@ -2112,6 +2134,13 @@ private void UpdateAllItemUI()
         GetCurrentBox().RequiredAmount,
         gameData.Boxes.Count // ← 추가
     );
+
+    // ✅ 추가: 현재 레벨 번호 UI 업데이트
+    // gameData.CurrentLevelIndex는 InitGame에서 PlayerPrefs 정보를 통해 저장됩니다.
+    if (UIManager != null)
+    {
+        UIManager.UpdateLevelDisplay(gameData.CurrentLevelIndex);
+    }
 
     // ✅ UpdateAllItemUI() 호출로 통일
     UpdateAllItemUI();

@@ -47,6 +47,13 @@ public class GameUIManager : MonoBehaviour
     [Header("연출 컨트롤러")]
     public BoxVisualController BoxVisual; // ★ 추가! 인스펙터에서 연결
 
+    [Header("레벨 표시 UI")]
+    public TextMeshProUGUI LevelText; 
+
+    [Header("별 표시 UI")]
+    public RectTransform star3Marker; // Star3_Point 할당
+    public RectTransform star2Marker; // Star2_Point 할당
+
 
 
     void Awake()
@@ -81,6 +88,35 @@ public class GameUIManager : MonoBehaviour
             // 연출기가 없으면 그냥 즉시 완료 처리
             onFinished?.Invoke();
         }
+    }
+    /// <summary>
+    /// 화면에 현재 레벨 번호를 표시합니다.
+    /// </summary>
+    /// <param name="levelIndex">현재 레벨 번호</param>
+    public void UpdateLevelDisplay(int levelIndex)
+    {
+        if (LevelText != null)
+        {
+            // 예: "LEVEL 1", "LEVEL 2" 형식으로 표시
+            LevelText.text = $"LEVEL {levelIndex}";
+        }
+    }
+
+
+    public void SetupStarMarkers(float maxTime)
+    {
+        // GameManager의 기준: 3개(0.6), 2개(0.8)
+        // 슬라이더가 오른쪽에서 왼쪽으로 줄어든다면 (1 -> 0), 
+        // 시간이 60% 남았을 때가 아니라 '전체 시간의 40% 지점'에 별이 있어야 합니다.
+        // 하지만 보통 클리어 시간 기준이므로, 남은 시간 슬라이더 기준으로는 반대로 계산합니다.
+
+        float sliderWidth = TimerSlider.GetComponent<RectTransform>().rect.width;
+
+        // 별 3개 위치 (남은 시간 40% 지점 = 0.4)
+        star3Marker.anchoredPosition = new Vector2(sliderWidth * 0.4f, 0);
+        
+        // 별 2개 위치 (남은 시간 20% 지점 = 0.2)
+        star2Marker.anchoredPosition = new Vector2(sliderWidth * 0.2f, 0);
     }
 // ✅ 수정: 최대 횟수 파라미터 추가
 public void UpdateHintAndItemUI(

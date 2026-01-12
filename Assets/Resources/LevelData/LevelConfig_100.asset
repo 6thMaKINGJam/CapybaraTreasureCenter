@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f060972f81309794897e74ba9bdb7039, type: 3}
-  m_Name: Level_3
+  m_Name: LevelConfig_100
   m_EditorClassIdentifier: 
-  ChapterNumber: 3
+  ChapterNumber: 4
   MinBox: 5
   MaxBox: 15
   MaxTime: 120
   MinTime: 60
   GemTypeCount: 5
-  MaxRequiredPerBox: 13
-  MaxHintCount: 3
-  MaxUndoCount: 5
+  MaxRequiredPerBox: 15
+  MaxHintCount: 4
+  MaxUndoCount: 10
   MaxUndo1Count: 3
   TimeAddAmount: 10
   BackgroundVideoFileName: bg_chapter1.mp4

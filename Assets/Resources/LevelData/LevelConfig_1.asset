@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LevelConfig_1
   m_EditorClassIdentifier: 
   ChapterNumber: 1
-  MinBox: 5
-  MaxBox: 15
-  MaxTime: 120
+  MinBox: 1
+  MaxBox: 10
+  MaxTime: 180
   MinTime: 60
-  GemTypeCount: 5
+  GemTypeCount: 3
   MaxRequiredPerBox: 10
   MaxHintCount: 1
   MaxUndoCount: 3
   MaxUndo1Count: 3
   TimeAddAmount: 10
   BackgroundVideoFileName: gamescreen_challangeMode.mp4
-  AdditionalBGMLayer: {fileID: 0}
+  AdditionalBGMLayer: {fileID: 8300000, guid: f674f9de95e60451db31d6a4f04171db, type: 3}
