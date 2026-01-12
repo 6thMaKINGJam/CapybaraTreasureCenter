@@ -32,7 +32,7 @@ public class ChapterLevelListPopup : MonoBehaviour
         // 타이틀 설정
         if(chapterNumber == 100)
         {
-            TitleText.text = "최종 보스 레벨";
+            TitleText.text = "Lv 100";
         }
         else
         {
