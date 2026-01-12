@@ -153,6 +153,10 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         int levelInChapter = selectedLevel - chapterStartLevel + 1;
         
         var (boxCount, timeLimit) = CurrentLevelConfig.CalculateDifficulty(levelInChapter);
+        if (UIManager != null)
+        {
+            UIManager.SetupStarMarkers(timeLimit);
+        }
         
         Debug.Log($"[GameManager] 레벨 {selectedLevel} (챕터 {CurrentLevelConfig.ChapterNumber}, 챕터 내 {levelInChapter}) - 상자 {boxCount}개, 시간 {timeLimit}초");
         
