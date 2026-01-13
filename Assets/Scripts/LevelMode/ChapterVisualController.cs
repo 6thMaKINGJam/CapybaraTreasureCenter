@@ -34,8 +34,15 @@ public class ChapterVisualController : MonoBehaviour
             Debug.LogWarning("[ChapterVisualController] currentConfig가 null입니다.");
             return;
         }
+        
+         string currentConfigName = currentConfig.name;
 
-        string currentConfigName = currentConfig.name;
+       if  (currentConfig.name  == "LevelConfig_100")
+        {
+            currentConfigName = "LevelConfig_1"; // level100테마는 level1과 동일 
+        }
+
+        
         Color targetColor = Color.white;
         bool colorFound = false;
 

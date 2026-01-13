@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -134,7 +134,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: chapt_button_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1512
+        width: 1854
+        height: 1541
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03e9762d9245f4957bc6d45dabffc9c1
+      internalID: -1602862672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chapt_button_1
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 0
+        width: 1773
+        height: 1514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 680169e9d34894a719650a9cc496b14e
+      internalID: 1231392962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chapt_button_2
+      rect:
+        serializedVersion: 2
+        x: 2101
+        y: 1238
+        width: 1637
+        height: 1834
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2be23b69da30c42e7ba280867e810c21
+      internalID: 707974715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chapt_button_3
+      rect:
+        serializedVersion: 2
+        x: 3814
+        y: 1101
+        width: 1643
+        height: 1971
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee8e053c2a9cc4698a8df97086e92185
+      internalID: -212929932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +229,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      chapt_button_0: -1602862672
+      chapt_button_1: 1231392962
+      chapt_button_2: 707974715
+      chapt_button_3: -212929932
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
