@@ -6,6 +6,8 @@ using System.Linq;
 using TMPro;
 using UnityEngine.Video;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+
 
 public class ChallengeModeManager : MonoBehaviour
 {
@@ -1041,13 +1043,26 @@ public class ChallengeModeManager : MonoBehaviour
             finalDisplayMsg,
             () => {
                 Time.timeScale = 1f; // 시간 복구
-                Core.SceneLoader.Instance.RestartCurrentLevel();
+                RestartCurrentLevel();
             },
             () => {
                 Time.timeScale = 1f; // 시간 복구
-                Core.SceneLoader.Instance.GoToMainHome();
+                GoToMainHome();
             }
         );
+    }
+
+    public void RestartCurrentLevel()
+    {
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Debug.Log("[ChallengeModeManager] 현재 레벨 재시작");  
+    }
+
+    public void GoToMainHome()
+    {
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SceneManager.LoadScene("MainHome");
     }
 
     private void StopBackgroundMedia()

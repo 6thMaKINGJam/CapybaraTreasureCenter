@@ -35,10 +35,23 @@ public class PausePanel : MonoBehaviour
         popup.Setup(
             "정말 새로 시작하시겠습니까?",
             () => {
-                Core.SceneLoader.Instance.RestartCurrentLevel();
+                RestartCurrentLevel();
             },
             null 
         );
+    }
+
+    public void RestartCurrentLevel()
+    {
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Debug.Log("[ChallengeModeManager] 현재 레벨 재시작");  
+    }
+
+    public void GoToMainHome()
+    {
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SceneManager.LoadScene("MainHome");
     }
 
     public void OnClickMainHome()
@@ -48,7 +61,7 @@ public class PausePanel : MonoBehaviour
         popup.Setup(
             "메인 홈으로 이동하시겠습니까?",
             () => {
-                Core.SceneLoader.Instance.GoToMainHome();
+                GoToMainHome();
             },
             null
         );

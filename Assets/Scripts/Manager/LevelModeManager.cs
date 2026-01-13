@@ -14,6 +14,7 @@ using System.IO;
 public class LevelModeManager : MonoBehaviour
 {
     public static LevelModeManager Instance;
+    public bool IsTutorialScene = false; // 인스펙터에서 체크
     
     [Header("매니저 참조")]
     public ChunkGenerator ChunkGenerator;
@@ -39,7 +40,7 @@ public class LevelModeManager : MonoBehaviour
     [Header("UI 매니저 참조")]
     public GemCountPanelManager GemCountStatusPanel;
     [Header("배경 Video Player")]
-public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
+    public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 게임 데이터
     private GameData gameData;
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
@@ -49,9 +50,9 @@ public VideoPlayer backgroundVideoPlayer; // Inspector에서 할당
     // 시간 관련
 
     [Header("알림")]
-public GameObject NotificationPanel; // Inspector 할당
-public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
-public float NotificationDuration = 2f; // 표시 시간
+    public GameObject NotificationPanel; // Inspector 할당
+    public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
+    public float NotificationDuration = 2f; // 표시 시간
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
     
@@ -94,6 +95,24 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     void Start()
     {
         InitGame();
+    
+        // 튜토리얼 실습 모드일 때 추가 설정
+        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) != 0)
+        {
+            ApplyTutorialPracticeRules();
+        }
+    }
+
+    private void ApplyTutorialPracticeRules()
+    {
+        IsTutorialScene = true;
+        Debug.Log("[LevelModeManager] 튜토리얼 실습 모드 적용");
+        // 1. 레벨 표시 UI 숨기기
+        if (UIManager != null && UIManager.LevelText != null)
+            UIManager.LevelText.gameObject.SetActive(false);
+
+        // 2. 사과/별 시스템 안내 (게임 시작 시 1회)
+        ShowTopNotification("별을 획득하면 사과를 얻을 수 있어요! 사과는 아이템 구매에 사용됩니다.");
     }
 
     void Update()
@@ -144,6 +163,10 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         
         // 레벨 선택 정보 로드
         int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+        if(PlayerPrefs.GetInt("TutorialPracticeMode", 0) != 0)
+        {
+            selectedLevel = 0; // 튜토리얼 전용
+        }
         LoadLevelConfig(selectedLevel);
         
         // ✅ 난이도 계산 (챕터 내 레벨 번호)
@@ -196,6 +219,10 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         {
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
         }
+        // 튜토리얼 학습 모드일 경우 타이머를 시작하지 않음*(수정필요)
+
+        UIManager.TimerSlider.gameObject.SetActive(true);
+        
     }
     
 // ✅ 난이도 적용된 게임 설정
@@ -251,6 +278,7 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
     {
         switch(chapterNumber)
         {
+            case 0: return 0;
             case 1: return 1;
             case 2: return 34;
             case 3: return 67;
@@ -262,6 +290,27 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
 
     private void LoadLevelConfig(int levelIndex)
     {
+        // 1. 튜토리얼 실습 모드인지 확인
+        bool isPracticeMode = PlayerPrefs.GetInt("TutorialPracticeMode", 0) != 0;
+        if (isPracticeMode)
+        {
+            // 튜토리얼 전용 컨피그 로드
+            CurrentLevelConfig = Resources.Load<LevelConfig>("LevelData/LevelConfig_Tutorial");
+            Debug.Log($"[LevelModeManager] {CurrentLevelConfig.name} 로드 시도");
+            
+            if (CurrentLevelConfig == null)
+            {
+                Debug.LogError("[LevelModeManager] LevelConfig_Tutorial을 찾을 수 없습니다! Resources 폴더를 확인하세요.");
+                // 실패 시 기본 1챕터 컨피그로 대체
+                CurrentLevelConfig = Resources.Load<LevelConfig>("LevelData/LevelConfig_1");
+            }
+            else
+            {
+                Debug.Log("[LevelModeManager] 튜토리얼 실습용 컨피그 로드 완료");
+            }
+            return; // 튜토리얼 로직 종료
+        }
+
         // ✅ 챕터별 LevelConfig 로드
         int chapterNumber;
         if(levelIndex == 100)
@@ -707,99 +756,115 @@ private class BundleRestoreInfo
     
  // LevelModeManager.cs 내부
 
-public void ProcessBoxCompletion()
-{
-    // 1. 흔들림 등 효과 중지
-    GridManager.StopAllShaking();
-
-    // 2. [데이터 처리] 사용한 번들 제거 및 정리 (즉시 실행)
-    foreach (var bundle in gameData.SelectedBundles)
+    public void ProcessBoxCompletion()
     {
-        // Pool과 Display 목록에서 제거
-        if (gameData.BundlePool.Contains(bundle))
+        // 1. 흔들림 등 효과 중지
+        GridManager.StopAllShaking();
+
+        // 2. [데이터 처리] 사용한 번들 제거 및 정리 (즉시 실행)
+        foreach (var bundle in gameData.SelectedBundles)
         {
-            gameData.BundlePool.Remove(bundle);
-        }
-
-        if (gameData.CurrentDisplayBundles.Contains(bundle))
-        {
-            gameData.CurrentDisplayBundles.Remove(bundle);
-        }
-    }
-
-    // 3. 완료된 상자 기록 저장
-    CompletedBox completedBox = new CompletedBox();
-    completedBox.BoxIndex = gameData.CurrentBoxIndex;
-    completedBox.UsedBundles = new List<GemBundle>(gameData.SelectedBundles);
-    gameData.CompletedBoxes.Add(completedBox);
-
-    // 4. 상자 인덱스 증가
-    gameData.CurrentBoxIndex++;
-
-    // 5. 선택 관련 데이터 초기화
-    foreach (var bundle in gameData.SelectedBundles)
-    {
-        if (selectedBundleOriginalPrefabs.ContainsKey(bundle))
-        {
-            selectedBundleOriginalPrefabs.Remove(bundle);
-        }
-    }
-    gameData.SelectedBundles.Clear();
-
-    // 6. 연속 성공 카운트 및 대사 처리
-    consecutiveSuccessCount++;
-    if (CapyDialogue != null && CapyDialogueText != null)
-    {
-        if (consecutiveSuccessCount >= 1)
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.BoxCompleted);
-            CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
-        }
-        else
-        {
-            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
-            CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
-        }
-    }
-
-    // 7. 게임오버 체크 (보석이 말랐는지 확인)
-    if (CheckGameOver())
-    {
-        HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
-        return;
-    }
-
-    // 8. [시각적 연출] 상자 교체 애니메이션 실행
-    // 데이터는 이미 위에서 변했으므로, 애니메이션이 끝난 후 UI를 갱신합니다.
-    if (UIManager != null)
-    {
-        UIManager.AnimateBoxChange(() =>
-        {
-            // === 이 안의 코드는 애니메이션(0.3~0.5초)이 끝난 후 실행됩니다 ===
-
-            // A. 레벨 클리어 체크
-            // (인덱스가 증가했으므로 전체 개수와 비교)
-            if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+            // Pool과 Display 목록에서 제거
+            if (gameData.BundlePool.Contains(bundle))
             {
-                HandleLevelClear();
-                return; 
+                gameData.BundlePool.Remove(bundle);
             }
 
-            // B. UI 갱신 (새로운 상자 정보로 표시)
-            // 선택 패널 비우기
-            UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-            
-            // 상단 상자 정보 갱신 (다음 상자 요구량 표시)
-            Box nextBox = GetCurrentBox();
-            if (nextBox != null)
+            if (gameData.CurrentDisplayBundles.Contains(bundle))
             {
-           UIManager.UpdateBoxUI(
-    gameData.CurrentBoxIndex, 
-    0, 
-    nextBox.RequiredAmount,
-    gameData.Boxes.Count // ← 추가
-);
- }
+                gameData.CurrentDisplayBundles.Remove(bundle);
+            }
+        }
+
+        // 3. 완료된 상자 기록 저장
+        CompletedBox completedBox = new CompletedBox();
+        completedBox.BoxIndex = gameData.CurrentBoxIndex;
+        completedBox.UsedBundles = new List<GemBundle>(gameData.SelectedBundles);
+        gameData.CompletedBoxes.Add(completedBox);
+
+        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 1) // 레벨 실습 모드일 때
+        {
+            int nextBoxIdx = gameData.CurrentBoxIndex + 1;
+
+            if (nextBoxIdx == 1) {
+                ShowTopNotification("모든 종류의 보석을 포함해 개수를 맞춰보세요.보석은 [빨->노->초->파->보] 순서로 보충됩니다.");
+            }
+            else if (nextBoxIdx == 2) {
+                ShowTopNotification("이제 왼쪽에 있는 아이템을 사용해 보세요. ");
+            }
+            else if (nextBoxIdx == 3) { // 3번째 상자 클리어
+                StartCoroutine(ReturnToTutorialAfterDelay());
+                return; 
+            }
+        }
+
+        // 4. 상자 인덱스 증가
+        gameData.CurrentBoxIndex++;
+
+        // 5. 선택 관련 데이터 초기화
+        foreach (var bundle in gameData.SelectedBundles)
+        {
+            if (selectedBundleOriginalPrefabs.ContainsKey(bundle))
+            {
+                selectedBundleOriginalPrefabs.Remove(bundle);
+            }
+        }
+        gameData.SelectedBundles.Clear();
+
+        // 6. 연속 성공 카운트 및 대사 처리
+        consecutiveSuccessCount++;
+        if (CapyDialogue != null && CapyDialogueText != null)
+        {
+            if (consecutiveSuccessCount >= 1)
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.BoxCompleted);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+            else
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+        }
+
+        // 7. 게임오버 체크 (보석이 말랐는지 확인)
+        if (CheckGameOver())
+        {
+            HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
+            return;
+        }
+
+        // 8. [시각적 연출] 상자 교체 애니메이션 실행
+        // 데이터는 이미 위에서 변했으므로, 애니메이션이 끝난 후 UI를 갱신합니다.
+        if (UIManager != null)
+        {
+            UIManager.AnimateBoxChange(() =>
+            {
+                // === 이 안의 코드는 애니메이션(0.3~0.5초)이 끝난 후 실행됩니다 ===
+
+                // A. 레벨 클리어 체크
+                // (인덱스가 증가했으므로 전체 개수와 비교)
+                if (gameData.CurrentBoxIndex >= gameData.Boxes.Count)
+                {
+                    HandleLevelClear();
+                    return; 
+                }
+
+                // B. UI 갱신 (새로운 상자 정보로 표시)
+                // 선택 패널 비우기
+                UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+                
+                // 상단 상자 정보 갱신 (다음 상자 요구량 표시)
+                Box nextBox = GetCurrentBox();
+                if (nextBox != null)
+                {
+                UIManager.UpdateBoxUI(
+                    gameData.CurrentBoxIndex, 
+                    0, 
+                    nextBox.RequiredAmount,
+                    gameData.Boxes.Count // ← 추가
+                );
+        }
 
             // 하단 아이템 개수 등 갱신
             UpdateAllItemUI();
@@ -812,6 +877,36 @@ public void ProcessBoxCompletion()
         if (gameData.CurrentBoxIndex >= gameData.Boxes.Count) HandleLevelClear();
     }
 }
+
+    private IEnumerator ReturnToTutorialAfterDelay()
+    {
+        // 1. 상단 알림으로 안내 (기존 ShowTopNotification 활용)
+        ShowTopNotification("실습을 모두 마쳤습니다! 튜토리얼로 돌아갑니다.");
+        
+        // 2. (선택 사항) 만약 전용 팝업창을 띄우고 싶다면 BaseConfirmationPopup 등을 활용 가능
+        /*
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+        popup.Setup("학습이 완료되었습니다.\n튜토리얼 씬으로 돌아갈까요?", 
+            () => { SceneManager.LoadScene("TutorialScene"); }, // 확인 버튼 클릭 시
+            null); 
+        */
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        progressData.isTutorialSequenceFinished = true;
+        SaveManager.Save(progressData, "ProgressData");
+        Debug.Log($"[LevelModeManager] 튜토리얼 실습 완료 처리 {progressData.isTutorialSequenceFinished}");
+
+        // 3. 잠시 대기 (사용자가 메시지를 읽을 시간)
+        yield return new WaitForSeconds(2.0f);
+        
+        // 4. 튜토리얼 상태 초기화 및 씬 전환
+        PlayerPrefs.SetInt("TutorialPracticeMode", 0); // 실습 모드 종료
+        PlayerPrefs.Save();
+        
+        // DOTween 등이 동작 중일 수 있으므로 정리 후 이동
+        DOTween.KillAll();
+        SceneManager.LoadScene("Tutorial"); 
+    }
 
 
     // ========== 게임오버/클리어 체크 ==========
@@ -866,8 +961,8 @@ public void ProcessBoxCompletion()
             // 3. 팝업에도 위에서 결정한 finalMessage를 전달
             popup.Setup(
                 finalMessage, 
-                () => Core.SceneLoader.Instance.RestartCurrentLevel(), // 다시하기
-                () => Core.SceneLoader.Instance.GoToMainHome()  // 메인으로
+                () => RestartCurrentLevel(), // 다시하기
+                () => GoToMainHome()  // 메인으로
             );
         }
         else
@@ -876,6 +971,15 @@ public void ProcessBoxCompletion()
             Debug.LogError("[LevelModeManager] GameOverPopup을 찾을 수 없습니다!");
         }
     }
+
+    public void RestartCurrentLevel()
+    {
+        Time.timeScale = 1f; // 시간 흐름 복구
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Debug.Log("[LevelModeManager] 현재 레벨 재시작");  
+    }
+
+    
 private void HandleLevelClear()
 {
     gameData.GameState = GameState.Win;
@@ -1021,7 +1125,7 @@ public void GoToNextLevel()
     {
         // 더 이상 다음 레벨이 없으면 메인 홈으로 이동
         Debug.Log("모든 레벨을 클리어했습니다! 메인으로 돌아갑니다.");
-        Core.SceneLoader.Instance.GoToMainHome();
+        GoToMainHome();
     }
 }
 
@@ -1133,6 +1237,17 @@ private void StopBackgroundMedia()
                 }
             }
             yield return null; // 다음 프레임까지 대기
+        }
+    }
+
+    // 특정 UI 강조 기능 (예: 화살표나 반짝이는 효과)
+    public void HighlightUI(string objectName)
+    {
+        GameObject target = GameObject.Find(objectName);
+        if (target != null)
+        {
+            // 대상 오브젝트를 제외한 배경을 어둡게 하거나 화살표 표시 (DOTween 활용)
+            target.transform.DOScale(1.2f, 0.5f).SetLoops(-1, LoopType.Yoyo);
         }
     }
     

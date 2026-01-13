@@ -13078,7 +13078,7 @@ MonoBehaviour:
   UndoButton: {fileID: 1648687989}
   CompleteButton: {fileID: 1752374780}
   Undo1Button: {fileID: 1768813380}
-  ReselectReqButton: {fileID: 1768813380}
+  ReselectReqButton: {fileID: 0}
   PausePopupPanel: {fileID: 199996081}
   TimerSlider: {fileID: 893932537}
   RefreshCountText: {fileID: 2034395610}
@@ -14568,6 +14568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2521421863f8c84dbe6bad2b1e5cb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsTutorialScene: 0
   ChunkGenerator: {fileID: 629570687}
   UIManager: {fileID: 637300471}
   GridManager: {fileID: 347816904}
@@ -14584,11 +14585,6 @@ MonoBehaviour:
   NotificationPanel: {fileID: 263552383}
   NotificationText: {fileID: 314398620}
   NotificationDuration: 0.5
-  Costume_Chapter1: {fileID: 0}
-  Costume_Chapter2_A: {fileID: 0}
-  Costume_Chapter2_B: {fileID: 0}
-  Costume_Chapter3: {fileID: 0}
-  Costume_Level100: {fileID: 0}
   chapterVisualController: {fileID: 2022880285}
 --- !u!4 &877127996
 Transform:
