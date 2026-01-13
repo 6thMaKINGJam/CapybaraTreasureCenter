@@ -33,8 +33,6 @@ public class TutorialManager : MonoBehaviour
     public static TutorialManager Instance;
     private bool isWaitingForAction = false;
 
-    private static int lastSequenceBeforePractice = 0;
-
     [Header("모드 선택 UI")]
     public GameObject ModeSelectPopup;
 
@@ -346,12 +344,13 @@ public class TutorialManager : MonoBehaviour
         {
             // 실습 모드 플래그 설정 (1: 레벨 모드 실습)
             PlayerPrefs.SetInt("TutorialPracticeMode", 1);
-            lastSequenceBeforePractice = currentSequenceIndex;
             PlayerPrefs.Save();
             SceneManager.LoadScene("LevelMode"); // 실습용 전용 씬        
         }
         else if (actionType == TutorialWaitType.ChallengeButton)
         {
+            PlayerPrefs.SetInt("TutorialPracticeMode", 2);
+            PlayerPrefs.Save();
             SceneManager.LoadScene("ChallengeMode");
         }
     }

@@ -14785,7 +14785,7 @@ MonoBehaviour:
   challengeMaxRequired: 12
   RequirementCardPrefab: {fileID: 6763445550043822803, guid: 2d2662e1070708c4a8357d3bbfef9d79, type: 3}
   RequirementParentPanel: {fileID: 39537991}
-  RequirementPopupObject: {fileID: 1287542402}
+  RequirementPopupObject: {fileID: 1713593722}
   CapyDialogue: {fileID: 1517742757}
   CapyDialogueText: {fileID: 1126950689}
   GemCountStatusPanel: {fileID: 1006858061}
@@ -15648,7 +15648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1287542403
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16839,7 +16839,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1713593723
 RectTransform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,6 @@ using UnityEngine.Video;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 
-
 public class ChallengeModeManager : MonoBehaviour
 {
     public static ChallengeModeManager Instance;
@@ -84,6 +83,8 @@ public class ChallengeModeManager : MonoBehaviour
     private bool isSelectionActive = false;
     private Coroutine selectionTimerCoroutine;
     private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
+
+    private bool isTutorialMode = false;
     
 
     void Awake()
@@ -93,6 +94,13 @@ public class ChallengeModeManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log($"[ChallengeModeManager] 챌린지 모드 시작 {PlayerPrefs.GetInt("TutorialPracticeMode", 0)}");
+        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 2)
+        {
+            
+            isTutorialMode = true;
+            ShowTopNotification("챌린지는 기본 규칙 대신 '선택한 조건'만 지키면 됩니다! 시간이 다 되면 랜덤으로 선택돼요.");
+        }
         InitChallengeMode();
     }
 
@@ -665,6 +673,7 @@ public class ChallengeModeManager : MonoBehaviour
 
     public void OnClickComplete()
     {
+        Debug.Log("[ChallengeModeManager] Complete 버튼 클릭됨");
         if (currentActiveRequirement == null) return;
 
         Box currentBox = GetCurrentBox();
@@ -931,6 +940,14 @@ public class ChallengeModeManager : MonoBehaviour
     // [수정] 상자 완료 시 보상 로직
     private void ProcessBoxSuccess()
     {
+        Debug.Log($"[ChallengeModeManager] 상자 완료 처리 시작 {isTutorialMode}");
+        if (isTutorialMode)
+        {
+            Debug.Log("[ChallengeModeManager] 튜토리얼 모드에서 상자 완료 처리 - 튜토리얼로 돌아갑니다.");
+            StartCoroutine(ReturnToTutorialAfterChallengeDelay());
+            return; 
+        }
+        
         // 점수 계산 (상자 완료 점수 100 + 현재 남은 시간 * 10)
         // 남은 시간은 소수점이 있을 수 있으므로 반올림(Mathf.RoundToInt)하여 자연수로 만듭니다.
         int boxScore = 100;
@@ -977,6 +994,7 @@ public class ChallengeModeManager : MonoBehaviour
         }
 
         gameData.CurrentBoxIndex++;
+
         
         // [수정] 애니메이션 종료 후 다음 상자 정보를 명시적으로 업데이트
         UIManager.AnimateBoxChange(() => {
@@ -1003,6 +1021,23 @@ public class ChallengeModeManager : MonoBehaviour
             ExtractDisplayBundles();
             ShowRequirementSelection();
         });
+    }
+    private IEnumerator ReturnToTutorialAfterChallengeDelay()
+    {
+        isTutorialMode = false; // 중복 진입 방지
+        ShowTopNotification("챌린지 실습을 완료했습니다! 튜토리얼로 돌아갑니다.");
+        
+        yield return new WaitForSeconds(2.0f);
+
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        progressData.isTutorialSequenceFinished = true;
+        SaveManager.Save(progressData, "ProgressData");
+        
+        PlayerPrefs.SetInt("TutorialPracticeMode", 0);
+        PlayerPrefs.Save();
+        
+        DOTween.KillAll();
+        SceneManager.LoadScene("Tutorial"); // 튜토리얼 씬 이름 확인 필요
     }
 
     private void HandleTimeOver()

@@ -895,7 +895,7 @@ private class BundleRestoreInfo
         progressData.isTutorialSequenceFinished = true;
         SaveManager.Save(progressData, "ProgressData");
         Debug.Log($"[LevelModeManager] 튜토리얼 실습 완료 처리 {progressData.isTutorialSequenceFinished}");
-
+        IsTutorialScene = false;
         // 3. 잠시 대기 (사용자가 메시지를 읽을 시간)
         yield return new WaitForSeconds(2.0f);
         
