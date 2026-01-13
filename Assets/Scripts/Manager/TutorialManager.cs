@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using System;
+
 
 public class TutorialManager : MonoBehaviour
 {
@@ -28,23 +30,26 @@ public class TutorialManager : MonoBehaviour
     private GameObject currentDialog;
     private Sprite previousBackgroundSprite;
     private bool isTransitioning = false; // 전환 중인지 확인
+    public static TutorialManager Instance;
+    private bool isWaitingForAction = false;
+
+    private static int lastSequenceBeforePractice = 0;
+
+    [Header("모드 선택 UI")]
+    public GameObject ModeSelectPopup;
+
+    void Awake() => Instance = this;
     
     void Start()
     {
         // 1. 튜토리얼 완료 여부 확인
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        if(progressData.TutorialCompleted)
+        if (progressData.isTutorialSequenceFinished)
         {
-            Debug.Log("[TutorialManager] 튜토리얼이 이미 완료되었습니다. MainHome으로 이동합니다.");
-            SceneManager.LoadScene("MainHome");
-            return;
+            ShowModeSelectPopup();
+            ShowSequence(15);
         }
         
-        if(Sequences.Count == 0)
-        {
-            Debug.LogError("[TutorialManager] 시퀀스가 설정되지 않았습니다!");
-            return;
-        }
         
         // 초기 배경 설정 (페이드 없이)
         if(BackgroundImage != null)
@@ -53,9 +58,10 @@ public class TutorialManager : MonoBehaviour
             initialColor.a = 0f;
             BackgroundImage.color = initialColor;
         }
-        
-        ShowSequence(0, false); // 첫 시퀀스는 페이드 인 효과 적용
+
+        ShowSequence(0);
     }
+
     
     // 특정 시퀀스 표시
    private void ShowSequence(int index, bool fadeBackground = true)
@@ -64,7 +70,7 @@ public class TutorialManager : MonoBehaviour
     
     if(index >= Sequences.Count)
     {
-        CompleteTutorial();
+        ShowModeSelectPopup();
         return;
     }
     
@@ -99,6 +105,27 @@ public class TutorialManager : MonoBehaviour
     previousBackgroundSprite = sequence.BackgroundImage;
 }
 
+    private void ShowModeSelectPopup()
+    {
+        if (ModeSelectPopup != null)
+        {
+            ModeSelectPopup.SetActive(true); // 팝업 활성화
+            
+            // 필요하다면 페이드 인 효과 추가 (CanvasGroup 사용 시)
+            CanvasGroup cg = ModeSelectPopup.GetComponent<CanvasGroup>();
+            if(cg != null)
+            {
+                cg.alpha = 0;
+                cg.DOFade(1f, 0.5f); // DOTween 사용 시
+            }
+        }
+        else
+        {
+            // 팝업이 설정되지 않았다면 바로 메인홈으로 이동하는 안전장치
+            CompleteTutorial();
+        }
+    }
+
     
     // 배경 전환이 필요한 경우
     private IEnumerator TransitionSequence(TutorialSequence sequence)
@@ -129,6 +156,14 @@ public class TutorialManager : MonoBehaviour
         ShowDialog(sequence);
         
         isTransitioning = false;
+    }
+
+    public void OnTutorialSequenceFinished()
+    {
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        progressData.isTutorialSequenceFinished = true;
+        SaveManager.Save(progressData, "ProgressData");
+        ShowModeSelectPopup();
     }
     
     // 배경을 즉시 설정 (전환 불필요한 경우)
@@ -169,6 +204,30 @@ public class TutorialManager : MonoBehaviour
         else
         {
             Debug.LogError($"[TutorialManager] {sequence.DialogType} Prefab이 할당되지 않았습니다!");
+        }
+
+        isWaitingForAction = (sequence.WaitType != TutorialWaitType.None);
+        
+        // 가이드 대사 중에는 버튼을 강조하는 연출을 여기에 추가할 수 있습니다.
+        if (isWaitingForAction) {
+             Debug.Log($"{sequence.WaitType} 행동을 기다리는 중...");
+        }
+
+        if (!string.IsNullOrEmpty(sequence.HighlightObjectName))
+        {
+            // LevelModeManager가 있다면 강조 실행
+            if (LevelModeManager.Instance != null) 
+                LevelModeManager.Instance.HighlightUI(sequence.HighlightObjectName);
+        }
+
+        if (!string.IsNullOrEmpty(sequence.TargetUIPath))
+        {
+            GameObject target = GameObject.Find(sequence.TargetUIPath);
+            if (target != null)
+            {
+                // 타겟을 위아래로 흔들거나 크기를 키워 강조
+                target.transform.DOScale(1.1f, 0.5f).SetLoops(-1, LoopType.Yoyo);
+            }
         }
     }
     
@@ -275,12 +334,25 @@ public class TutorialManager : MonoBehaviour
     // 창 클릭 시 다음 시퀀스로
     private void OnDialogClicked()
     {
-        if(isTransitioning) return; // 전환 중이면 무시
+        if(isTransitioning || isWaitingForAction) return; // 액션 대기 중이면 클릭 무시
         
-        // 현재 창 페이드 아웃 후 다음 시퀀스로
-        if(currentDialog != null)
+        if(currentDialog != null) StartCoroutine(FadeOutAndNext());
+    }
+
+    // 버튼 등을 눌렀을 때 외부에서 호출할 함수
+    public void ResolveAction(TutorialWaitType actionType)
+    {
+        if (actionType == TutorialWaitType.LevelButton)
         {
-            StartCoroutine(FadeOutAndNext());
+            // 실습 모드 플래그 설정 (1: 레벨 모드 실습)
+            PlayerPrefs.SetInt("TutorialPracticeMode", 1);
+            lastSequenceBeforePractice = currentSequenceIndex;
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("LevelMode"); // 실습용 전용 씬        
+        }
+        else if (actionType == TutorialWaitType.ChallengeButton)
+        {
+            SceneManager.LoadScene("ChallengeMode");
         }
     }
     
@@ -305,7 +377,7 @@ public class TutorialManager : MonoBehaviour
         
         // ProgressData에 튜토리얼 완료 저장
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.TutorialCompleted = true;
+        progressData.isTutorialComplete = true;
         SaveManager.Save(progressData, "ProgressData");
         
         // 배경과 마지막 창을 페이드 아웃한 후 Scene 전환
@@ -329,6 +401,34 @@ public class TutorialManager : MonoBehaviour
     private void OnDestroy()
     {
         DOTween.KillAll();
+    }
+
+    // 튜토리얼 화면의 레벨 모드 버튼에 연결할 함수 예시
+    public void OnTutorialLevelButtonClick()
+    {
+        if (TutorialManager.Instance != null)
+        {
+            // TutorialManager에게 레벨 버튼이 눌렸음을 알림
+            TutorialManager.Instance.ResolveAction(TutorialWaitType.LevelButton);
+        }
+    }
+
+    // 튜토리얼 화면의 챌린지 모드 버튼에 연결할 함수 예시
+    public void OnTutorialChallengeButtonClick()
+    {
+        if (TutorialManager.Instance != null)
+        {
+            // TutorialManager에게 챌린지 버튼이 눌렸음을 알림
+            TutorialManager.Instance.ResolveAction(TutorialWaitType.ChallengeButton);
+        }
+    }
+
+    public void OnMainHomeButtonClick()
+    {
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        progressData.isTutorialComplete = true;
+        SaveManager.Save(progressData, "ProgressData");
+        SceneManager.LoadScene("MainHome");
     }
 
     

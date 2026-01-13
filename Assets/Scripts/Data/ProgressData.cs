@@ -19,7 +19,8 @@ public class ProgressData
 {
     public int LastClearedLevel;
     public int BestTime;
-    public bool TutorialCompleted;
+    public bool isTutorialSequenceFinished; // 시퀀스 시청 완료 여부
+    public bool isTutorialComplete;         // 튜토리얼 전체(메인홈 버튼 클릭) 완료 여부
     public bool EndingCompleted;
     public bool isLevel100Completed;
     
@@ -32,7 +33,8 @@ public class ProgressData
     {
         LastClearedLevel = 0;
         BestTime = 0;
-        TutorialCompleted = false;
+        isTutorialComplete = false;
+        isTutorialSequenceFinished = false;
         EndingCompleted = false;
         isLevel100Completed = false;
         LevelStars = new List<LevelStarData>();

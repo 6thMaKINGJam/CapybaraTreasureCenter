@@ -52,7 +52,13 @@ public class LevelConfig : ScriptableObject
         int boxCount;
         float timeLimit;
         
-        if(levelInChapter <= 11)
+        if(levelInChapter == 0)
+        {
+            // 튜토리얼 레벨
+            boxCount = MinBox;
+            timeLimit = MaxTime;
+        }
+        else if(levelInChapter <= 11)
         {
             // 레벨 1~11: 상자만 증가 (5→15)
             boxCount = MinBox + (levelInChapter - 1);

@@ -22,31 +22,6 @@ namespace Core
             }
         }
 
-        // 일시정지 (Time.timeScale 제어)
-        public void TogglePause(bool isPause)
-        {
-            Time.timeScale = isPause ? 0f : 1f;
-            Debug.Log($"[Core] 게임 {(isPause ? "일시정지" : "재개")}");
-        }
-
-        /// <summary>
-        /// 현재 활성화된 씬을 다시 로드 (새로 시작)
-        /// </summary>
-        public void RestartCurrentLevel()
-        {
-            Time.timeScale = 1f; // 시간 흐름 복구
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            Debug.Log("[Core] 현재 레벨 재시작");  
-        }
-
-        /// <summary>
-        /// 메인 홈 화면으로 이동
-        /// </summary>
-        public void GoToMainHome()
-        {
-            Time.timeScale = 1f; // 시간 흐름 복구
-            SceneManager.LoadScene("MainHome");
-        }
         public void ExecuteUndo1()
         {
             // 현재 씬에 levelModeManager 있으면 실행

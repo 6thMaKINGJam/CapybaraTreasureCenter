@@ -126,7 +126,7 @@ public class GameUIManager : MonoBehaviour
             // 1. 일시정지 및 재개 (Core.SceneLoader 활용)
         PauseButton.onClick.RemoveAllListeners();
         PauseButton.onClick.AddListener(() => {
-            Core.SceneLoader.Instance.TogglePause(true);
+            TogglePause(true);
             OpenPausePopup(); // 기존 팝업 열기 함수 호출
         });
 
@@ -134,7 +134,7 @@ public class GameUIManager : MonoBehaviour
         {
             ResumeButton.onClick.RemoveAllListeners();
             ResumeButton.onClick.AddListener(() => {
-                Core.SceneLoader.Instance.TogglePause(false);
+                TogglePause(false);
                 ClosePausePopup(); // 기존 팝업 닫기 함수 호출
             });
         }
@@ -195,6 +195,12 @@ public class GameUIManager : MonoBehaviour
         }
         
         
+    }
+
+    public void TogglePause(bool isPause)
+    {
+        Time.timeScale = isPause ? 0f : 1f;
+        Debug.Log($"[GameUIManager] 게임 {(isPause ? "일시정지" : "재개")}");
     }
 
 // ✅ 기존 UpdateItemUI() 대신 사용
