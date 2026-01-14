@@ -8,6 +8,7 @@ using UnityEngine.Video;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.ComponentModel;
 
 public class ChallengeModeManager : MonoBehaviour
 {
@@ -75,8 +76,13 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private int timeBonus = 0; // 시간 보너스 점수
     
     [Header("조건 선택 타이머 설정")]
-    [Tooltip("조건 선택 제한 시간 (초)")]
-    public float selectionLimitTime = 10f;
+    [Tooltip("초기 조건 선택 제한 시간 (첫 번째 상자)")]
+    public float initialSelectionLimitTime = 120f; // 120초부터 시작
+    [Tooltip("조건 선택 최소 제한 시간")]
+    public float minSelectionLimitTime = 10f;     // 최종적으로 10초까지 감소
+    [Tooltip("상자당 감소할 시간")]
+    public float selectionTimeStep = 10f;
+    public TMP_Text RestricText;
 
  [Header("모래시계 UI (FillAmount)")]
     public Image SandTopImage;      // 위쪽 모래
@@ -96,6 +102,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private int tutorialStep = 0;
     private bool startinstruction = false;
     private bool afterReqinstruction = false;
+    private float selectionLimitTime = 10f;
     
 
     void Awake()
@@ -588,6 +595,12 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         gameData.GameState = GameState.Paused; 
         isSelectionActive = true;
 
+        float calculatedTime = initialSelectionLimitTime - (gameData.CurrentBoxIndex * selectionTimeStep);
+        selectionLimitTime = Mathf.Max(minSelectionLimitTime, calculatedTime); // 최소 10초 보장
+        RestricText.text = $"제한시간은 {selectionLimitTime}초!";
+
+        Debug.Log($"[Challenge] 현재 상자: {gameData.CurrentBoxIndex + 1}, 선택 제한 시간: {selectionLimitTime}초");
+
         RequirementPopupObject.SetActive(true);
         
         // 기존 카드 제거 및 데이터 초기화
@@ -786,8 +799,6 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     {
         ActiveRequirementDisplay.UpdateRequirement(selectedReq);
     }
-    
-        ShowTopNotification("조건이 결정되었습니다카피!");
         // 튜토리얼 모드인 경우 추가 안내 실행
         if (isTutorialMode)
         {
