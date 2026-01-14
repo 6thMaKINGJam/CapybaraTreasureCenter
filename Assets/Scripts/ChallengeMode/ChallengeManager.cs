@@ -118,13 +118,14 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         // 튜토리얼 단계 설정 및 시간 완전 정지
         tutorialStep = 1; // 다음 단계로 이동
         Time.timeScale = 0f; 
-
-        ShowTutorialPopup("챌린지 모드에 오신 걸 환영합니다카피!\n이 모드에서는 먼저 적용될 '규칙'을 직접 선택해야 합니다카피.", () => {
-            ShowTutorialPopup("규칙 선택 화면에서 시간이 모두 지나면\n규칙이 랜덤으로 선택되니 주의하세요카피!", () => {
-                // [추가] 모든 설명이 끝난 뒤에 실제 조건 선택 팝업을 띄웁니다.
-                Debug.Log("튜토리얼 안내 완료. 조건 선택 팝업을 표시합니다.");
-                startinstruction = true;
-                ShowRequirementSelectionInternal(); 
+        ShowTutorialPopup("도전 모드에 오신 걸 환영합니다카피!\n 도전모드는 사과 한개를 사용해 진입할 수 있다카피",() => {
+            ShowTutorialPopup("이 모드에서는 먼저 적용될 '규칙'을 직접 선택해야 합니다카피.", () => {
+                ShowTutorialPopup("규칙 선택 화면에서 시간이 모두 지나면\n규칙이 랜덤으로 선택되니 주의하세요카피!", () => {
+                    // [추가] 모든 설명이 끝난 뒤에 실제 조건 선택 팝업을 띄웁니다.
+                    Debug.Log("튜토리얼 안내 완료. 조건 선택 팝업을 표시합니다.");
+                    startinstruction = true;
+                    ShowRequirementSelectionInternal(); 
+                });
             });
         });
     }
@@ -146,18 +147,19 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
 
         // 안내 팝업이 뜰 동안만 시간을 멈춥니다.
         Time.timeScale = 0f;
-        ShowTutorialPopup("챌린지 모드에서는 선택한 '규칙'만 만족하면 됩니다카피!\n레벨 모드처럼 모든 종류의 보석을 넣을 필요가 없어요카피.", () => {
-            ShowTutorialPopup("또한, 여기서는 '새로고침' 버튼 대신\n'조건 다시 선택' 버튼이 생깁니다카피! 신중하게 사용하세요.", () => {
-                // 모든 튜토리얼 안내가 끝나면 시간을 흐르게 하고 게임을 시작합니다.
-                Time.timeScale = 1f;
-                gameData.GameState = GameState.Playing; 
-                
-                StopCoroutine(nameof(ChallengeTimerRoutine));
-                StartCoroutine(ChallengeTimerRoutine()); // 여기서 타이머 시작
-                Debug.Log("챌린지 튜토리얼 안내 종료 - 게임 시작");
-                afterReqinstruction = true;
+            ShowTutorialPopup("도전 모드에서는 선택한 '규칙'만 만족하면 됩니다카피!\n레벨 모드처럼 모든 종류의 보석을 넣을 필요가 없어요카피.", () => {
+                ShowTutorialPopup("또한, 여기서는 '새로고침' 버튼 대신\n'조건 다시 선택' 버튼이 생깁니다카피! 신중하게 사용하세요.", () => {
+                    // 모든 튜토리얼 안내가 끝나면 시간을 흐르게 하고 게임을 시작합니다.
+                    Time.timeScale = 1f;
+                    gameData.GameState = GameState.Playing; 
+                    
+                    StopCoroutine(nameof(ChallengeTimerRoutine));
+                    StartCoroutine(ChallengeTimerRoutine()); // 여기서 타이머 시작
+                    Debug.Log("챌린지 튜토리얼 안내 종료 - 게임 시작");
+                    afterReqinstruction = true;
+                });
             });
-        });
+
     }
 
     private void InitChallengeMode()
@@ -1155,7 +1157,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private IEnumerator ReturnToTutorialAfterChallengeDelay()
     {
         isTutorialMode = false; // 중복 진입 방지
-        ShowTopNotification("챌린지 실습을 완료했습니다! 튜토리얼로 돌아갑니다.");
+        ShowTopNotification("도전 모드 튜토리얼을 완료했습니다! 튜토리얼로 돌아갑니다.");
         
         yield return new WaitForSeconds(2.0f);
 
@@ -1163,6 +1165,8 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         progressData.isTutorialSequenceFinished = true;
         SaveManager.Save(progressData, "ProgressData");
         
+        isTutorialMode = false;
+        tutorialStep = 0;
         PlayerPrefs.SetInt("TutorialPracticeMode", 0);
         PlayerPrefs.Save();
         

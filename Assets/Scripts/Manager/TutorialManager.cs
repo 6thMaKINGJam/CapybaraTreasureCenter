@@ -340,18 +340,69 @@ public class TutorialManager : MonoBehaviour
     // 버튼 등을 눌렀을 때 외부에서 호출할 함수
     public void ResolveAction(TutorialWaitType actionType)
     {
+        // 저장된 진행 데이터 로드
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+
         if (actionType == TutorialWaitType.LevelButton)
         {
-            // 실습 모드 플래그 설정 (1: 레벨 모드 실습)
+            // 레벨 모드 실습 진입
             PlayerPrefs.SetInt("TutorialPracticeMode", 1);
             PlayerPrefs.Save();
-            SceneManager.LoadScene("LevelMode"); // 실습용 전용 씬        
+            SceneManager.LoadScene("LevelMode");
         }
         else if (actionType == TutorialWaitType.ChallengeButton)
         {
-            PlayerPrefs.SetInt("TutorialPracticeMode", 2);
-            PlayerPrefs.Save();
-            SceneManager.LoadScene("ChallengeMode");
+            // [수정] 레벨 모드 튜토리얼 수행 여부 확인
+            // ProgressData에 해당 플래그가 있다고 가정하거나, PlayerPrefs 등을 활용합니다.
+            // 여기서는 예시로 progressData.isLevelTutorialCleared 라는 변수가 있다고 가정합니다.
+            
+            bool isLevelCleared = PlayerPrefs.GetInt("LevelTutorialDone", 0) == 1;
+
+            if (isLevelCleared)
+            {
+                PlayerPrefs.SetInt("TutorialPracticeMode", 2);
+                PlayerPrefs.Save();
+                SceneManager.LoadScene("ChallengeMode");
+            }
+            else
+            {
+                // 아직 레벨 모드를 안 했다면 경고 팝업 표시
+                Debug.Log("레벨 모드 튜토리얼을 먼저 완료해야 합니다카피!");
+                ShowRequirementSelectionInternal_Warning("레벨 모드 튜토리얼을 먼저\n완료해야 챌린지에 도전할 수 있습니다카피!");
+
+            }
+        }
+    }
+
+    // Scripts/Manager/TutorialManager.cs (371번 라인 부근 수정)
+
+    private void ShowRequirementSelectionInternal_Warning(string message)
+    {
+        // 1. 인스턴스 존재 확인
+        if (PopupParentSetHelper.Instance == null)
+        {
+            Debug.LogError("[TutorialManager] PopupParentSetHelper Instance가 씬에 없습니다!");
+            return;
+        }
+
+        // 2. 팝업 생성 시도
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+        
+        if (popupObj == null)
+        {
+            Debug.LogError("[TutorialManager] 'Prefabs/BaseWarningPopup' 프리팹을 찾을 수 없거나 생성에 실패했습니다!");
+            return;
+        }
+
+        // 3. 컴포넌트 확인
+        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
+        if (popup != null)
+        {
+            popup.Setup(message, null);
+        }
+        else
+        {
+            Debug.LogError("[TutorialManager] 생성된 팝업에 BaseWarningPopup 컴포넌트가 없습니다!");
         }
     }
     
