@@ -85,6 +85,9 @@ public class ChallengeModeManager : MonoBehaviour
     private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
 
     private bool isTutorialMode = false;
+    private int tutorialStep = 0;
+    private bool startinstruction = false;
+    private bool afterReqinstruction = false;
     
 
     void Awake()
@@ -97,11 +100,56 @@ public class ChallengeModeManager : MonoBehaviour
         Debug.Log($"[ChallengeModeManager] 챌린지 모드 시작 {PlayerPrefs.GetInt("TutorialPracticeMode", 0)}");
         if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 2)
         {
-            
             isTutorialMode = true;
-            ShowTopNotification("챌린지는 기본 규칙 대신 '선택한 조건'만 지키면 됩니다! 시간이 다 되면 랜덤으로 선택돼요.");
         }
         InitChallengeMode();
+    }
+
+    private void StartChallengeTutorial()
+    {
+        // 튜토리얼 단계 설정 및 시간 완전 정지
+        tutorialStep = 1; // 다음 단계로 이동
+        Time.timeScale = 0f; 
+
+        ShowTutorialPopup("챌린지 모드에 오신 걸 환영합니다카피!\n이 모드에서는 먼저 적용될 '규칙'을 직접 선택해야 합니다카피.", () => {
+            ShowTutorialPopup("규칙 선택 화면에서 시간이 모두 지나면\n규칙이 랜덤으로 선택되니 주의하세요카피!", () => {
+                // [추가] 모든 설명이 끝난 뒤에 실제 조건 선택 팝업을 띄웁니다.
+                Debug.Log("튜토리얼 안내 완료. 조건 선택 팝업을 표시합니다.");
+                startinstruction = true;
+                ShowRequirementSelectionInternal(); 
+            });
+        });
+    }
+
+    private void ShowTutorialPopup(string message, System.Action onConfirm)
+    {
+        // BaseConfirmationPopup 대신 확인 버튼만 있는 BaseWarningPopup 사용 권장
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
+        if (popup != null)
+        {
+            popup.Setup(message, onConfirm);
+        }
+    }
+
+    public void OnTutorialAfterRequirementSelected()
+    {
+        if (!isTutorialMode || afterReqinstruction) return;
+
+        // 안내 팝업이 뜰 동안만 시간을 멈춥니다.
+        Time.timeScale = 0f;
+        ShowTutorialPopup("챌린지 모드에서는 선택한 '규칙'만 만족하면 됩니다카피!\n레벨 모드처럼 모든 종류의 보석을 넣을 필요가 없어요카피.", () => {
+            ShowTutorialPopup("또한, 여기서는 '새로고침' 버튼 대신\n'조건 다시 선택' 버튼이 생깁니다카피! 신중하게 사용하세요.", () => {
+                // 모든 튜토리얼 안내가 끝나면 시간을 흐르게 하고 게임을 시작합니다.
+                Time.timeScale = 1f;
+                gameData.GameState = GameState.Playing; 
+                
+                StopCoroutine(nameof(ChallengeTimerRoutine));
+                StartCoroutine(ChallengeTimerRoutine()); // 여기서 타이머 시작
+                Debug.Log("챌린지 튜토리얼 안내 종료 - 게임 시작");
+                afterReqinstruction = true;
+            });
+        });
     }
 
     private void InitChallengeMode()
@@ -112,9 +160,6 @@ public class ChallengeModeManager : MonoBehaviour
         
         // 초기 제한 시간 설정
         currentRemainingTime = startingTimeLimit;
-
-       
-
        
         ChunkData chunkData = ChunkGenerator.GenerateAllChunks(
             totalChallengeBoxes,                           
@@ -163,7 +208,18 @@ public class ChallengeModeManager : MonoBehaviour
         // 3. 화면에 보석 그리드 표시
         ExtractDisplayBundles();
         currentReselectCount = 0;
+        UpdateReselectUI();
         UpdateAllItemUI();
+
+        if (isTutorialMode)
+        {
+            gameData.GameState = GameState.Paused; // 상태를 일시정지로 설정
+            Debug.Log("튜토리얼 모드: 메인 타이머 시작을 보류합니다.");
+        }
+        else
+        {
+            StartCoroutine(ChallengeTimerRoutine());
+        }
 
         StartCoroutine(ChallengeTimerRoutine());
         // 4. 첫 조건 선택 시작
@@ -477,12 +533,20 @@ public class ChallengeModeManager : MonoBehaviour
     {
         while (gameData.GameState == GameState.Playing)
         {
-            currentRemainingTime -= Time.deltaTime;
+            // [수정] 튜토리얼 모드일 때는 남은 시간을 줄이지 않음
+            if (!isTutorialMode)
+            {
+                currentRemainingTime -= Time.deltaTime;
+            }
+            else 
+            {
+                // 튜토리얼 중에도 타이머 바를 꽉 찬 상태로 유지하고 싶다면 추가
+                currentRemainingTime = startingTimeLimit; 
+            }
             
-            // UI 타이머 슬라이더 업데이트 (기존 UIManager 활용)
+            // UI 타이머 슬라이더 업데이트
             if (GameUIManager.Instance.TimerSlider != null)
             {
-                // 챌린지 모드는 최대 시간이 가변적이므로 슬라이더 연출은 별도 조정 권장
                 GameUIManager.Instance.TimerSlider.value = Mathf.Max(0, currentRemainingTime / startingTimeLimit);
             }
 
@@ -496,6 +560,18 @@ public class ChallengeModeManager : MonoBehaviour
     }
 
     public void ShowRequirementSelection()
+    {
+        // 1. 튜토리얼 모드라면 실제 조건 선택창을 띄우지 않고 설명부터 시작
+        if (isTutorialMode && !startinstruction)
+        {
+            StartChallengeTutorial();
+            return; 
+        }
+
+        // 튜토리얼이 아닐 때만 즉시 실행
+        ShowRequirementSelectionInternal();
+    }
+    private void ShowRequirementSelectionInternal()
     {
         // 1. 게임 메인 시간 정지
         Time.timeScale = 0f;
@@ -512,14 +588,15 @@ public class ChallengeModeManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             var req = GenerateRandomRequirement();
-            generatedRequirements.Add(req); // 랜덤 선택을 위해 저장
+            generatedRequirements.Add(req);
             GameObject cardObj = Instantiate(RequirementCardPrefab, RequirementParentPanel);
             cardObj.GetComponent<RequirementCard>().Setup(req, OnRequirementSelected);
         }
 
-        // 2. 선택 전용 타이머 코루틴 시작 (UnscaledTime 사용 필수)
+        // 2. 선택 전용 타이머 코루틴 시작 (Time.unscaledDeltaTime 사용으로 시각적으로 정지됨)
         if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
         selectionTimerCoroutine = StartCoroutine(SelectionTimerRoutine());
+        Time.timeScale = 1f;
     }
     private IEnumerator SelectionTimerRoutine()
     {
@@ -527,6 +604,11 @@ public class ChallengeModeManager : MonoBehaviour
 
         while (currentSelectionTimer > 0)
         {
+            if (isTutorialMode) 
+            {
+                yield return null;
+                continue;
+            }
             // Time.timeScale이 0이므로 Time.unscaledDeltaTime을 사용해야 합니다.
             currentSelectionTimer -= Time.unscaledDeltaTime;
 
@@ -656,7 +738,6 @@ public class ChallengeModeManager : MonoBehaviour
         RequirementPopupObject.SetActive(false);
         
         // 게임 재개
-        Time.timeScale = 1f; 
         gameData.GameState = GameState.Playing;
 
         // 메인 타이머가 아직 안돌고 있다면 시작 (이미 돌고 있다면 무시됨)
@@ -669,6 +750,22 @@ public class ChallengeModeManager : MonoBehaviour
         }
         
         ShowTopNotification("조건이 결정되었습니다카피!");
+        // 튜토리얼 모드인 경우 추가 안내 실행
+        if (isTutorialMode)
+        {
+            OnTutorialAfterRequirementSelected();
+        }
+        else
+        {
+            Time.timeScale =1f;
+            StopCoroutine(nameof(ChallengeTimerRoutine));
+            StartCoroutine(ChallengeTimerRoutine());
+        }
+
+        if (ActiveRequirementText != null)
+        {
+            ActiveRequirementText.text = $"현재 조건: {selectedReq.GetDescription()}";
+        }
     }
 
     public void OnClickComplete()
