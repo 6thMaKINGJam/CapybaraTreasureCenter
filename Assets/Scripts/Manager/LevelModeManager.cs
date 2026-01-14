@@ -1132,6 +1132,8 @@ private void HandleLevelClear()
         AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
     }
 
+progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+
     // 4. 이제 별 개수를 갱신하고 저장합니다.
     progressData.SetStars(currentLevel, starCount);
     if (progressData.LastClearedLevel < currentLevel)
