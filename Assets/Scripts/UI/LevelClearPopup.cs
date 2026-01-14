@@ -9,6 +9,7 @@ public class LevelClearPopup : MonoBehaviour
 {
     [Header("UI 요소 연결")]
     public TextMeshProUGUI MessageText;
+    public TMP_Text LevelText;
     public GameObject[] StarObjects;
     
     [Header("버튼 연결")]
@@ -32,8 +33,10 @@ public class LevelClearPopup : MonoBehaviour
     /// <param name="onNextLevel">다음 레벨 버튼 기능</param>
     /// <param name="onRetry">다시하기 버튼 기능</param>
     /// <param name="onHome">홈으로 가기 버튼 기능</param>
-    public void Setup(int starCount, string message, Action onNextLevel, Action onRetry, Action onHome)
+    public void Setup(int levelIndex, int starCount, string message, Action onNextLevel, Action onRetry, Action onHome)
     {
+        if (LevelText != null && levelIndex != 0)
+            LevelText.text = $"LEVEL {levelIndex}";
         // 1. 텍스트 설정
         if (MessageText != null)
             MessageText.text = message;

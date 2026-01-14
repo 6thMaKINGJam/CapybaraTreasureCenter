@@ -12368,7 +12368,6 @@ MonoBehaviour:
   UndoCountText: {fileID: 1228318477}
   CountdownText: {fileID: 1899612949}
   BoxVisual: {fileID: 252433823}
-  LevelText: {fileID: 0}
   star3Marker: {fileID: 0}
   star2Marker: {fileID: 0}
 --- !u!114 &637300472
@@ -14920,7 +14919,10 @@ MonoBehaviour:
   MaxRequirementValue: 5
   SuccessRewardTime: 10
   InitialGemCountPerType: 10
-  selectionLimitTime: 10
+  initialSelectionLimitTime: 120
+  minSelectionLimitTime: 10
+  selectionTimeStep: 10
+  RestricText: {fileID: 1934600410}
   SandTopImage: {fileID: 1802764479}
   SandBottomImage: {fileID: 1685206551}
   SandStreamImage: {fileID: 98547754}

@@ -49,9 +49,6 @@ public class GameUIManager : MonoBehaviour
     [Header("연출 컨트롤러")]
     public BoxVisualController BoxVisual; // ★ 추가! 인스펙터에서 연결
 
-    [Header("레벨 표시 UI")]
-    public TextMeshProUGUI LevelText; 
-
     [Header("별 표시 UI")]
     public RectTransform star3Marker; // Star3_Point 할당
     public RectTransform star2Marker; // Star2_Point 할당
@@ -94,19 +91,6 @@ private bool isChallengeMode;
             onFinished?.Invoke();
         }
     }
-    /// <summary>
-    /// 화면에 현재 레벨 번호를 표시합니다.
-    /// </summary>
-    /// <param name="levelIndex">현재 레벨 번호</param>
-    public void UpdateLevelDisplay(int levelIndex)
-    {
-        if (LevelText != null)
-        {
-            // 예: "LEVEL 1", "LEVEL 2" 형식으로 표시
-            LevelText.text = $"LEVEL {levelIndex}";
-        }
-    }
-
 
     public void SetupStarMarkers(float maxTime)
     {

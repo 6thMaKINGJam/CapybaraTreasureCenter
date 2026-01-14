@@ -110,7 +110,6 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         IsTutorialScene = true;
         if (UIManager != null)
         {
-            UIManager.LevelText.gameObject.SetActive(false);
             // 초기 상태: 모든 버튼 비활성화 (보석 클릭은 허용)
             SetAllButtonsInteractable(false);
             // 2. 완료 버튼만 개별적으로 활성화 (추가 코드)
@@ -1079,6 +1078,7 @@ private class BundleRestoreInfo
         {
             // 3. 팝업에도 위에서 결정한 finalMessage를 전달
             popup.Setup(
+                gameData.CurrentLevelIndex,
                 finalMessage, 
                 () => RestartCurrentLevel(), // 다시하기
                 () => GoToMainHome()  // 메인으로
@@ -1198,6 +1198,7 @@ private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel
     if (popup != null)
     {
         popup.Setup(
+            gameData.CurrentLevelIndex,
             starCount, 
             message,
                 () => GoToNextLevel(),
@@ -1414,6 +1415,7 @@ private void StopBackgroundMedia()
     {
             // ✅ 시간추가 콜백 전달
             popup.Setup(
+                gameData.CurrentLevelIndex,
                 randomMsg,
                 () => RestartLevel(),
                 () => GoToMainHome(),
@@ -2427,13 +2429,6 @@ private void UpdateAllItemUI()
         GetCurrentBox().RequiredAmount,
         gameData.Boxes.Count // ← 추가
     );
-
-    // ✅ 추가: 현재 레벨 번호 UI 업데이트
-    // gameData.CurrentLevelIndex는 InitGame에서 PlayerPrefs 정보를 통해 저장됩니다.
-    if (UIManager != null)
-    {
-        UIManager.UpdateLevelDisplay(gameData.CurrentLevelIndex);
-    }
 
     // ✅ UpdateAllItemUI() 호출로 통일
     UpdateAllItemUI();
