@@ -55,6 +55,7 @@ public class LevelModeManager : MonoBehaviour
     public float NotificationDuration = 2f; // 표시 시간
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
+    private int tutorialStep = 0;
     
 
 
@@ -97,7 +98,8 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         InitGame();
     
         // 튜토리얼 실습 모드일 때 추가 설정
-        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) != 0)
+        Debug.Log($"[levelmodeManager] TutorialPracticeMode: {PlayerPrefs.GetInt("TutorialPracticeMode", 0)}");
+        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 1)
         {
             ApplyTutorialPracticeRules();
         }
@@ -106,13 +108,42 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     private void ApplyTutorialPracticeRules()
     {
         IsTutorialScene = true;
-        Debug.Log("[LevelModeManager] 튜토리얼 실습 모드 적용");
-        // 1. 레벨 표시 UI 숨기기
-        if (UIManager != null && UIManager.LevelText != null)
+        if (UIManager != null)
+        {
             UIManager.LevelText.gameObject.SetActive(false);
+            // 초기 상태: 모든 버튼 비활성화 (보석 클릭은 허용)
+            SetAllButtonsInteractable(false);
+            // 2. 완료 버튼만 개별적으로 활성화 (추가 코드)
+            if (UIManager.CompleteButton != null)
+            {
+                UIManager.CompleteButton.interactable = true;
+            }
+        }
+        StartCoroutine(ShowTutorialNotificationsSequentially());
+    }
 
-        // 2. 사과/별 시스템 안내 (게임 시작 시 1회)
-        ShowTopNotification("별을 획득하면 사과를 얻을 수 있어요! 사과는 아이템 구매에 사용됩니다.");
+    private IEnumerator ShowTutorialNotificationsSequentially()
+    {
+        // 첫 번째 알림
+        ShowTopNotification("기본 규칙: 모든 종류의 보석을 개수에 맞게 넣으세요! [빨->노->초->파->보] 순서로 보충됩니다.");
+        
+        // 알림이 떠 있는 시간(NotificationDuration) + 페이드 인/아웃 시간만큼 대기
+        // 현재 코드상 NotificationDuration은 2f이며, 페이드는 왕복 0.6f입니다.
+        yield return new WaitForSeconds(3.0f); 
+
+        // 두 번째 알림
+        ShowTopNotification("별을 많이 얻을수록 더 많은 사과를 얻을 수 있어요! 사과는 아이템 구매에 사용됩니다. 이제 보석을 담아보세요.");
+        yield return new WaitForSeconds(3.0f); 
+    }
+
+    // 버튼 상호작용 일괄 제어 헬퍼
+    private void SetAllButtonsInteractable(bool interactable)
+    {
+        UIManager.UndoButton.interactable = interactable;
+        UIManager.Undo1Button.interactable = interactable;
+        UIManager.RefreshButton.interactable = interactable;
+        UIManager.CancelSelectButton.interactable = interactable;
+        UIManager.CompleteButton.interactable = interactable;
     }
 
     void Update()
@@ -347,11 +378,6 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         }
     }
     
-
-    
-  
-    
-
     
     private void ExtractDisplayBundles()
     {
@@ -678,6 +704,28 @@ public void CancelSelection()
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
     UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount,gameData.Boxes.Count);
     GridManager.ClearAllSelections();
+    if (IsTutorialScene && tutorialStep == 5) 
+    {
+        OnCancelSelectionSuccess(); // 튜토리얼 콜백 추가
+    }
+}
+
+public void OnCancelSelectionSuccess()
+{
+    if (IsTutorialScene && tutorialStep == 5)
+    {
+        UIManager.StopWigggleInTutorial(UIManager.CancelSelectButton.gameObject);
+        
+        // 모든 기능을 써봤으므로 모든 버튼 활성화
+        CompleteTutorialPractice();
+    }
+}
+private void CompleteTutorialPractice()
+{
+    ShowTopNotification("모든 기능을 익히셨습니다! 이제 자유롭게 보석을 담아 레벨을 클리어하세요.");
+    SetAllButtonsInteractable(true); // 모든 버튼 활성화
+    IsTutorialScene = false; // 튜토리얼 강제 흐름 종료
+    tutorialStep = 10; // 완료 상태
 }
 
 // ===== 복원 정보 클래스 =====
@@ -691,7 +739,7 @@ private class BundleRestoreInfo
     // ========== 완료 버튼 ==========
    public void OnClickComplete()
     {    // ✅ 모든 흔들림 중지
-    GridManager.StopAllShaking();
+        GridManager.StopAllShaking();
     
 
         Box currentBox = GetCurrentBox();
@@ -787,9 +835,6 @@ private class BundleRestoreInfo
             int nextBoxIdx = gameData.CurrentBoxIndex + 1;
 
             if (nextBoxIdx == 1) {
-                ShowTopNotification("모든 종류의 보석을 포함해 개수를 맞춰보세요.보석은 [빨->노->초->파->보] 순서로 보충됩니다.");
-            }
-            else if (nextBoxIdx == 2) {
                 ShowTopNotification("이제 왼쪽에 있는 아이템을 사용해 보세요. ");
             }
             else if (nextBoxIdx == 3) { // 3번째 상자 클리어
@@ -864,10 +909,16 @@ private class BundleRestoreInfo
                     nextBox.RequiredAmount,
                     gameData.Boxes.Count // ← 추가
                 );
-        }
+            }
 
             // 하단 아이템 개수 등 갱신
             UpdateAllItemUI();
+            if (IsTutorialScene && tutorialStep < 4)
+            {
+                // 튜토리얼 단계별 강제 흐름
+                HandleTutorialStep();
+                return; 
+            }
         });
     }
     else
@@ -877,6 +928,40 @@ private class BundleRestoreInfo
         if (gameData.CurrentBoxIndex >= gameData.Boxes.Count) HandleLevelClear();
     }
 }
+    private void HandleTutorialStep()
+    {
+        switch (tutorialStep)
+        {
+            case 0: // 첫 상자 채운 후 -> Undo 학습
+                SetAllButtonsInteractable(false);
+                UIManager.UndoButton.interactable = true;
+                UIManager.StartWiggle(UIManager.UndoButton.gameObject); // 흔들기 효과
+                ShowWarning("Undo 버튼을 누르면 이전 상자로 돌아갑니다. 눌러보세요!");
+                tutorialStep = 1;
+                break;
+        }
+    }
+    public void OnUndoSuccess() 
+    {
+        if (IsTutorialScene && tutorialStep == 1)
+        {
+            ShowWarning("이제 아무 보석이나 하나 클릭해 보세요.");
+            tutorialStep = 2;
+            OnTutorialBundleClicked();
+        }
+    }
+
+    private void OnTutorialBundleClicked()
+    {
+        if (IsTutorialScene && tutorialStep == 2)
+        {
+            SetAllButtonsInteractable(false);
+            UIManager.Undo1Button.interactable = true;
+            UIManager.StartWiggle(UIManager.Undo1Button.gameObject);
+            ShowWarning("Undo1 버튼은 보석 하나만 되돌립니다. 눌러보세요!");
+            tutorialStep = 3;
+        }
+    }
 
     private IEnumerator ReturnToTutorialAfterDelay()
     {
@@ -1408,48 +1493,73 @@ private void StopBackgroundMedia()
     
     // ========== Undo/Refresh/Hint ==========
     public void ProcessUndo()
-{
-    if(gameData.CompletedBoxes.Count == 0)
     {
-        ShowWarning("되돌릴 상자가 없습니다카피!");
-        return;
-    }
-    
-    gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
-    
-    
-    if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
-    {
-        // [수정됨] 확인 팝업 먼저 표시
-        ShowAdConfirmationPopup(() =>
+        if(gameData.CompletedBoxes.Count == 0)
         {
-            // Yes 클릭 시에만 광고 호출
-            AdManager.Instance.ShowRewardedAd((success) =>
-            {
-                if(success)  StartCoroutine(ExecuteUndoWithCancle());
-                // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
-            });
-        }, 
-        null); // ✅ No 버튼도 Count 원복 안 함
-    }
-    else
-    {
-        StartCoroutine(ExecuteUndoWithCancle());
-    }
-}
-
-private IEnumerator ExecuteUndoWithCancle()
-    {
-        // 2. 선택 강제 비우기 (애니메이션 포함)
-    if(gameData.SelectedBundles.Count > 0)
-    {
-        CancelSelection();
+            ShowWarning("되돌릴 상자가 없습니다카피!");
+            return;
+        }
         
-        // CancelSelection의 애니메이션 시간 대기
-        // (DOTween 0.3초 축소 + 0.2초 팝업 = 약 0.5초)
-        yield return new WaitForSeconds(0.6f);
+        gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
+        
+        
+        if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
+        {
+            // [수정됨] 확인 팝업 먼저 표시
+            ShowAdConfirmationPopup(() =>
+            {
+                // Yes 클릭 시에만 광고 호출
+                AdManager.Instance.ShowRewardedAd((success) =>
+                {
+                    if(success)  StartCoroutine(ExecuteUndoWithCancle());
+                    // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
+                });
+            }, 
+            null); // ✅ No 버튼도 Count 원복 안 함
+        }
+        else
+        {
+            StartCoroutine(ExecuteUndoWithCancle());
+        }
+        if (tutorialStep == 1) 
+        {
+            ApplyUndoTutorialRule();
+        }
     }
-    ExecuteUndo();
+    private void ApplyUndoTutorialRule()
+    {
+        if (UIManager != null)
+        {
+            // 1. Undo 버튼 비활성화
+            if (UIManager.UndoButton != null)
+            {
+                UIManager.StopWigggleInTutorial(UIManager.UndoButton.gameObject); 
+                UIManager.UndoButton.interactable = false;
+                // 만약 아예 안 보이게 하고 싶다면 gameObject.SetActive(false);
+            }
+
+            // 2. Complete 버튼 활성화
+            if (UIManager.CompleteButton != null)
+            {
+                UIManager.CompleteButton.interactable = true;
+                // 만약 숨겨져 있었다면 gameObject.SetActive(true);
+            }
+        }
+        OnUndoSuccess();
+    }
+
+    private IEnumerator ExecuteUndoWithCancle()
+        {
+            // 2. 선택 강제 비우기 (애니메이션 포함)
+        if(gameData.SelectedBundles.Count > 0)
+        {
+            CancelSelection();
+            
+            // CancelSelection의 애니메이션 시간 대기
+            // (DOTween 0.3초 축소 + 0.2초 팝업 = 약 0.5초)
+            yield return new WaitForSeconds(0.6f);
+        }
+        ExecuteUndo();
     }   
 
 
@@ -1504,7 +1614,34 @@ private IEnumerator ExecuteUndoWithCancle()
     {
         ExecuteRefresh();
     }
+    if(tutorialStep == 4)
+    {
+        ApplyRefreshTutorialRule();
+    }
 }
+    private void ApplyRefreshTutorialRule()
+    {
+        if (UIManager != null)
+        {
+            // 1. refresh 버튼 비활성화
+            if (UIManager.RefreshButton != null)
+            {
+                UIManager.StopWigggleInTutorial(UIManager.RefreshButton.gameObject); 
+                UIManager.RefreshButton.interactable = false;
+                // 만약 아예 안 보이게 하고 싶다면 gameObject.SetActive(false);
+            }
+
+            // 2. 버리기 버튼 활성화
+            if (UIManager.CancelSelectButton != null)
+            {
+                UIManager.CancelSelectButton.interactable = true;
+                // 만약 숨겨져 있었다면 gameObject.SetActive(true);
+            }
+        }
+        tutorialStep = 5;
+        
+    }
+
 
     
     private void ExecuteRefresh()
@@ -1554,6 +1691,33 @@ private IEnumerator ExecuteUndoWithCancle()
             gameData.Undo1Count++; // 무료 사용 횟수 증가
             Execute1Undo();
         }
+        if(tutorialStep == 3)
+        {
+            ApplyUndo1TutorialRule();
+        }
+    }
+    private void ApplyUndo1TutorialRule()
+    {
+        if (UIManager != null)
+        {
+            // 1. Undo1 버튼 비활성화
+            if (UIManager.Undo1Button != null)
+            {
+                UIManager.StopWigggleInTutorial(UIManager.Undo1Button.gameObject); 
+                UIManager.Undo1Button.interactable = false;
+                // 만약 아예 안 보이게 하고 싶다면 gameObject.SetActive(false);
+            }
+
+            // 2. refresh 버튼 활성화
+            if (UIManager.RefreshButton != null)
+            {
+                UIManager.RefreshButton.interactable = true;
+                UIManager.StartWiggle(UIManager.RefreshButton.gameObject);
+                // 만약 숨겨져 있었다면 gameObject.SetActive(true);
+            }
+        }
+        tutorialStep = 4;
+        
     }
 
     public void Execute1Undo()
@@ -2298,7 +2462,7 @@ private IEnumerator NotificationCoroutine(string message)
     yield return canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
     
     // 유지
-    yield return new WaitForSeconds(NotificationDuration);
+    yield return new WaitForSeconds(NotificationDuration + 0.5f);
     
     // 페이드 아웃
     yield return canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();

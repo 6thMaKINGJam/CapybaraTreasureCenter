@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 
 public class GameUIManager : MonoBehaviour
@@ -195,6 +196,28 @@ public class GameUIManager : MonoBehaviour
         }
         
         
+    }
+
+    public void StartWiggle(GameObject target)
+    {
+        // DOTween을 이용한 흔들기 효과
+        target.transform.DOShakePosition(1.0f, 10f, 10, 90, false, true).SetLoops(-1);
+    }
+
+    public void StopWiggle(GameObject target)
+    {
+        target.transform.DOKill();
+        target.transform.localPosition = Vector3.zero; // 위치 초기화 (부모 기준)
+    }
+
+    public void StopWigggleInTutorial (GameObject target)
+    {
+        target.transform.DOKill();
+    }
+
+    public void ExecuteUndo1()
+    {
+        StopWiggle(Undo1Button.gameObject);
     }
 
     public void TogglePause(bool isPause)
