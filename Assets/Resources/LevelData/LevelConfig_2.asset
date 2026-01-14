@@ -15,12 +15,12 @@ MonoBehaviour:
   ChapterNumber: 2
   MinBox: 5
   MaxBox: 15
-  MaxTime: 120
-  MinTime: 60
+  MaxTime: 200
+  MinTime: 100
   GemTypeCount: 4
   MaxRequiredPerBox: 12
   MaxRefreshCount: 1
-  MaxUndoCount: 4
+  MaxUndoCount: 3
   MaxUndo1Count: 3
   TimeAddAmount: 10
   BackgroundVideoFileName: gamescreen_beach.mp4

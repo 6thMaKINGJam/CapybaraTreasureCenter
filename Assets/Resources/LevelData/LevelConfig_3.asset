@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChapterNumber: 3
   MinBox: 5
-  MaxBox: 15
-  MaxTime: 120
-  MinTime: 60
+  MaxBox: 12
+  MaxTime: 300
+  MinTime: 130
   GemTypeCount: 5
-  MaxRequiredPerBox: 13
+  MaxRequiredPerBox: 15
   MaxRefreshCount: 1
   MaxUndoCount: 5
   MaxUndo1Count: 3
