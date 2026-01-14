@@ -15088,7 +15088,7 @@ MonoBehaviour:
   NotificationPanel: {fileID: 263552383}
   NotificationText: {fileID: 314398620}
   NotificationDuration: 2
-  ActiveRequirementDisplay: {fileID: 0}
+  ActiveRequirementDisplay: {fileID: 417477033}
   MaxFreeRequirementReselect: 2
   ReselectCountText: {fileID: 1684604504}
   MinRequirementValue: 2
@@ -15098,7 +15098,7 @@ MonoBehaviour:
   selectionLimitTime: 10
   SandTopImage: {fileID: 1802764479}
   SandBottomImage: {fileID: 1685206551}
-  SandStreamImage: {fileID: 0}
+  SandStreamImage: {fileID: 98547754}
   SandCurve:
     serializedVersion: 2
     m_Curve:
