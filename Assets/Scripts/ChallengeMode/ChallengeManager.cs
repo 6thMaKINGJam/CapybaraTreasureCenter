@@ -1209,6 +1209,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
 
         // 3. 콜백 설정 (다시 시작할 때 반드시 TimeScale을 1로 복구해야 함)
         popup.Setup(
+            0,
             finalDisplayMsg,
             () => {
                 Time.timeScale = 1f; // 시간 복구

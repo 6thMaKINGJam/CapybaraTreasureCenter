@@ -7,6 +7,7 @@ public class GameOverPopup : MonoBehaviour
 {
     [Header("UI 요소")]
     public TMP_Text MessageText;
+    public TMP_Text LevelText;
     public Button RestartButton;
     public Button MainHomeButton;
     public Button TimeAddButton; // ✅ 추가
@@ -15,8 +16,10 @@ public class GameOverPopup : MonoBehaviour
     private Action onMainHomeAction;
     private Action onTimeAddAction; // ✅ 추가
     
-    public void Setup(string message, Action restartCallback, Action mainHomeCallback, Action timeAddCallback = null)
+    public void Setup(int levelIndex, string message, Action restartCallback, Action mainHomeCallback, Action timeAddCallback = null)
     {
+        if (LevelText != null) 
+            LevelText.text = $"LEVEL {levelIndex}"; // ✅ 레벨 표시
         MessageText.text = message;
         
         onRestartAction = restartCallback;
