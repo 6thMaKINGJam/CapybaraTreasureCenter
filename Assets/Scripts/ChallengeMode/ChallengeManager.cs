@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.Video;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ChallengeModeManager : MonoBehaviour
 {
@@ -48,8 +49,9 @@ public class ChallengeModeManager : MonoBehaviour
     public GameObject NotificationPanel; // Inspector 할당
     public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
     public float NotificationDuration = 2f; // 표시 시간
-    [Header("선택된 조건 표시 UI")]
-    public TextMeshProUGUI ActiveRequirementText; // 현재 화면에 떠 있는 조건 텍스트
+[Header("선택된 조건 표시 UI")]
+public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 떠 있는 조건 UI
+
     [Header("Requirement Settings")]
     // 무료 조건 재선택 횟수
     public int MaxFreeRequirementReselect = 2; 
@@ -76,8 +78,14 @@ public class ChallengeModeManager : MonoBehaviour
     [Tooltip("조건 선택 제한 시간 (초)")]
     public float selectionLimitTime = 10f;
 
-    [Header("조건 선택 UI")]
-    public UnityEngine.UI.Slider SelectionTimerSlider;
+ [Header("모래시계 UI (FillAmount)")]
+    public Image SandTopImage;      // 위쪽 모래
+    public Image SandBottomImage;   // 아래쪽 모래
+    public Image SandStreamImage;   // (선택) 가운데 줄
+
+    [Header("모래시계 연출 옵션")]
+    public AnimationCurve SandCurve = AnimationCurve.Linear(0, 0, 1, 1); // 자연스러운 곡선
+    
     
     private float currentSelectionTimer;
     private bool isSelectionActive = false;
@@ -612,9 +620,36 @@ public class ChallengeModeManager : MonoBehaviour
             // Time.timeScale이 0이므로 Time.unscaledDeltaTime을 사용해야 합니다.
             currentSelectionTimer -= Time.unscaledDeltaTime;
 
-            // UI 슬라이더가 있다면 업데이트
-            if (SelectionTimerSlider != null)
-                SelectionTimerSlider.value = currentSelectionTimer / selectionLimitTime;
+            float remaining01 = Mathf.Clamp01(currentSelectionTimer / selectionLimitTime); // 1 -> 0
+    float progress01  = 1f - remaining01;                                          // 0 -> 1
+
+    // (선택) 곡선 적용: 모래가 더 자연스럽게 떨어지는 느낌
+    float p = SandCurve != null ? SandCurve.Evaluate(progress01) : progress01;
+    p = Mathf.Clamp01(p);
+
+ 
+    // 모래시계 업데이트
+    if (SandTopImage != null)
+        SandTopImage.fillAmount = Mathf.Max(0, 1f - p);
+
+    if (SandBottomImage != null)
+        SandBottomImage.fillAmount = p;
+
+    // (선택) 가운데 줄 연출: 진행 중에만 보이게 + 살짝 펄스
+    if (SandStreamImage != null)
+    {
+        // 시작/끝에 서서히 꺼지게(미니멀에 잘 어울림)
+        float fadeIn  = Mathf.InverseLerp(0f, 0.06f, p);        // 초반 6% 구간 페이드인
+        float fadeOut = 1f - Mathf.InverseLerp(0.94f, 1f, p);   // 마지막 6% 구간 페이드아웃
+        float fade = Mathf.Clamp01(fadeIn * fadeOut);
+
+        float pulse = 0.85f + 0.15f * Mathf.Sin(Time.unscaledTime * 16f);
+
+        var c = SandStreamImage.color;
+        c.a = fade * pulse;
+        SandStreamImage.color = c;
+    }
+
 
             yield return null;
         }
@@ -744,11 +779,12 @@ public class ChallengeModeManager : MonoBehaviour
         StopCoroutine(nameof(ChallengeTimerRoutine));
         StartCoroutine(ChallengeTimerRoutine());
 
-        if (ActiveRequirementText != null)
-        {
-            ActiveRequirementText.text = $"현재 조건: {selectedReq.GetDescription()}";
-        }
-        
+       // ★ 변경: 이미지 기반 UI로 업데이트
+    if (ActiveRequirementDisplay != null)
+    {
+        ActiveRequirementDisplay.UpdateRequirement(selectedReq);
+    }
+    
         ShowTopNotification("조건이 결정되었습니다카피!");
         // 튜토리얼 모드인 경우 추가 안내 실행
         if (isTutorialMode)
@@ -762,10 +798,7 @@ public class ChallengeModeManager : MonoBehaviour
             StartCoroutine(ChallengeTimerRoutine());
         }
 
-        if (ActiveRequirementText != null)
-        {
-            ActiveRequirementText.text = $"현재 조건: {selectedReq.GetDescription()}";
-        }
+       
     }
 
     public void OnClickComplete()
