@@ -190,7 +190,6 @@ var nowBox = currentBox;
 //     seq.Append(nowBox.root.DOScale(Vector3.one, 0.08f).SetEase(Ease.OutQuad));
 
 
-
     // 1) 문까지 이동(오른쪽)
     seq.Append(rt
         .DOAnchorPosX(startPos.x + approachX, tApproach)
@@ -205,6 +204,8 @@ var nowBox = currentBox;
     {
         nowBox.SetOpen();
     });
+     SoundManager.Instance.PlayFX(SoundType.OneBoxFailue);
+
 
     // 3) 튕겨나옴(왼쪽)
     seq.Append(rt

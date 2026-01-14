@@ -35,6 +35,7 @@ public class LevelClearPopup : MonoBehaviour
     /// <param name="onHome">홈으로 가기 버튼 기능</param>
     public void Setup(int levelIndex, int starCount, string message, Action onNextLevel, Action onRetry, Action onHome)
     {
+<<<<<<< Updated upstream
         if (LevelText != null)
         {
             // 챌린지 모드인 경우 텍스트 오브젝트 자체를 끔
@@ -42,6 +43,10 @@ public class LevelClearPopup : MonoBehaviour
             if (ChallengeModeManager.Instance == null && levelIndex != 0)
                 LevelText.text = $"LEVEL {levelIndex}";
         }
+=======
+        if (LevelText != null && levelIndex != 0)
+            LevelText.text = $"LV.{levelIndex}";
+>>>>>>> Stashed changes
         // 1. 텍스트 설정
         if (MessageText != null)
             MessageText.text = message;

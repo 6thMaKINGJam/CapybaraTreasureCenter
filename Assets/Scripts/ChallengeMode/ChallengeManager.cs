@@ -245,6 +245,8 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         StartCoroutine(ChallengeTimerRoutine());
         // 4. 첫 조건 선택 시작
         ShowRequirementSelection();
+
+        CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
     }
 
     // [추가] 초기 보석 데이터를 바탕으로 그리드용 번들 생성
@@ -830,7 +832,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         if (selectedTotal != currentBox.RequiredAmount)
         {
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
-            ShowTopNotification("보석 수량이 맞지 않습니다카피!");
+            ShowWarning(null);
              signboard?.PlayFailX(); // ✅ 전광판 X
              UIManager?.AnimateBoxFailure(null);
              if(gameData.SelectedBundles.Count > 0)
@@ -852,7 +854,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
             // 실패: 진동 및 알림
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
             
-            ShowTopNotification("조건에 맞지 않습니다카피!");
+            ShowWarning("조건에 맞지 않습니다카피!");
              signboard?.PlayFailX(); // ✅ 전광판 X
              UIManager?.AnimateBoxFailure(null);
              if(gameData.SelectedBundles.Count > 0)
