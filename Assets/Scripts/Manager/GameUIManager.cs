@@ -185,6 +185,18 @@ private bool isChallengeMode;
         
     }
 
+public void AnimateBoxFailure(System.Action onFinished)
+    {
+        if (BoxVisual != null)
+        {
+            BoxVisual.PlayFailureAnimation(onFinished);
+        }
+        else
+        {
+            onFinished?.Invoke();
+        }
+    }
+    
     public void StartWiggle(GameObject target)
     {
         // DOTween을 이용한 흔들기 효과

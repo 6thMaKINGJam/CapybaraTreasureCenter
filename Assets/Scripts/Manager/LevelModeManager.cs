@@ -780,6 +780,7 @@ private class BundleRestoreInfo
         ShowDifficientWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+          UIManager?.AnimateBoxFailure(null);
       
     if(gameData.SelectedBundles.Count > 0)
     {
@@ -796,6 +797,7 @@ private class BundleRestoreInfo
         ShowUnmatchGemWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+          UIManager?.AnimateBoxFailure(null);
       
     if(gameData.SelectedBundles.Count > 0)
     {
