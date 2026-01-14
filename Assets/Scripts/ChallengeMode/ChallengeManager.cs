@@ -123,6 +123,28 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         }
         InitChallengeMode();
     }
+ private int lastCountedSecond = -1; // 중복 호출 방지용
+  
+void Update()
+    {
+        // gameData가 생성된 상태이고 게임 상태가 Playing일 때만 작동
+        if (gameData != null && gameData.GameState == GameState.Playing)
+        {
+            float remainingTime = startingTimeLimit - gameData.ElapsedTime;
+
+            // 5.5초 이하일 때 카운트다운 시작
+            if (remainingTime <= 5.5f && remainingTime > 0)
+            {
+                int currentSecond = Mathf.CeilToInt(remainingTime);
+
+                if (currentSecond != lastCountedSecond)
+                {
+                    lastCountedSecond = currentSecond;
+                    GameUIManager.Instance.StartCountdownEffect(currentSecond);
+                }
+            }
+        }
+    }
 
     private void StartChallengeTutorial()
     {
@@ -141,7 +163,45 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         });
     }
 
-    private void ShowTutorialPopup(string message, System.Action onConfirm)
+ private IEnumerator CheckTimeOver()
+    {
+        float timeLimit = startingTimeLimit;
+        bool lowTimeWarningShown = false;
+
+        // gameData.ElapsedTime을 0으로 시작하거나 유지
+        while(true)
+        {
+            if(gameData.GameState == GameState.Playing)
+            {
+                // 매 프레임 흐른 시간을 누적 (timeScale이 0이면 0이 더해짐)
+                gameData.ElapsedTime += Time.deltaTime; 
+                
+                float remaining = timeLimit - gameData.ElapsedTime;
+                
+                // UI 업데이트
+                if (UIManager.TimerSlider != null)
+                    UIManager.TimerSlider.value = Mathf.Clamp01(remaining / timeLimit);
+
+                // 경고 로직
+                if(!lowTimeWarningShown && remaining <= 30f && remaining > 0f)
+                {
+                    if(CapyDialogue != null && CapyDialogueText != null)
+                        CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.TimeLowWarning);
+                    lowTimeWarningShown = true;
+                   
+                }
+
+                // 타임오버
+                if(remaining <= 0)
+                {
+                    HandleTimeOver();
+                    yield break;
+                }
+            }
+            yield return null; // 다음 프레임까지 대기
+        }
+    }
+        private void ShowTutorialPopup(string message, System.Action onConfirm)
     {
         // BaseConfirmationPopup 대신 확인 버튼만 있는 BaseWarningPopup 사용 권장
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
@@ -241,6 +301,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         {
             StartCoroutine(ChallengeTimerRoutine());
         }
+
 
         StartCoroutine(ChallengeTimerRoutine());
         // 4. 첫 조건 선택 시작

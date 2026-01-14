@@ -126,7 +126,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
     private void StartTutorialPopups()
     {
         ShowTutorialPopup("기본 규칙: 모든 종류의 보석을 개수에 맞게 넣으세요!\n[빨->노->초->파->보] 순서로 보충됩니다.", () => {
-            ShowTutorialPopup("별을 많이 얻을수록 더 많은 사과를 얻을 수 있어요!\n사과는 아이템 구매에 사용됩니다. 이제 보석을 담아보세요.", null);
+            ShowTutorialPopup("별을 많이 얻을수록 더 많은 사과를 얻을 수 있어요!\n사과는 아이템 구매와 도전모드 실행에 사용됩니다. 이제 보석을 담아보세요.", null);
         });
     }
 

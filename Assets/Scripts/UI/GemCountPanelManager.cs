@@ -7,7 +7,7 @@ public class GemCountPanelManager : MonoBehaviour
 {
     [Header("위험도 UI 설정")]
     public Slider DangerSlider; // 타이머 아래에 새로 추가할 슬라이더
-    public Image SliderFillImage; // 슬라이더의 색상을 바꿀 Fill 이미지
+    //public Image SliderFillImage; // 슬라이더의 색상을 바꿀 Fill 이미지//
     
     [Header("기존 아이템 설정")]
     public GameObject GemCountItemPrefab;
@@ -51,7 +51,7 @@ public class GemCountPanelManager : MonoBehaviour
             
             // 슬라이더 값도 안전(초록) 상태로 초기화
             if (DangerSlider != null) DangerSlider.value = 1f;
-            if (SliderFillImage != null) SliderFillImage.color = Color.green;
+           // if (SliderFillImage != null) SliderFillImage.color = Color.green;
         }
     }
 
@@ -124,7 +124,7 @@ public class GemCountPanelManager : MonoBehaviour
             else { statusColor = Color.green; sliderValue = Mathf.Lerp(0.66f, 1f, Mathf.Min(ratio - 1f, 1f)); }
 
             if (DangerSlider != null) DangerSlider.value = sliderValue;
-            if (SliderFillImage != null) SliderFillImage.color = statusColor;
+            //if (SliderFillImage != null) SliderFillImage.color = statusColor;
         }
         else
         {

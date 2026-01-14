@@ -15,10 +15,12 @@ MonoBehaviour:
   bgmClips:
   - sceneName: MainHome
     clip: {fileID: 8300000, guid: f8e9a79af66904ab5ad4db37286e3bb1, type: 3}
-  - sceneName: Game
+  - sceneName: LevelMode
     clip: {fileID: 8300000, guid: bb13968ffddec45c9a26a53941375c50, type: 3}
   - sceneName: Tutorial
     clip: {fileID: 8300000, guid: f8e9a79af66904ab5ad4db37286e3bb1, type: 3}
+  - sceneName: ChallengeMode
+    clip: {fileID: 8300000, guid: bb13968ffddec45c9a26a53941375c50, type: 3}
   fxClips:
   - type: 0
     clip: {fileID: 8300000, guid: def0b6bdb71bc4eae8260221364f6ffd, type: 3}

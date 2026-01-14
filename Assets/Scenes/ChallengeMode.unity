@@ -13061,7 +13061,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 40
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -15135,7 +15135,7 @@ MonoBehaviour:
   GridManager: {fileID: 347816904}
   UIManager: {fileID: 637300471}
   totalChallengeBoxes: 100
-  startingTimeLimit: 30
+  startingTimeLimit: 60
   challengeMaxRequired: 12
   RequirementCardPrefab: {fileID: 6763445550043822803, guid: 2d2662e1070708c4a8357d3bbfef9d79, type: 3}
   RequirementParentPanel: {fileID: 39537991}
