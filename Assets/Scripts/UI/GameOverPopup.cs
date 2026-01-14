@@ -19,7 +19,12 @@ public class GameOverPopup : MonoBehaviour
     public void Setup(int levelIndex, string message, Action restartCallback, Action mainHomeCallback, Action timeAddCallback = null)
     {
         if (LevelText != null) 
-            LevelText.text = $"LEVEL {levelIndex}"; // ✅ 레벨 표시
+        {
+            // 챌린지 모드일 때는 텍스트를 비활성화하고, 아닐 때만 레벨 표시
+            LevelText.gameObject.SetActive(ChallengeModeManager.Instance == null); 
+            if (ChallengeModeManager.Instance == null)
+                LevelText.text = $"LEVEL {levelIndex}"; 
+            }// ✅ 레벨 표시
         MessageText.text = message;
         
         onRestartAction = restartCallback;
