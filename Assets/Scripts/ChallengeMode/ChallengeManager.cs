@@ -874,7 +874,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         {
             if (message == null)
             {
-                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Warning);
+                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.UnmatchGemWarning);
                 CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
             }
             else

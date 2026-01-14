@@ -755,14 +755,14 @@ private class BundleRestoreInfo
         // 1. 개수 검증 실패
         if(selectedTotal != currentBox.RequiredAmount)
         {
-            HandleFailure(); // 실패 처리 함수 호출
+            HandleUnmatchGemFailure(); // 실패 처리 함수 호출
             return;
         }
         
         // 2. 종류 검증 실패 (모든 종류 1개 이상)
         if(!ValidateGemTypes())
         {
-            HandleFailure(); // 실패 처리 함수 호출
+            HandleDifficientFailure(); // 실패 처리 함수 호출
             return;
         }
         
@@ -771,14 +771,30 @@ private class BundleRestoreInfo
     }
 
     // [추가됨] 실패 시 공통 처리 로직
-    private void HandleFailure()
+    private void HandleDifficientFailure()
     {
         // 연속 성공 카운트 초기화
         consecutiveSuccessCount = 0; 
 
         // ===== CapyDialogue 연결: 검증 실패 =====
         // 경고 메시지를 띄우지만, 내부적으로 연속 성공은 깨짐
-        ShowWarning(null); 
+        ShowDifficientWarning(null); 
+        FlashRedScreen();
+        VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+      
+    if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+    }
+    }
+    private void HandleUnmatchGemFailure()
+    {
+        // 연속 성공 카운트 초기화
+        consecutiveSuccessCount = 0; 
+
+        // ===== CapyDialogue 연결: 검증 실패 =====
+        // 경고 메시지를 띄우지만, 내부적으로 연속 성공은 깨짐
+        ShowUnmatchGemWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
       
@@ -1088,11 +1104,10 @@ private void HandleLevelClear()
     gameData.GameState = GameState.Win;
     StopCoroutine(timeCheckCoroutine);
     
-    // ===== 추가: VideoPlayer + BGM 정지 =====
     StopBackgroundMedia();
     CapyDialogue.StopDialogue(CapyDialogueText);
 
-    // 1. 시간 및 별 계산
+    // 1. 별 개수 계산
     float clearTime = gameData.ElapsedTime;
     float maxTime = GetDynamicTimeLimit();
     int starCount = 1;
@@ -1101,21 +1116,22 @@ private void HandleLevelClear()
 
     string clearMessage = GetClearMessage(clearTime);
 
-    // 2. 데이터 로드 및 업데이트
+    // 2. 데이터 로드
     ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-
-    // ✅ 별 개수 갱신 (기존 기록보다 좋으면 업데이트)
     int currentLevel = gameData.CurrentLevelIndex;
-    // ✅ 사과 지급
-        int oldStars = progressData.GetStars(currentLevel);
-     progressData.SetStars(currentLevel, starCount);
 
-        if(AppleManager.Instance != null)
-        {
-            AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
-        }
-        
-    // 레벨 해금
+    // ★ 수정 포인트: 기존 별 개수를 먼저 가져온 후 사과를 계산해야 합니다.
+    int oldStars = progressData.GetStars(currentLevel); 
+    
+    // 3. 사과 지급 (데이터를 변경하기 전에 호출)
+    if(AppleManager.Instance != null)
+    {
+        // AppleManager 내부에서 newStars와 oldStars를 비교해 차액을 지급합니다.
+        AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
+    }
+
+    // 4. 이제 별 개수를 갱신하고 저장합니다.
+    progressData.SetStars(currentLevel, starCount);
     if (progressData.LastClearedLevel < currentLevel)
     {
         progressData.LastClearedLevel = currentLevel;
@@ -2422,9 +2438,6 @@ private void UpdateAllItemUI()
     // ✅ UpdateAllItemUI() 호출로 통일
     UpdateAllItemUI();
 }
-
-    
-    // ===== CapyDialogue 연결: 경고 메시지 =====
     private void ShowWarning(string message)
     {
         if(CapyDialogue != null && CapyDialogueText != null)
@@ -2432,6 +2445,46 @@ private void UpdateAllItemUI()
             if (message == null)
             {
                 CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Warning);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+            else
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+    
+        }
+        
+        Debug.LogWarning($"[LevelModeManager] {message}");
+    }
+    
+    // ===== CapyDialogue 연결: 경고 메시지 =====
+    private void ShowDifficientWarning(string message)
+    {
+        if(CapyDialogue != null && CapyDialogueText != null)
+        {
+            if (message == null)
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.DifficientWarning);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+            else
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, message, false);
+                CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
+            }
+    
+        }
+        
+        Debug.LogWarning($"[LevelModeManager] {message}");
+    }
+    private void ShowUnmatchGemWarning(string message)
+    {
+        if(CapyDialogue != null && CapyDialogueText != null)
+        {
+            if (message == null)
+            {
+                CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.UnmatchGemWarning);
                 CapyDialogue.RestartDefault(CapyDialogueText, 3.5f);
             }
             else
