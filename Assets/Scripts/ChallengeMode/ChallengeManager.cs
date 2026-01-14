@@ -92,6 +92,10 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     [Header("모래시계 연출 옵션")]
     public AnimationCurve SandCurve = AnimationCurve.Linear(0, 0, 1, 1); // 자연스러운 곡선
     
+    [Header("전광판")]
+[SerializeField] private SignboardFlickerIndicator signboard;
+
+
     
     private float currentSelectionTimer;
     private bool isSelectionActive = false;
@@ -827,7 +831,12 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         {
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
             ShowTopNotification("보석 수량이 맞지 않습니다카피!");
+             signboard?.PlayFailX(); // ✅ 전광판 X
              UIManager?.AnimateBoxFailure(null);
+             if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+    }
             return;
         }
 
@@ -844,8 +853,13 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
             
             ShowTopNotification("조건에 맞지 않습니다카피!");
+             signboard?.PlayFailX(); // ✅ 전광판 X
              UIManager?.AnimateBoxFailure(null);
-            CancelSelection(); 
+             if(gameData.SelectedBundles.Count > 0)
+    {
+        CancelSelection();
+    }
+           
         }
     }
     // 조건 검사 로직 예시
@@ -1140,7 +1154,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         }
 
         gameData.CurrentBoxIndex++;
-
+  signboard?.PlaySuccessO(); // ✅ 전광판 O
         
         // [수정] 애니메이션 종료 후 다음 상자 정보를 명시적으로 업데이트
         UIManager.AnimateBoxChange(() => {

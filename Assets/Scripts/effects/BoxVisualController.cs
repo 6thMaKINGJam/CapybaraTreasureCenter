@@ -180,14 +180,14 @@ public void PlayFailureAnimation(Action onComplete = null)
     Sequence seq = DOTween.Sequence();
 
 var nowBox = currentBox;
-// ===== 1) 닫힘(찌그러짐) =====
-    seq.Append(nowBox.root.DOScale(new Vector3(1.1f, 0.9f, 1f), 0.1f));
-    seq.AppendCallback(() =>
-    {
-        nowBox.SetClosed();
-        SoundManager.Instance.PlayFX(SoundType.OneBoxFailue);
-    });
-    seq.Append(nowBox.root.DOScale(Vector3.one, 0.08f).SetEase(Ease.OutQuad));
+// // ===== 1) 닫힘(찌그러짐) =====
+//     seq.Append(nowBox.root.DOScale(new Vector3(1.1f, 0.9f, 1f), 0.1f));
+//     seq.AppendCallback(() =>
+//     {
+//         nowBox.SetClosed();
+//         SoundManager.Instance.PlayFX(SoundType.OneBoxFailue);
+//     });
+//     seq.Append(nowBox.root.DOScale(Vector3.one, 0.08f).SetEase(Ease.OutQuad));
 
 
 

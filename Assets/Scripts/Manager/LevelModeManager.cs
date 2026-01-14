@@ -36,6 +36,8 @@ public class LevelModeManager : MonoBehaviour
     
     [Header("효과")]
     public Image FlashOverlay; // 빨간 화면 깜박임용 Image (전체 화면 크기)
+[Header("전광판")]
+[SerializeField] private SignboardFlickerIndicator signboard;
 
     [Header("UI 매니저 참조")]
     public GemCountPanelManager GemCountStatusPanel;
@@ -780,7 +782,9 @@ private class BundleRestoreInfo
         ShowDifficientWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+         signboard?.PlayFailX(); // ✅ 전광판 X
           UIManager?.AnimateBoxFailure(null);
+          
       
     if(gameData.SelectedBundles.Count > 0)
     {
@@ -797,7 +801,9 @@ private class BundleRestoreInfo
         ShowUnmatchGemWarning(null); 
         FlashRedScreen();
         VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+        signboard?.PlayFailX(); // ✅ 전광판 X
           UIManager?.AnimateBoxFailure(null);
+           
       
     if(gameData.SelectedBundles.Count > 0)
     {
@@ -903,6 +909,7 @@ private class BundleRestoreInfo
             return;
         }
 
+    signboard?.PlaySuccessO();
         // 8. [시각적 연출] 상자 교체 애니메이션 실행
         // 데이터는 이미 위에서 변했으므로, 애니메이션이 끝난 후 UI를 갱신합니다.
         if (UIManager != null)
@@ -1133,6 +1140,12 @@ private void HandleLevelClear()
     }
 
 progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+ // 5. AppleManager가 가진 최신 사과 값을 동기화해 저장 시 0으로 덮이는 문제를 방지합니다.
+    if (AppleManager.Instance != null)
+    {
+        progressData.TotalApples = AppleManager.Instance.GetAppleCount();
+    }
+
 
     // 4. 이제 별 개수를 갱신하고 저장합니다.
     progressData.SetStars(currentLevel, starCount);
