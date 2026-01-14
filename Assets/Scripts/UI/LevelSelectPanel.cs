@@ -39,28 +39,86 @@ public class LevelSelectPanel : MonoBehaviour
     }
     
     private void RefreshUI()
+{
+    ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+    int lastClearedLevel = progressData.LastClearedLevel;
+
+    // 챕터 2 잠금 (레벨 33 클리어 필요)
+    bool chapter2Unlocked = lastClearedLevel >= 33;
+    if(Chapter2Lock != null) Chapter2Lock.SetActive(!chapter2Unlocked);
+    Chapter2Button.interactable = chapter2Unlocked;
+    
+    // Chapter2Button의 BouncyEffect 제어
+    BouncyEffect chapter2Effect = Chapter2Button.GetComponent<BouncyEffect>();
+    if(chapter2Effect != null)
     {
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        int lastClearedLevel = progressData.LastClearedLevel;
-        
-        // 챕터 2 잠금 (레벨 33 클리어 필요)
-        bool chapter2Unlocked = lastClearedLevel >= 33;
-        if(Chapter2Lock != null) Chapter2Lock.SetActive(!chapter2Unlocked);
-        Chapter2Button.interactable = chapter2Unlocked;
-        
-        // 챕터 3 잠금 (레벨 66 클리어 필요)
-        bool chapter3Unlocked = lastClearedLevel >= 66;
-        if(Chapter3Lock != null) Chapter3Lock.SetActive(!chapter3Unlocked);
-        Chapter3Button.interactable = chapter3Unlocked;
-        
-        // 레벨 100 잠금 (레벨 99 클리어 필요)
-        bool level100Unlocked = lastClearedLevel >= 99;
-        if(Level100Lock != null) Level100Lock.SetActive(!level100Unlocked);
-        Level100Button.interactable = level100Unlocked;
+        if(chapter2Unlocked)
+    {
+        chapter2Effect.enabled = true;   // 활성화
+        chapter2Effect.StartBounce();
     }
+    else
+    {
+        chapter2Effect.StopBounce();     // 크기 복구
+        chapter2Effect.enabled = false;  // 비활성화
+    }
+    }
+
+    // 챕터 3 잠금 (레벨 66 클리어 필요)
+    bool chapter3Unlocked = lastClearedLevel >= 66;
+    if(Chapter3Lock != null) Chapter3Lock.SetActive(!chapter3Unlocked);
+    Chapter3Button.interactable = chapter3Unlocked;
+    
+    // Chapter3Button의 BouncyEffect 제어
+    BouncyEffect chapter3Effect = Chapter3Button.GetComponent<BouncyEffect>();
+    if(chapter3Effect != null)
+    {
+        if(chapter3Unlocked)
+    {
+        chapter3Effect.enabled = true;   // 활성화
+        chapter3Effect.StartBounce();
+    }
+    else
+    {
+        chapter3Effect.StopBounce();     // 크기 복구
+        chapter3Effect.enabled = false;  // 비활성화
+    }
+    
+    }
+
+    // 레벨 100 잠금 (레벨 99 클리어 필요)
+    bool level100Unlocked = lastClearedLevel >= 99;
+    if(Level100Lock != null) Level100Lock.SetActive(!level100Unlocked);
+    Level100Button.interactable = level100Unlocked;
+    
+    // Level100Button의 BouncyEffect 제어
+    BouncyEffect level100Effect = Level100Button.GetComponent<BouncyEffect>();
+    if(level100Effect != null)
+    {
+    if(level100Unlocked)
+    {
+        level100Effect.enabled = true;   // 활성화
+        level100Effect.StartBounce();
+    }
+    else
+    {
+        level100Effect.StopBounce();     // 크기 복구
+        level100Effect.enabled = false;  // 비활성화
+    }}
+}
+
     
     private void OnChapterClick(int chapterNumber)
     {
+        // Level 100은 팝업 없이 바로 시작
+    if(chapterNumber == 100)
+    {
+        PlayerPrefs.SetInt("SelectedLevel", 100);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("LevelMode");
+        return;
+    }
+    
         if(ChapterLevelListPopupPrefab == null)
         {
             Debug.LogError("[LevelSelectPanel] ChapterLevelListPopupPrefab이 없습니다!");
