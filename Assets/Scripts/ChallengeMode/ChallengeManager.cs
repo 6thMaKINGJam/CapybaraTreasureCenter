@@ -827,6 +827,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         {
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
             ShowTopNotification("보석 수량이 맞지 않습니다카피!");
+             UIManager?.AnimateBoxFailure(null);
             return;
         }
 
@@ -841,7 +842,9 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         {
             // 실패: 진동 및 알림
             VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
+            
             ShowTopNotification("조건에 맞지 않습니다카피!");
+             UIManager?.AnimateBoxFailure(null);
             CancelSelection(); 
         }
     }
