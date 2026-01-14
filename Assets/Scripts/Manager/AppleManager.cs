@@ -53,21 +53,25 @@ public class AppleManager : MonoBehaviour
     /// </summary>
     public void AddApplesFromStars(int oldStars, int newStars)
     {
+        // 공식: 별1(0개), 별2(1개), 별3(2개)
         int oldApples = Mathf.Max(0, oldStars - 1);
         int newApples = Mathf.Max(0, newStars - 1);
+        
+        // 기존 기록보다 더 많은 별을 땄을 때만 차액 지급
         int earnedApples = Mathf.Max(0, newApples - oldApples);
         
         if(earnedApples > 0)
         {
-            progressData.AddApples(earnedApples);
-            SaveManager.Save(progressData, "ProgressData"); 
-    OnAppleCountChanged?.Invoke(progressData.TotalApples);
+            // 1. 메모리 데이터 갱신
+            progressData.AddApples(earnedApples); 
             
-            Debug.Log($"[AppleManager] 사과 +{earnedApples}개 획득! (별 {oldStars}→{newStars}, 총 {progressData.TotalApples}개)");
-        }
-        else
-        {
-            Debug.Log($"[AppleManager] 사과 획득 없음 (별 {oldStars}→{newStars})");
+            // 2. 파일에 즉시 저장 (ProgressData 내부의 Save 호출 확인)
+            SaveManager.Save(progressData, "ProgressData"); 
+            
+            // 3. UI 업데이트 이벤트 알림
+            OnAppleCountChanged?.Invoke(progressData.TotalApples);
+            
+            Debug.Log($"[AppleManager] 사과 +{earnedApples}개 획득! (현재 총 {progressData.TotalApples}개)");
         }
     }
     

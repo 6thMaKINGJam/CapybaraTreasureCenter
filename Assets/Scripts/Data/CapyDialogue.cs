@@ -13,7 +13,9 @@ public enum DialogueType
     BoxCompleted,         // 상자 완료
     ConsecutiveSuccess,   // 연속 성공
     GemDepletedGameOver,  // 보석 0개로 게임오버
-    Warning,              // 경고 (뭔가 잘못될 것 같을 때)
+    Warning,
+    UnmatchGemWarning,    // 잼 숫자 안맞을 때 
+    DifficientWarning,    // 보석 종류 모두 안들어가 있을 때
     TimeOverGameOver,     // 시간 오버로 게임오버
     TimeLowWarning,       // 시간 부족 경고
     HallOfFame,            // 명예의 전당 (레벨4 클리어)
