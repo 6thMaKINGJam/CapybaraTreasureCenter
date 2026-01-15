@@ -58,19 +58,8 @@ public class LevelSelectPanel : MonoBehaviour
     
     // Chapter2Button의 BouncyEffect 제어
     BouncyEffect chapter2Effect = Chapter2Button.GetComponent<BouncyEffect>();
-    if(chapter2Effect != null)
-    {
-        if(chapter2Unlocked)
-    {
-        chapter2Effect.enabled = true;   // 활성화
-        chapter2Effect.StartBounce();
-    }
-    else
-    {
-     
-        chapter2Effect.enabled = false;  // 비활성화
-    }
-    }
+     if (chapter2Unlocked) chapter2Effect.StartBounce();
+    else chapter2Effect.StopBounce();
 
     // 챕터 3 잠금 (레벨 66 클리어 필요)
     bool chapter3Unlocked = lastClearedLevel >= 66;
@@ -79,20 +68,8 @@ public class LevelSelectPanel : MonoBehaviour
     
     // Chapter3Button의 BouncyEffect 제어
     BouncyEffect chapter3Effect = Chapter3Button.GetComponent<BouncyEffect>();
-    if(chapter3Effect != null)
-    {
-        if(chapter3Unlocked)
-    {
-        chapter3Effect.enabled = true;   // 활성화
-        chapter3Effect.StartBounce();
-    }
-    else
-    {
-        
-        chapter3Effect.enabled = false;  // 비활성화
-    }
-    
-    }
+     if (chapter3Unlocked) chapter3Effect.StartBounce();
+    else chapter3Effect.StopBounce();
 
     // 레벨 100 잠금 (레벨 99 클리어 필요)
     bool level100Unlocked = lastClearedLevel >= 99;
@@ -101,18 +78,8 @@ public class LevelSelectPanel : MonoBehaviour
     
     // Level100Button의 BouncyEffect 제어
     BouncyEffect level100Effect = Level100Button.GetComponent<BouncyEffect>();
-    if(level100Effect != null)
-    {
-    if(level100Unlocked)
-    {
-        level100Effect.enabled = true;   // 활성화
-        level100Effect.StartBounce();
-    }
-    else
-    {
-
-        level100Effect.enabled = false;  // 비활성화
-    }}
+     if (level100Unlocked) level100Effect.StartBounce();
+    else level100Effect.StopBounce();
 }
 
     
