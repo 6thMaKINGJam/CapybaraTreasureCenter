@@ -132,10 +132,14 @@ public class MainHomeManager : MonoBehaviour
     }
 
     public void OnClickHowToPlay()
-    {
-        mainHomeUI.OpenPanel(mainHomeUI.HowToPlayPanel);
-        howToPlayUI.Init();
-    }
+{
+    // 기존 패널 오픈 로직을 주석 처리하거나 삭제합니다.
+    // mainHomeUI.OpenPanel(mainHomeUI.HowToPlayPanel);
+    // howToPlayUI.Init();
+
+    // "Tutorial"이라는 이름의 씬으로 전환합니다. (씬 이름이 다를 경우 수정 필요)
+    UnityEngine.SceneManagement.SceneManager.LoadScene("Tutorial"); 
+}
 
     public void OnClickHallOfFame()
     {

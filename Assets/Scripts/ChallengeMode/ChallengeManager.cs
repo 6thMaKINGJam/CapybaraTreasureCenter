@@ -120,6 +120,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
         if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 2)
         {
             isTutorialMode = true;
+            UIManager.PauseButton.gameObject.SetActive(false);
         }
         InitChallengeMode();
     }
