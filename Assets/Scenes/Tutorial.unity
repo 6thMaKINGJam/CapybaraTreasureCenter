@@ -744,8 +744,8 @@ MonoBehaviour:
     HighlightObjectName: 
   - BackgroundImage: {fileID: 21300000, guid: 233e1508fdcef4a8e88f77e0dbf21ad3, type: 3}
     DialogType: 1
-    MessageText: "4\uB2E8\uACC4 \uC791\uC5C5\uAE4C\uC9C0 \uC644\uB8CC\uD558\uACE0
-      \uB098\uBA74 \uCE74\uD53C\uBC14\uB77C \uC138\uACC4\uC758 \uCE74\uD53C\uBC14\uB77C\uB178\uBCA8\uC0C1
+    MessageText: "\uCC4C\uB9B0\uC9C0\uBAA8\uB4DC\uC5D0\uC11C \uC0C1\uC790 100\uAC1C\uB97C
+      \uCC44\uC6B0\uBA74 \uCE74\uD53C\uBC14\uB77C \uC138\uACC4\uC758 \uCE74\uD53C\uBC14\uB77C\uB178\uBCA8\uC0C1
       \uC218\uC0C1\uC790\uAC00 \uB418\uC5B4 \uBA85\uC608\uC758 \uC804\uB2F9\uC5D0
       \uC62C\uB77C\uAC08 \uC218 \uC788\uCE74\uD53C!!\n"
     YesButton1Text: Yes
