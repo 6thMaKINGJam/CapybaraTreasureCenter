@@ -24,4 +24,4 @@ MonoBehaviour:
   MaxUndo1Count: 3
   TimeAddAmount: 10
   BackgroundVideoFileName: gamescreen_tang.mp4
-  AdditionalBGMLayer: {fileID: 8300000, guid: def0b6bdb71bc4eae8260221364f6ffd, type: 3}
+  AdditionalBGMLayer: {fileID: 8300000, guid: becc934b3d612dc49bccb522822c017e, type: 3}

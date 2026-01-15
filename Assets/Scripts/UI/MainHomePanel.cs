@@ -34,7 +34,7 @@ namespace Scripts.UI
         {
             
             levelSelectPanel.SetActive(false);
-            howToPlayPanel.SetActive(false);
+            //howToPlayPanel.SetActive(false);
             hallOfFamePanel.SetActive(false);
         }
 

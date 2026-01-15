@@ -103,6 +103,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         Debug.Log($"[levelmodeManager] TutorialPracticeMode: {PlayerPrefs.GetInt("TutorialPracticeMode", 0)}");
         if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 1)
         {
+            UIManager.PauseButton.gameObject.SetActive(false);
             ApplyTutorialPracticeRules();
         }
     }
