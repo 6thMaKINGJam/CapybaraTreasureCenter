@@ -108,7 +108,7 @@ public class MainHomeManager : MonoBehaviour
     private void CheckAndRunEndingSequence()
     {
         // 레벨 4 클리어했지만 엔딩 미시청
-        if(currentProgress.LastClearedLevel >= 4 && !currentProgress.EndingCompleted)
+        if(currentProgress.LastClearedLevel >= 100 && !currentProgress.EndingCompleted)
         {
             if(NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())
             {
