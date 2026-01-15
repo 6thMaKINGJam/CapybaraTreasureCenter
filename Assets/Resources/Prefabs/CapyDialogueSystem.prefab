@@ -193,7 +193,7 @@ MonoBehaviour:
     IsPersistent: 1
     IsLoop: 0
     LoopInterval: 0
-  - Type: 7
+  - Type: 9
     Dialogues:
     - "\uBA4B\uC9C0\uB2E4 \uCE74\uD53C..\u3160\u3160"
     - "\uC5ED\uC2DC!! \uCD5C\uACE0\uC57C!!"
@@ -209,16 +209,6 @@ MonoBehaviour:
     - "\uC720\uCE94\uB450\uC5D0\uBE0C\uB9AC\uB775\uCE74\uD53C"
     IsPersistent: 0
     IsLoop: 1
-    LoopInterval: 0
-  - Type: 8
-    Dialogues:
-    - "\uC774\uBBF8 \uC774 \uD310\uC740 \uAE00\uB800\uB2E4\uCE74\uD53C. \uC0C8\uB85C\uC2DC\uC791\uD558\uAC70\uB098
-      \uB418\uB3CC\uB9AC\uAE30 \uBC84\uD2BC\uC744 \uB20C\uB7EC \uC218\uC2B5\uD574\uC57C\uD55C\uB2E4\uCE74\uD53C "
-    - "\uC74C.. \uBBF8\uB798\uB97C \uBCF4\uACE0 \uC654\uB294\uB370 \uB2F5\uC774 \uC5C6\uB294
-      \uC0C1\uD0DC\uCE74\uD53C. \uC0C8\uB85C \uC2DC\uC791 \uB610\uB294 \uB418\uB3CC\uB9AC\uAE30
-      \uD574\uCE74\uD53C. "
-    IsPersistent: 1
-    IsLoop: 0
     LoopInterval: 0
   DialogueBubble: {fileID: 0}
   FadeInDuration: 0.3

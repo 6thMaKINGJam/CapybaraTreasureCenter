@@ -23,5 +23,5 @@ MonoBehaviour:
   MaxUndoCount: 10
   MaxUndo1Count: 10
   TimeAddAmount: 10
-  BackgroundVideoFileName: bg_chapter1.mp4
-  AdditionalBGMLayer: {fileID: 0}
+  BackgroundVideoFileName: gamescreen_jungle.mp4
+  AdditionalBGMLayer: {fileID: 8300000, guid: 2ed01174eb7dcf94a90ce2bec84079af, type: 3}

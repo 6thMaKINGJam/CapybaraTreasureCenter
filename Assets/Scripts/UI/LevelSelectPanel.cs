@@ -31,6 +31,7 @@ public class LevelSelectPanel : MonoBehaviour
         Level100Button.onClick.AddListener(() => OnChapterClick(100));
         
         closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+     
     }
     
     private void OnEnable()
@@ -40,8 +41,15 @@ public class LevelSelectPanel : MonoBehaviour
     
     private void RefreshUI()
 {
+     // 혹시 스케일이 0으로 남는 문제 방지
+    Chapter2Button.transform.localScale = Vector3.one;
+    Chapter3Button.transform.localScale = Vector3.one;
+    Level100Button.transform.localScale = Vector3.one;
+
+    
     ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
     int lastClearedLevel = progressData.LastClearedLevel;
+
 
     // 챕터 2 잠금 (레벨 33 클리어 필요)
     bool chapter2Unlocked = lastClearedLevel >= 33;
@@ -59,7 +67,7 @@ public class LevelSelectPanel : MonoBehaviour
     }
     else
     {
-        chapter2Effect.StopBounce();     // 크기 복구
+     
         chapter2Effect.enabled = false;  // 비활성화
     }
     }
@@ -80,7 +88,7 @@ public class LevelSelectPanel : MonoBehaviour
     }
     else
     {
-        chapter3Effect.StopBounce();     // 크기 복구
+        
         chapter3Effect.enabled = false;  // 비활성화
     }
     
@@ -102,7 +110,7 @@ public class LevelSelectPanel : MonoBehaviour
     }
     else
     {
-        level100Effect.StopBounce();     // 크기 복구
+
         level100Effect.enabled = false;  // 비활성화
     }}
 }
