@@ -49,8 +49,14 @@ public class DialogueData
 
 public class CapyDialogue : MonoBehaviour
 {
-    [Header("대사 데이터")]
-    public List<DialogueData> DialogueDatas = new List<DialogueData>();
+// ===== 변경 후 =====
+[Header("대사 데이터")]
+public DialogueDatabase Database; // Inspector에 할당
+
+// ⚠️ 기존 데이터 마이그레이션용 (에디터에서 가져오기 후 삭제 가능)
+[Header("구 데이터 (마이그레이션 후 삭제)")]
+public List<DialogueData> DialogueDatas = new List<DialogueData>();
+
     
     [Header("말풍선 이미지")] // ← 추가
 public GameObject DialogueBubble; // Inspector에 할당
@@ -87,55 +93,69 @@ public GameObject DialogueBubble; // Inspector에 할당
     /// </summary>
     /// <param name="targetText">대사를 표시할 TextMeshProUGUI</param>
     /// <param name="type">대사 상황 타입</param>
-    public void ShowDialogue(TextMeshProUGUI targetText, DialogueType type)
+   public void ShowDialogue(TextMeshProUGUI targetText, DialogueType type)
+{
+    if (targetText == null)
     {
-        if (targetText == null)
-        {
-            Debug.LogError("[CapyDialogue] targetText가 null입니다!");
-            return;
-        }
-        
-        // 해당 타입의 대사 데이터 찾기
-        DialogueData data = DialogueDatas.Find(d => d.Type == type);
-        
-        if (data == null)
-        {
-            Debug.LogWarning($"[CapyDialogue] {type} 타입의 대사 데이터를 찾을 수 없습니다.");
-            return;
-        }
-        
-        if (data.Dialogues == null || data.Dialogues.Length == 0)
-        {
-            Debug.LogWarning($"[CapyDialogue] {type} 타입의 대사가 비어있습니다.");
-            return;
-        }
-        
-        // 기존 대사 즉시 중단
-        StopDialogue(targetText);
-        
-        // 텍스트 색상 설정
-        SetTextColor(targetText, type);
-        
-        // CanvasGroup 준비
-        CanvasGroup canvasGroup = GetOrCreateCanvasGroup(targetText);
-        
-        // 새 대사 시작
-       if (data.IsLoop)
-        {
-            activeDialogues[targetText] = StartCoroutine(LoopDialogueCoroutine(targetText, canvasGroup, data));
-        }
-        else if (data.IsPersistent) // ✅ 추가
-        {
-            activeDialogues[targetText] = StartCoroutine(PersistentDialogueCoroutine(targetText, canvasGroup, data));
-        }
-        else
-        {
-            activeDialogues[targetText] = StartCoroutine(ShowOnceCoroutine(targetText, canvasGroup, data));
-        }
-
-
+        Debug.LogError("[CapyDialogue] targetText가 null입니다!");
+        return;
     }
     
+    if (Database == null)
+    {
+        Debug.LogError("[CapyDialogue] Database가 할당되지 않았습니다!");
+        return;
+    }
+    
+    // Database에서 찾기 (변경됨)
+    var entry = Database.GetEntry(type);
+    
+    if (entry == null)
+    {
+        Debug.LogWarning($"[CapyDialogue] {type} 타입의 대사 데이터를 찾을 수 없습니다.");
+        return;
+    }
+    
+    if (entry.Dialogues == null || entry.Dialogues.Count == 0)
+    {
+        Debug.LogWarning($"[CapyDialogue] {type} 타입의 대사가 비어있습니다.");
+        return;
+    }
+    
+    // 기존 대사 즉시 중단
+    StopDialogue(targetText);
+    
+    // 텍스트 색상 설정
+    SetTextColor(targetText, type);
+    
+    // CanvasGroup 준비
+    CanvasGroup canvasGroup = GetOrCreateCanvasGroup(targetText);
+    
+    // DialogueData → DialogueDatabase.DialogueEntry 변환
+    var tempData = new DialogueData
+    {
+        Type = entry.Type,
+        Dialogues = entry.Dialogues.ToArray(),
+        IsPersistent = entry.IsPersistent,
+        IsLoop = entry.IsLoop,
+        LoopInterval = entry.LoopInterval
+    };
+    
+    // 새 대사 시작
+    if (tempData.IsLoop)
+    {
+        activeDialogues[targetText] = StartCoroutine(LoopDialogueCoroutine(targetText, canvasGroup, tempData));
+    }
+    else if (tempData.IsPersistent)
+    {
+        activeDialogues[targetText] = StartCoroutine(PersistentDialogueCoroutine(targetText, canvasGroup, tempData));
+    }
+    else
+    {
+        activeDialogues[targetText] = StartCoroutine(ShowOnceCoroutine(targetText, canvasGroup, tempData));
+    }
+}
+
     /// <summary>
     /// 특정 텍스트를 강제로 표시합니다 (overrideText)
     /// </summary>
@@ -334,21 +354,17 @@ public GameObject DialogueBubble; // Inspector에 할당
     /// <summary>
     /// 특정 타입의 대사 중 하나를 랜덤으로 반환합니다 (화면 표시 X)
     /// </summary>
-    public string GetRandomMessage(DialogueType type)
+   public string GetRandomMessage(DialogueType type)
+{
+    if (Database == null)
     {
-        // 데이터 찾기
-        DialogueData data = DialogueDatas.Find(d => d.Type == type);
-        
-        // 데이터 유효성 검사
-        if (data != null && data.Dialogues != null && data.Dialogues.Length > 0)
-        {
-            // 랜덤으로 하나 뽑아서 리턴
-            return data.Dialogues[UnityEngine.Random.Range(0, data.Dialogues.Length)];
-        }
-        
-        // 데이터가 없으면 빈 문자열 반환
+        Debug.LogError("[CapyDialogue] Database가 할당되지 않았습니다!");
         return "";
     }
+    
+    return Database.GetRandomDialogue(type);
+}
+
     
  // 한 번만 표시
 private IEnumerator ShowOnceCoroutine(TextMeshProUGUI targetText, CanvasGroup canvasGroup, DialogueData data)
