@@ -12,25 +12,7 @@ public class SoundManagerEditor : Editor {
         EditorGUILayout.Space(20);
         EditorGUILayout.LabelField("=== 에디터 테스트 ===", EditorStyles.boldLabel);
         
-        // BGM 테스트
-        EditorGUILayout.LabelField("BGM 재생", EditorStyles.miniBoldLabel);
         
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("MainHome")) {
-            manager.EditorPlayBGM("MainHome");
-        }
-        if (GUILayout.Button("Tutorial")) {
-            manager.EditorPlayBGM("Tutorial");
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Game")) {
-            manager.EditorPlayBGM("Game");
-        }
-        if (GUILayout.Button("Ending")) {
-            manager.EditorPlayBGM("Ending");
-        }
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.Space(10);

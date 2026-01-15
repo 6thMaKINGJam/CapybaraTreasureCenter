@@ -106,12 +106,12 @@ public class SoundManager : MonoBehaviour {
     }
     
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        // Game Scene이 아니면 기존 방식
-        if(scene.name != "Game")
+        // LevelMode Scene이 아니면 기존 방식
+        if(scene.name != "LevelMode")
         {
             PlayBGMForScene(scene.name);
         }
-        // Game Scene은 LevelModeManager가 직접 PlayBGMWithLayer 호출
+        // LevelMode Scene은 LevelModeManager가 직접 PlayBGMWithLayer 호출
     }
     
     // ==================== BGM (기존 방식) ====================

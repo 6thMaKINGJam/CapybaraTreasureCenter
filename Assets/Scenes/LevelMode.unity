@@ -13022,7 +13022,7 @@ MonoBehaviour:
   SelectionPanel: {fileID: 302145879}
   GemCountStatusPanel: {fileID: 1006858061}
   BoxIndexText: {fileID: 594604523}
-  BoxProgressText: {fileID: 0}
+  BoxProgressText: {fileID: 136801003}
   PauseButton: {fileID: 592469689}
   ResumeButton: {fileID: 13634995}
   RefreshButton: {fileID: 1898324143}
@@ -13821,7 +13821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &725807496
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17179,7 +17179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1526547711
 RectTransform:
   m_ObjectHideFlags: 0

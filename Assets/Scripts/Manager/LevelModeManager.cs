@@ -80,7 +80,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
  private HintManager hintManager;
     
  // ✅ 시간추가 관련
-    private bool isWaitingForTimeAdd = false;
+    
     
 
     
@@ -90,7 +90,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         {
             Instance = this;
             // ✅ HintManager 초기화
-            hintManager = new HintManager();
+            hintManager = gameObject.AddComponent<HintManager>();
         }
         else
         {
@@ -228,7 +228,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         if(SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayBGMWithLayer(
-                "Game", 
+                "LevelMode", 
                 CurrentLevelConfig.AdditionalBGMLayer
             );
         }
@@ -1429,7 +1429,7 @@ private void StopBackgroundMedia()
         if (!isTimeAddUsed && PopupParentSetHelper.Instance != null)
         {
             isTimeAddUsed = true; // ✅ 제안 표시 기록
-            isWaitingForTimeAdd = true;
+         
 
             GameObject confirmPopupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
             BaseConfirmationPopup confirmPopup = confirmPopupObj.GetComponent<BaseConfirmationPopup>();
@@ -1458,7 +1458,7 @@ private void StopBackgroundMedia()
 
     private void ShowFinalGameOverPopup(string reason)
     {
-        isWaitingForTimeAdd = false;
+    
         string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
         if (string.IsNullOrEmpty(randomMsg)) randomMsg = reason;
 
@@ -1560,8 +1560,7 @@ private void StopBackgroundMedia()
         
         // 2. 게임 상태 복구
         gameData.GameState = GameState.Playing;
-        isWaitingForTimeAdd = false;
-        
+       
         // 3. UI 즉시 갱신 (슬라이더가 즉시 늘어나는 것을 보여줌)
         if (UIManager.TimerSlider != null)
         {
