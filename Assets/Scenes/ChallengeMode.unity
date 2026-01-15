@@ -14841,7 +14841,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DangerSlider: {fileID: 0}
-  SliderFillImage: {fileID: 0}
   GemCountItemPrefab: {fileID: 2273705045484454930, guid: 250755b41ab46d144b4fa3bf378e1fb7, type: 3}
   SpriteDatabase: {fileID: 11400000, guid: 383b110ef0be59247b645b2218c51e12, type: 2}
   sliderExposureRange: 5
@@ -16266,7 +16265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0.08789873, a: 0.2}
+  m_Color: {r: 1, g: 0, b: 0.08789873, a: 0.14901961}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -19595,7 +19594,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1899612950
