@@ -72,7 +72,7 @@ public class LevelSelectPanel : MonoBehaviour
     else chapter3Effect.StopBounce();
 
     // 레벨 100 잠금 (레벨 99 클리어 필요)
-    bool level100Unlocked = lastClearedLevel >= 99;
+    bool level100Unlocked = progressData.AreAllLevelsThreeStars(1, 99);
     if(Level100Lock != null) Level100Lock.SetActive(!level100Unlocked);
     Level100Button.interactable = level100Unlocked;
     
