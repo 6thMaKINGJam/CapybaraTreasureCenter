@@ -88,4 +88,16 @@ public class ProgressData
         SaveManager.Save(this, "ProgressData");
         return true;
     }
+
+    public bool AreAllLevelsThreeStars(int startLevel, int endLevel)
+    {
+        for (int i = startLevel; i <= endLevel; i++)
+        {
+            if (GetStars(i) < 3)
+            {
+                return false; // 하나라도 3개 미만이면 실패
+            }
+        }
+        return true;
+    }
 }
