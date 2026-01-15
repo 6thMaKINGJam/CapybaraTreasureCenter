@@ -48,10 +48,10 @@ public class DialogueEditorWindow : EditorWindow
         
         GUILayout.FlexibleSpace();
         
-        if (GUILayout.Button("현재 씬 데이터 가져오기", EditorStyles.toolbarButton, GUILayout.Width(150)))
-        {
-            ImportFromScene();
-        }
+        // if (GUILayout.Button("현재 씬 데이터 가져오기", EditorStyles.toolbarButton, GUILayout.Width(150)))
+        // {
+        //     ImportFromScene();
+        // }
         
         EditorGUILayout.EndHorizontal();
         
@@ -265,66 +265,66 @@ public class DialogueEditorWindow : EditorWindow
         EditorUtility.DisplayDialog("복원 완료", "백업이 복원되었습니다.", "확인");
     }
     
-    private void ImportFromScene()
-    {
-        CapyDialogue capy = FindObjectOfType<CapyDialogue>();
+    // private void ImportFromScene()
+    // {
+    //     CapyDialogue capy = FindObjectOfType<CapyDialogue>();
         
-        if (capy == null)
-        {
-            EditorUtility.DisplayDialog("오류", "씬에서 CapyDialogue를 찾을 수 없습니다.", "확인");
-            return;
-        }
+    //     if (capy == null)
+    //     {
+    //         EditorUtility.DisplayDialog("오류", "씬에서 CapyDialogue를 찾을 수 없습니다.", "확인");
+    //         return;
+    //     }
         
-        if (capy.DialogueDatas == null || capy.DialogueDatas.Count == 0)
-        {
-            EditorUtility.DisplayDialog("오류", "CapyDialogue에 데이터가 없습니다.", "확인");
-            return;
-        }
+    //     if (capy.DialogueDatas == null || capy.DialogueDatas.Count == 0)
+    //     {
+    //         EditorUtility.DisplayDialog("오류", "CapyDialogue에 데이터가 없습니다.", "확인");
+    //         return;
+    //     }
         
-        bool confirm = EditorUtility.DisplayDialog(
-            "씬 데이터 가져오기", 
-            $"씬의 CapyDialogue 데이터를 가져오시겠습니까?\n({capy.DialogueDatas.Count}개 항목)\n\n현재 에디터 내용은 덮어씌워집니다.", 
-            "가져오기", 
-            "취소"
-        );
+    //     bool confirm = EditorUtility.DisplayDialog(
+    //         "씬 데이터 가져오기", 
+    //         $"씬의 CapyDialogue 데이터를 가져오시겠습니까?\n({capy.DialogueDatas.Count}개 항목)\n\n현재 에디터 내용은 덮어씌워집니다.", 
+    //         "가져오기", 
+    //         "취소"
+    //     );
         
-        if (!confirm) return;
+    //     if (!confirm) return;
         
-        // 데이터베이스 초기화
-        if (database == null)
-        {
-            database = ScriptableObject.CreateInstance<DialogueDatabase>();
-        }
+    //     // 데이터베이스 초기화
+    //     if (database == null)
+    //     {
+    //         database = ScriptableObject.CreateInstance<DialogueDatabase>();
+    //     }
         
-        database.Entries.Clear();
+    //     database.Entries.Clear();
         
-        // 씬 데이터 변환
-        foreach (var oldData in capy.DialogueDatas)
-        {
-            var newEntry = new DialogueDatabase.DialogueEntry
-            {
-                Type = oldData.Type,
-                Dialogues = new List<string>(oldData.Dialogues),
-                IsPersistent = oldData.IsPersistent,
-                IsLoop = oldData.IsLoop,
-                LoopInterval = oldData.LoopInterval
-            };
+    //     // 씬 데이터 변환
+    //     foreach (var oldData in capy.DialogueDatas)
+    //     {
+    //         var newEntry = new DialogueDatabase.DialogueEntry
+    //         {
+    //             Type = oldData.Type,
+    //             Dialogues = new List<string>(oldData.Dialogues),
+    //             IsPersistent = oldData.IsPersistent,
+    //             IsLoop = oldData.IsLoop,
+    //             LoopInterval = oldData.LoopInterval
+    //         };
             
-            database.Entries.Add(newEntry);
-        }
+    //         database.Entries.Add(newEntry);
+    //     }
         
-        // 텍스트 에리어 초기화
-        textAreaContents.Clear();
-        foreach (var entry in database.Entries)
-        {
-            textAreaContents[entry.Type] = string.Join("\n\n", entry.Dialogues);
-        }
+    //     // 텍스트 에리어 초기화
+    //     textAreaContents.Clear();
+    //     foreach (var entry in database.Entries)
+    //     {
+    //         textAreaContents[entry.Type] = string.Join("\n\n", entry.Dialogues);
+    //     }
         
-        Debug.Log($"[DialogueEditor] 씬 데이터 가져오기 완료: {database.Entries.Count}개 항목");
-        EditorUtility.DisplayDialog("가져오기 완료", $"{database.Entries.Count}개 항목을 가져왔습니다.\n'저장' 버튼을 눌러 파일로 저장하세요.", "확인");
+    //     Debug.Log($"[DialogueEditor] 씬 데이터 가져오기 완료: {database.Entries.Count}개 항목");
+    //     EditorUtility.DisplayDialog("가져오기 완료", $"{database.Entries.Count}개 항목을 가져왔습니다.\n'저장' 버튼을 눌러 파일로 저장하세요.", "확인");
         
-        Repaint();
-    }
+    //     Repaint();
+    // }
     
     private List<string> ParseTextArea(string text)
     {

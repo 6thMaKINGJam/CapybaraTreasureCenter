@@ -103,7 +103,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
 
     private bool isTutorialMode = false;
-    private int tutorialStep = 0;
+  
     private bool startinstruction = false;
     private bool afterReqinstruction = false;
     private float selectionLimitTime = 10f;
@@ -150,7 +150,7 @@ void Update()
     private void StartChallengeTutorial()
     {
         // 튜토리얼 단계 설정 및 시간 완전 정지
-        tutorialStep = 1; // 다음 단계로 이동
+     
         Time.timeScale = 0f; 
         ShowTutorialPopup("도전 모드에 오신 걸 환영합니다카피!\n 도전모드는 사과 한개를 사용해 진입할 수 있다카피",() => {
             ShowTutorialPopup("이 모드에서는 먼저 적용될 '규칙'을 직접 선택해야 합니다카피.", () => {
@@ -1258,7 +1258,7 @@ void Update()
         SaveManager.Save(progressData, "ProgressData");
         
         isTutorialMode = false;
-        tutorialStep = 0;
+     
         PlayerPrefs.SetInt("TutorialPracticeMode", 0);
         PlayerPrefs.Save();
         

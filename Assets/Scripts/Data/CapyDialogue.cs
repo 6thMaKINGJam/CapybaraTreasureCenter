@@ -53,9 +53,6 @@ public class CapyDialogue : MonoBehaviour
 [Header("대사 데이터")]
 public DialogueDatabase Database; // Inspector에 할당
 
-// ⚠️ 기존 데이터 마이그레이션용 (에디터에서 가져오기 후 삭제 가능)
-[Header("구 데이터 (마이그레이션 후 삭제)")]
-public List<DialogueData> DialogueDatas = new List<DialogueData>();
 
     
     [Header("말풍선 이미지")] // ← 추가
