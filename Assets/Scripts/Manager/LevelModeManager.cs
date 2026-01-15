@@ -58,6 +58,9 @@ public class LevelModeManager : MonoBehaviour
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
     private int tutorialStep = 0;
+
+    [Header("상태 관리")]
+    private bool isTimeAddUsed = false;
     
 
 
@@ -262,6 +265,7 @@ private Dictionary<GemBundle, int> selectedBundleOriginalIndices
         // 튜토리얼 학습 모드일 경우 타이머를 시작하지 않음*(수정필요)
 
         UIManager.TimerSlider.gameObject.SetActive(true);
+        isTimeAddUsed = false;
         
     }
     
@@ -1404,13 +1408,12 @@ private void StopBackgroundMedia()
     
  // ✅ 타임오버 처리 (시간추가 버튼 포함)
     private void HandleTimeOver()
-{
+    {
         Debug.Log("[HandleTimeOver] 타임오버 발생!");
-    
-    gameData.GameState = GameState.TimeOver;
-        isWaitingForTimeAdd = true;
-     
-        // 음악/영상 일시정지 (시간추가 가능성)
+        
+        gameData.GameState = GameState.TimeOver;
+        
+        // 음악/영상 일시정지
         if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
         {
             backgroundVideoPlayer.Pause();
@@ -1421,23 +1424,100 @@ private void StopBackgroundMedia()
         }
         
         CapyDialogue.StopDialogue(CapyDialogueText);
-    
-    string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
-   
+
+        // ✅ 1단계: 이번 판에서 시간 추가를 이미 제안했는지 확인
+        if (!isTimeAddUsed && PopupParentSetHelper.Instance != null)
+        {
+            isTimeAddUsed = true; // ✅ 제안 표시 기록
+            isWaitingForTimeAdd = true;
+
+            GameObject confirmPopupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup confirmPopup = confirmPopupObj.GetComponent<BaseConfirmationPopup>();
+
+            if (confirmPopup != null)
+            {
+                confirmPopup.Setup(
+                    "시간이 다 됐습니다카피!\n사과를 사용하거나 광고를 보고 시간을 추가하시겠습니까?",
+                    () => {
+                        // '네' 클릭 시: 시간 추가 요청
+                        OnTimeAddRequested();
+                    },
+                    () => {
+                        // '아니오' 클릭 시: 최종 게임오버 창 표시
+                        ShowFinalGameOverPopup("시간이 부족합니다카피!");
+                    }
+                );
+            }
+        }
+        else
+        {
+            // ✅ 이미 한 번 띄웠던 적이 있다면 바로 게임오버 창 표시
+            ShowFinalGameOverPopup("시간이 부족합니다카피!");
+        }
+    }
+
+    private void ShowFinalGameOverPopup(string reason)
+    {
+        isWaitingForTimeAdd = false;
+        string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
+        if (string.IsNullOrEmpty(randomMsg)) randomMsg = reason;
+
         GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/GameOverPopup");
         GameOverPopup popup = popupObj.GetComponent<GameOverPopup>();
         
         SoundManager.Instance.PlayFX(SoundType.GameOver);
         
         if(popup != null)
-    {
-            // ✅ 시간추가 콜백 전달
+        {
             popup.Setup(
                 gameData.CurrentLevelIndex,
                 randomMsg,
                 () => RestartLevel(),
                 () => GoToMainHome(),
-                () => OnTimeAddRequested() // ✅ 시간추가
+                null // 시간 추가 콜백은 null로 전달하여 버튼 숨김
+            );
+        }
+    }
+
+    private void OnTimeAddRequested()
+    {
+        if(AppleManager.Instance == null) return;
+
+        // 사과 1개를 소모하여 구매 시도
+        AppleManager.Instance.TryPurchaseTimeAdd(
+            onSuccess: () => {
+                ExecuteTimeAdd(); // 시간 연장 실행
+            },
+            onNoApples: () => {
+                // 사과가 없을 경우 광고 팝업 표시
+                ShowTimeAddAdPopup();
+            }
+        );
+    }
+
+    private void ShowTimeAddAdPopup()
+    {
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+        
+        if (popup != null)
+        {
+            popup.Setup(
+                "사과가 부족합니다카피!\n광고를 시청하고 시간을 추가하시겠습니까?",
+                () => {
+                    AdManager.Instance.ShowRewardedAd((success) => {
+                        if(success)
+                        {
+                            // 광고 시청 성공 시 사과 보너스 및 시간 추가 실행
+                            AppleManager.Instance.AddApplesFromAd();
+                            ExecuteTimeAdd();
+                        }
+                    });
+                },
+                () => {
+                    // 광고 보기도 거절하면 최종 게임오버 화면 표시
+                    ShowFinalGameOverPopup("시간이 부족합니다카피!");
+                }
             );
         }
     }
@@ -1461,50 +1541,7 @@ private void StopBackgroundMedia()
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainHome");
     }
-
     
-    // ✅ 시간추가 요청
-    private void OnTimeAddRequested()
-    {
-        if(AppleManager.Instance == null)
-    {
-            Debug.LogError("[LevelModeManager] AppleManager가 없습니다!");
-        return;
-    }
-   
-        AppleManager.Instance.TryPurchaseTimeAdd(
-            onSuccess: () => {
-                ExecuteTimeAdd();
-            },
-            onNoApples: () => {
-                ShowTimeAddAdPopup();
-            }
-        );
-
-    }
-     // ✅ 광고 시청 팝업
-    private void ShowTimeAddAdPopup()
-    {
-        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
-        BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
-        
-        popup.Setup(
-            "사과가 부족합니다.\n광고를 시청하여 시간을 추가하시겠습니까?",
-            () => {
-                AdManager.Instance.ShowRewardedAd((success) => {
-                    if(success)
-                    {
-                        AppleManager.Instance.AddApplesFromAd();
-                        ExecuteTimeAdd();
-                    }
-                });
-            },
-            null
-        );
-    }
-    
-
-
     // ✅ 시간추가 실행
     private void ExecuteTimeAdd()
     {
