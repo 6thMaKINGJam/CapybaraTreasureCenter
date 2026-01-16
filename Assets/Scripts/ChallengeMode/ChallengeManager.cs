@@ -1212,63 +1212,48 @@ void Update()
         int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
        // int currentCount = 0;
 
-        // 총 개수를 채울 때까지 랜덤하게 번들을 생성합니다.
         if (currentActiveRequirement.RewardGemCounts != null)
         {
             for (int i = 0; i < currentActiveRequirement.RewardGemCounts.Length; i++)
             {
                 GemType type = currentActiveRequirement.RewardGemTypes[i];
                 int count = currentActiveRequirement.RewardGemCounts[i];
-                
                 gameData.RemainingGems[type] += count;
 
-                // 번들 풀에 추가
                 int allocated = 0;
                 while (allocated < count)
                 {
                     int size = UnityEngine.Random.Range(1, Mathf.Min(5, count - allocated + 1));
-                    gameData.BundlePool.Add(new GemBundle {
+                    GemBundle newBundle = new GemBundle {
                         BundleID = Guid.NewGuid().ToString(),
                         GemType = type,
                         GemCount = size
-                    });
+                    };
+                    
+                    // 생성 즉시 Pool에 추가
+                    if (!gameData.BundlePool.Contains(newBundle))
+                        gameData.BundlePool.Add(newBundle);
+                    
                     allocated += size;
                 }
             }
         }
 
-        // 3. UI 갱신
-        if (GemCountStatusPanel != null)
-        {
-            GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
-        }
-
         gameData.CurrentBoxIndex++;
-  signboard?.PlaySuccessO(); // ✅ 전광판 O
-        
-        // [수정] 애니메이션 종료 후 다음 상자 정보를 명시적으로 업데이트
+        signboard?.PlaySuccessO();
+
         UIManager.AnimateBoxChange(() => {
             gameData.SelectedBundles.Clear();
             selectedBundleOriginalIndices.Clear();
-            UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
             
-            // 다음 상자 정보 UI 즉시 반영
-            Box nextBox = GetCurrentBox();
-            if (nextBox != null)
-            {
-                UIManager.UpdateBoxUI(
-                    gameData.CurrentBoxIndex, 
-                    0, 
-                    nextBox.RequiredAmount, 
-                    gameData.Boxes.Count
-                );
-            }
-
-            if (GemCountStatusPanel != null)
-                GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
-
+            // [핵심] 상자 교체 시점에 화면 데이터(CurrentDisplayBundles)와 Pool을 완전히 재동기화
             gameData.BundlePool = gameData.BundlePool.OrderBy(x => UnityEngine.Random.value).ToList();
-            ExtractDisplayBundles();
+            
+            // 현재 화면에 빈 자리가 생겼거나 보충이 필요하므로 다시 추출
+            ExtractDisplayBundles(); 
+            
+            // UI 갱신
+            RefreshUI();
             ShowRequirementSelection();
         });
     }

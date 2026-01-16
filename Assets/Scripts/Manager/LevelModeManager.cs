@@ -400,116 +400,73 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
     
 
    // ===== OnBundleClicked() - 완전 재작성 =====
-private void OnBundleClicked(GemBundlePrefab clickedPrefab)
-{
-    GemBundle bundle = clickedPrefab.GetData();
-    
-    // Placeholder 클릭 방지
-    if(bundle == null) return;
-    
-    // 힌트 흔들림 중지
-    GridManager.StopShakingBundle(bundle);
-    
-    // 현재 Grid 인덱스 찾기
-    int gridIndex = clickedPrefab.transform.GetSiblingIndex();
-    
-    // ===== 선택 취소 =====
-    if(gameData.SelectedBundles.Contains(bundle))
+    private void OnBundleClicked(GemBundlePrefab clickedPrefab)
     {
-        gameData.SelectedBundles.Remove(bundle);
-        gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
-        
-        if(!selectedBundleOriginalIndices.ContainsKey(bundle))
+        GemBundle bundle = clickedPrefab.GetData();
+        if (bundle == null) return;
+
+        GridManager.StopShakingBundle(bundle);
+        int gridIndex = clickedPrefab.transform.GetSiblingIndex();
+
+        // ===== [해결] 선택 취소 로직 강화 =====
+        if (gameData.SelectedBundles.Contains(bundle))
         {
-            Debug.LogError($"[OnBundleClicked] {bundle.BundleID}의 원래 인덱스를 찾을 수 없습니다!");
-            return;
-        }
-        
-        int originalIndex = selectedBundleOriginalIndices[bundle];
-        selectedBundleOriginalIndices.Remove(bundle);
-        
-        if(!gameData.BundlePool.Contains(bundle))
-        {
-            gameData.BundlePool.Add(bundle);
-        }
-        
-        GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
-        
-        if(currentBundle != null && currentBundle != bundle)
-        {
-            if(!gameData.BundlePool.Contains(currentBundle))
+            gameData.SelectedBundles.Remove(bundle);
+            gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
+
+            if (!selectedBundleOriginalIndices.ContainsKey(bundle)) return;
+
+            int originalIndex = selectedBundleOriginalIndices[bundle];
+            selectedBundleOriginalIndices.Remove(bundle);
+
+            // [수정] Pool에 추가하기 전 중복 체크 및 Display 리스트에서 제거된 번들 처리
+            GemBundle currentOnGrid = gameData.CurrentDisplayBundles[originalIndex];
+            
+            // 현재 그리드에 있던 (새로 보충됐던) 번들을 다시 풀로 돌려보냄
+            if (currentOnGrid != null && !gameData.BundlePool.Contains(currentOnGrid))
             {
-                gameData.BundlePool.Add(currentBundle);
+                gameData.BundlePool.Add(currentOnGrid);
             }
-        }
-        
-        gameData.CurrentDisplayBundles[originalIndex] = bundle;
-        
-        GridManager.ReplaceBundleAtIndex(
-            originalIndex,
-            bundle,
-            OnBundleClicked,
-            isRestoring: true
-        );
-        
-        // 취소는 즉시 UI 업데이트
-        UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(
-    gameData.CurrentBoxIndex,
-    CalculateSelectedTotal(),
-    GetCurrentBox().RequiredAmount,
-    gameData.Boxes.Count // ← 추가
-);
 
-        
-        if (GemCountStatusPanel != null)
-        {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
-        }
-    }
-    // ===== 선택 =====
-    else
-    {
-       // ✅ 디버그 로그만 추가 (에러는 발생시키지 않음)
-    if(gameData.RemainingGems[bundle.GemType] < bundle.GemCount)
-    {
-        Debug.LogWarning($"[OnBundleClicked] ⚠️ 동기화 문제 감지!");
-        Debug.LogWarning($"  - {bundle.GemType} 남은 개수: {gameData.RemainingGems[bundle.GemType]}");
-        Debug.LogWarning($"  - {bundle.GemType} 필요 개수: {bundle.GemCount}");
-        Debug.LogWarning($"  - BundlePool의 {bundle.GemType} 총합: {gameData.BundlePool.Where(b => b.GemType == bundle.GemType).Sum(b => b.GemCount)}");
-        Debug.LogWarning($"  - 선택 계속 진행...");
-    }
-    
-        gameData.SelectedBundles.Add(bundle);
-        selectedBundleOriginalIndices[bundle] = gridIndex;
-        gameData.BundlePool.Remove(bundle);
-        
-       GemBundle newBundle = GetRandomFromRemainingPool();
- // ★ 수정: 색상 순환 로직 적용
-    // GemType nextColor = GetNextColorInCycle(bundle.GemType);
-    // GemBundle newBundle = GetNextBundleByColor(nextColor);
+            // 원래 번들을 다시 그리드 데이터에 할당하고 Pool에서 제거 (중복 방지)
+            gameData.CurrentDisplayBundles[originalIndex] = bundle;
+            if (gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Remove(bundle);
+            }
 
-        gameData.CurrentDisplayBundles[gridIndex] = newBundle;
-        
-        gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
-        
-        if (GemCountStatusPanel != null)
-        {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
+            GridManager.ReplaceBundleAtIndex(originalIndex, bundle, OnBundleClicked, isRestoring: true);
+            
+            // UI 즉시 업데이트
+            RefreshUI();
         }
-        
-        // Grid 교체 시작 (애니메이션 포함)
-        GridManager.ReplaceBundleAtIndex(
-            gridIndex,
-            newBundle,
-            OnBundleClicked,
-            isRestoring: false
-        );
-        
-        // 애니메이션 완료 후 UI 업데이트 (0.5초 딜레이)
-        StartCoroutine(UpdateSelectionUIAfterAnimation());
+        // ===== [해결] 선택 로직 강화 (유령 번들 방지) =====
+        else
+        {
+            gameData.SelectedBundles.Add(bundle);
+            selectedBundleOriginalIndices[bundle] = gridIndex;
+
+            // [수정] 보충할 새 번들을 가져오기 전, 클릭된 번들을 확실히 Pool에서 제거
+            if (gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Remove(bundle);
+            }
+
+            // 새 번들 추출 (이미 표시된 번들은 제외하고 가져옴)
+            GemBundle newBundle = GetRandomFromRemainingPool();
+            gameData.CurrentDisplayBundles[gridIndex] = newBundle;
+
+            gameData.RemainingGems[bundle.GemType] -= bundle.GemCount;
+
+            if (GemCountStatusPanel != null)
+            {
+                GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
+            }
+
+            GridManager.ReplaceBundleAtIndex(gridIndex, newBundle, OnBundleClicked, isRestoring: false);
+            StartCoroutine(UpdateSelectionUIAfterAnimation());
+        }
     }
-}
 // ✅ 새 메서드: 애니메이션 완료 후 UI 업데이트
 private IEnumerator UpdateSelectionUIAfterAnimation()
 {
@@ -606,28 +563,22 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
 
 // ===== 남은 Pool에서 랜덤 1개 선택 =====
 // ===== 남은 Pool에서 랜덤 선택 =====
-private GemBundle GetRandomFromRemainingPool()
-{
-    // ✅ 수정: null 제외하고 사용 가능한 번들만 필터링
-    List<GemBundle> availableBundles = gameData.BundlePool
-        .Where(b => b != null) // ← null 제외
-        .ToList();
-    foreach(var displayedBundle in gameData.CurrentDisplayBundles)
+    private GemBundle GetRandomFromRemainingPool()
     {
-        if(displayedBundle != null)
-        {
-            availableBundles.Remove(displayedBundle);
-        }
+        // 1. Pool에 있는 것 중 현재 화면에 표시되지 않는 것만 필터링
+        var purelyAvailable = gameData.BundlePool
+            .Where(b => b != null && !gameData.CurrentDisplayBundles.Contains(b))
+            .ToList();
+
+        if (purelyAvailable.Count == 0) return null;
+
+        int randomIndex = UnityEngine.Random.Range(0, purelyAvailable.Count);
+        GemBundle selected = purelyAvailable[randomIndex];
+        
+        // 2. 선택된 번들은 더 이상 "대기 Pool" 상태가 아니므로 제거
+        gameData.BundlePool.Remove(selected);
+        return selected;
     }
-    
-    if(availableBundles.Count == 0)
-    {
-        return null;
-    }
-    
-    int randomIndex = UnityEngine.Random.Range(0, availableBundles.Count);
-    return availableBundles[randomIndex];
-}
 
 public void CancelSelection()
 {
