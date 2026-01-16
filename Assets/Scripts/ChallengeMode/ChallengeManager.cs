@@ -94,9 +94,8 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     
     [Header("전광판")]
 [SerializeField] private SignboardFlickerIndicator signboard;
+    private bool isProcessingCompletion = false;
 
-
-    
     private float currentSelectionTimer;
     private bool isSelectionActive = false;
     private Coroutine selectionTimerCoroutine;
@@ -907,6 +906,10 @@ void Update()
 
     public void OnClickComplete()
     {
+        if (isProcessingCompletion) return;
+
+        // UI 매니저를 통해 버튼 자체를 0.8초간 비활성화
+        UIManager.SetCompleteButtonCooldown(0.8f);
         Debug.Log("[ChallengeModeManager] Complete 버튼 클릭됨");
         if (currentActiveRequirement == null) return;
 

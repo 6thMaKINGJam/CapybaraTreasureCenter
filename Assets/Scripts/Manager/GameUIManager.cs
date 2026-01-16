@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System.Collections;
 
 
 public class GameUIManager : MonoBehaviour
@@ -52,7 +53,8 @@ public class GameUIManager : MonoBehaviour
     [Header("별 표시 UI")]
     public RectTransform star3Marker; // Star3_Point 할당
     public RectTransform star2Marker; // Star2_Point 할당
-private bool isChallengeMode;
+    private bool isChallengeMode;
+    private bool isCompleteButtonCoolingDown = false;
 
 
 
@@ -302,5 +304,23 @@ public void UpdateBoxUI(int boxIndex, int currentAmount, int requiredAmount, int
         }
 
         CountdownText.gameObject.SetActive(false);
+    }
+
+    public void SetCompleteButtonCooldown(float duration = 0.5f)
+    {
+        if (CompleteButton == null || isCompleteButtonCoolingDown) return;
+        
+        StartCoroutine(CompleteButtonCooldownCoroutine(duration));
+    }
+
+    private IEnumerator CompleteButtonCooldownCoroutine(float duration)
+    {
+        isCompleteButtonCoolingDown = true;
+        CompleteButton.interactable = false; // 버튼 비활성화
+
+        yield return new WaitForSecondsRealtime(duration); // TimeScale 영향을 받지 않도록 Realtime 사용
+
+        CompleteButton.interactable = true; // 버튼 재활성화
+        isCompleteButtonCoolingDown = false;
     }
 }

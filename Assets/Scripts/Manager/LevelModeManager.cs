@@ -61,28 +61,21 @@ public class LevelModeManager : MonoBehaviour
 
     [Header("상태 관리")]
     private bool isTimeAddUsed = false;
+    private bool isProcessingCompletion = false;
     
+    [Header("Visual Management")]
+    [SerializeField] private ChapterVisualController chapterVisualController;
 
-
-
-[Header("Visual Management")]
-[SerializeField] private ChapterVisualController chapterVisualController;
-
-    // 연속 성공 카운트
-    private int consecutiveSuccessCount = 0;
-    private int lastCountedSecond = -1; // 중복 호출 방지용
-  
-private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs 
-    = new Dictionary<GemBundle, GemBundlePrefab>();
-private Dictionary<GemBundle, int> selectedBundleOriginalIndices 
-    = new Dictionary<GemBundle, int>(); // Bundle → 원래 Grid 인덱스
-
- private HintManager hintManager;
+        // 연속 성공 카운트
+        private int consecutiveSuccessCount = 0;
+        private int lastCountedSecond = -1; // 중복 호출 방지용
     
- // ✅ 시간추가 관련
-    
-    
+    private Dictionary<GemBundle, GemBundlePrefab> selectedBundleOriginalPrefabs 
+        = new Dictionary<GemBundle, GemBundlePrefab>();
+    private Dictionary<GemBundle, int> selectedBundleOriginalIndices 
+        = new Dictionary<GemBundle, int>(); // Bundle → 원래 Grid 인덱스
 
+    private HintManager hintManager;
     
     void Awake()
     {
@@ -751,7 +744,12 @@ private class BundleRestoreInfo
    
     // ========== 완료 버튼 ==========
    public void OnClickComplete()
-    {    // ✅ 모든 흔들림 중지
+    {
+        if (isProcessingCompletion) return;
+
+        // UI 매니저를 통해 버튼 자체를 0.5초간 비활성화
+        UIManager.SetCompleteButtonCooldown(0.8f);
+        // ✅ 모든 흔들림 중지
         GridManager.StopAllShaking();
     
 
