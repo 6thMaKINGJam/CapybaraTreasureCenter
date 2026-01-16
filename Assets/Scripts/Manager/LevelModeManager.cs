@@ -628,27 +628,32 @@ private GemBundle GetRandomFromRemainingPool()
     int randomIndex = UnityEngine.Random.Range(0, availableBundles.Count);
     return availableBundles[randomIndex];
 }
-// ===== CancelSelection() - 간단 버전 =====
+
 public void CancelSelection()
 {
-    if(gameData.SelectedBundles.Count == 0)
+    if (gameData.SelectedBundles.Count == 0)
     {
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount,  gameData.Boxes.Count);
+        UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount, gameData.Boxes.Count);
         return;
     }
     
-    // 복원 정보 수집 (인덱스 순서대로 정렬)
     List<BundleRestoreInfo> restoreInfos = new List<BundleRestoreInfo>();
     
-    foreach(var bundle in gameData.SelectedBundles)
+    foreach (var bundle in gameData.SelectedBundles)
     {
-        if(!selectedBundleOriginalIndices.ContainsKey(bundle))
+        if (!selectedBundleOriginalIndices.ContainsKey(bundle)) continue;
+
+        int originalIndex = selectedBundleOriginalIndices[bundle];
+        
+        // ✅ [버그 수정] 인덱스 범위 체크 추가
+        if (originalIndex < 0 || originalIndex >= gameData.CurrentDisplayBundles.Count)
         {
-            Debug.LogWarning($"[CancelSelection] {bundle.BundleID}의 인덱스를 찾을 수 없습니다!");
+            Debug.LogError($"[CancelSelection] 인덱스 범위 초과: {originalIndex}");
             continue;
         }
-        
+
+        // 중복 복구 방지: RemainingGems는 여기서 한 번만 복구
         gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
         
         if (GemCountStatusPanel != null)
@@ -656,7 +661,6 @@ public void CancelSelection()
             GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
 
-        int originalIndex = selectedBundleOriginalIndices[bundle];
         GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
         
         restoreInfos.Add(new BundleRestoreInfo
@@ -667,31 +671,25 @@ public void CancelSelection()
         });
     }
     
-    // 인덱스 순서대로 정렬
     restoreInfos.Sort((a, b) => a.OriginalIndex.CompareTo(b.OriginalIndex));
     
-    // 복원 실행
-    foreach(var info in restoreInfos)
+    foreach (var info in restoreInfos)
     {
-        // BundlePool에 원래 번들 추가
-        if(!gameData.BundlePool.Contains(info.OriginalBundle))
+        if (!gameData.BundlePool.Contains(info.OriginalBundle))
         {
             gameData.BundlePool.Add(info.OriginalBundle);
         }
         
-        // 현재 번들 반환
-        if(info.CurrentBundle != null && info.CurrentBundle != info.OriginalBundle)
+        if (info.CurrentBundle != null && info.CurrentBundle != info.OriginalBundle)
         {
-            if(!gameData.BundlePool.Contains(info.CurrentBundle))
+            if (!gameData.BundlePool.Contains(info.CurrentBundle))
             {
                 gameData.BundlePool.Add(info.CurrentBundle);
             }
         }
         
-        // CurrentDisplayBundles 복원
         gameData.CurrentDisplayBundles[info.OriginalIndex] = info.OriginalBundle;
         
-        // Grid 복원
         GridManager.ReplaceBundleAtIndex(
             info.OriginalIndex,
             info.OriginalBundle,
@@ -700,20 +698,12 @@ public void CancelSelection()
         );
     }
 
-    
-    
-    // 전체 초기화
     gameData.SelectedBundles.Clear();
     selectedBundleOriginalIndices.Clear();
     
-    // UI 업데이트
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
-    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount,gameData.Boxes.Count);
+    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount, gameData.Boxes.Count);
     GridManager.ClearAllSelections();
-    if (IsTutorialScene && tutorialStep == 5) 
-    {
-        OnCancelSelectionSuccess(); // 튜토리얼 콜백 추가
-    }
 }
 
 public void OnCancelSelectionSuccess()
@@ -747,7 +737,7 @@ private class BundleRestoreInfo
     {
         if (isProcessingCompletion) return;
 
-        // UI 매니저를 통해 버튼 자체를 0.5초간 비활성화
+        // UI 매니저를 통해 버튼 자체를 0.8초간 비활성화
         UIManager.SetCompleteButtonCooldown(0.8f);
         // ✅ 모든 흔들림 중지
         GridManager.StopAllShaking();
