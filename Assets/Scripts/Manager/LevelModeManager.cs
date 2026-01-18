@@ -1608,31 +1608,83 @@ private void StopBackgroundMedia()
     
     private void ExecuteUndo()
     {
+        // ✅ [디버그] undo 시작 상태 로깅
+        Debug.Log($"[ExecuteUndo] 시작 - CompletedBoxes: {gameData.CompletedBoxes.Count}, CurrentBoxIndex: {gameData.CurrentBoxIndex}, SelectedBundles: {gameData.SelectedBundles.Count}");
+        
+        if (gameData.CompletedBoxes.Count == 0)
+        {
+            Debug.LogWarning("[ExecuteUndo] 되돌릴 완료된 상자가 없습니다!");
+            return;
+        }
+        
         CompletedBox lastBox = gameData.CompletedBoxes[gameData.CompletedBoxes.Count - 1];
         gameData.CompletedBoxes.RemoveAt(gameData.CompletedBoxes.Count - 1);
+        
+        Dictionary<GemType, int> gemChanges = new Dictionary<GemType, int>();
+        
+        Debug.Log($"[ExecuteUndo] 되돌릴 상자의 번들 개수: {lastBox.UsedBundles.Count}");
         
         foreach(var bundle in lastBox.UsedBundles)
         {
             gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
             gameData.BundlePool.Insert(0, bundle);
         
-        if (GemCountStatusPanel != null)
-        {
-            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
-        }
-
+            // ✅ [버그 수정] 루프 내에서 개별 호출 제거, 루프 후 한 번만 호출하도록 변경
+            if (!gemChanges.ContainsKey(bundle.GemType))
+            {
+                gemChanges[bundle.GemType] = 0;
+            }
+            gemChanges[bundle.GemType] += bundle.GemCount;
+            
+            Debug.Log($"[ExecuteUndo] {bundle.GemType}: +{bundle.GemCount} → 현재: {gameData.RemainingGems[bundle.GemType]}");
         }
         
         gameData.CurrentBoxIndex--;
+        
+        // ✅ [버그 수정] CurrentDisplayBundles(현재 그리드의 번들들)을 BundlePool에 돌려놓기
+        foreach (var bundle in gameData.CurrentDisplayBundles)
+        {
+            if (bundle != null && !gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
+        
+        // ✅ [버그 수정] SelectedBundles를 BundlePool에 다시 넣고 clear
+        foreach (var bundle in gameData.SelectedBundles)
+        {
+            if (!gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
         gameData.SelectedBundles.Clear();
+        selectedBundleOriginalIndices.Clear();
+        
+        Debug.Log($"[ExecuteUndo] BundlePool 보충 후: {gameData.BundlePool.Count}개");
+        
         UpdateAllItemUI();
+        
+        // ✅ [버그 수정] 루프 후 한 번만 GemCountStatusPanel 업데이트
+        foreach (var gemType in gemChanges.Keys)
+        {
+            if (GemCountStatusPanel != null)
+            {
+                Debug.Log($"[ExecuteUndo] UpdateGemCount 호출: {gemType} = {gameData.RemainingGems[gemType]}");
+                GemCountStatusPanel.UpdateGemCount(gemType, gameData.RemainingGems[gemType], RemainingBoxes);
+            }
+        }
         
         // 연속 성공 카운트 리셋
         consecutiveSuccessCount = 0;
         
+        // ✅ [버그 수정] 먼저 그리드 추출 및 갱신
         ExtractDisplayBundles();
+        GridManager.ClearAllSelections(); // ✅ 그리드의 선택 상태도 초기화
+        
         RefreshUI();
         
+        Debug.Log($"[ExecuteUndo] 완료 - CurrentBoxIndex: {gameData.CurrentBoxIndex}, RemainingBoxes: {RemainingBoxes}");
         ShowTopNotification("이전 상태로 되돌아갔습니다카피!");
     }
     
