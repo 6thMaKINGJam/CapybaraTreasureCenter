@@ -1527,6 +1527,12 @@ private void StopBackgroundMedia()
             CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
         }
         
+        // ✅ Complete 버튼 활성화 복구
+        if(UIManager != null && UIManager.CompleteButton != null)
+        {
+            UIManager.CompleteButton.interactable = true;
+        }
+        
         ShowTopNotification($"시간 +{addTime}초 추가되었습니다카피!");
         Debug.Log($"[LevelModeManager] 시간추가 완료! 현재 경과시간: {gameData.ElapsedTime} / 제한시간: {timeLimit}");
     }
@@ -1640,28 +1646,6 @@ private void StopBackgroundMedia()
         }
         
         gameData.CurrentBoxIndex--;
-        
-        // ✅ [버그 수정] CurrentDisplayBundles(현재 그리드의 번들들)을 BundlePool에 돌려놓기
-        foreach (var bundle in gameData.CurrentDisplayBundles)
-        {
-            if (bundle != null && !gameData.BundlePool.Contains(bundle))
-            {
-                gameData.BundlePool.Add(bundle);
-            }
-        }
-        
-        // ✅ [버그 수정] SelectedBundles를 BundlePool에 다시 넣고 clear
-        foreach (var bundle in gameData.SelectedBundles)
-        {
-            if (!gameData.BundlePool.Contains(bundle))
-            {
-                gameData.BundlePool.Add(bundle);
-            }
-        }
-        gameData.SelectedBundles.Clear();
-        selectedBundleOriginalIndices.Clear();
-        
-        Debug.Log($"[ExecuteUndo] BundlePool 보충 후: {gameData.BundlePool.Count}개");
         
         UpdateAllItemUI();
         
