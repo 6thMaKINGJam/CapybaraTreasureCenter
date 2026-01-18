@@ -51,7 +51,7 @@ public class AppleManager : MonoBehaviour
     /// 공식: 사과 = 별개수 - 1 (별1=사과0, 별2=사과1, 별3=사과2)
     /// 재플레이: 증가분만 지급
     /// </summary>
-    public void AddApplesFromStars(int oldStars, int newStars)
+    public int AddApplesFromStars(int oldStars, int newStars)
     {
         // 공식: 별1(0개), 별2(1개), 별3(2개)
         int oldApples = Mathf.Max(0, oldStars - 1);
@@ -73,6 +73,9 @@ public class AppleManager : MonoBehaviour
             
             Debug.Log($"[AppleManager] 사과 +{earnedApples}개 획득! (현재 총 {progressData.TotalApples}개)");
         }
+        
+        // ✅ 실제 지급된 사과 개수 반환
+        return earnedApples;
     }
     
     /// <summary>

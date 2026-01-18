@@ -1076,11 +1076,12 @@ private void HandleLevelClear()
     // ★ 수정 포인트: 기존 별 개수를 먼저 가져온 후 사과를 계산해야 합니다.
     int oldStars = progressData.GetStars(currentLevel); 
     
-    // 3. 사과 지급 (데이터를 변경하기 전에 호출)
+    // 3. 사과 지급 (데이터를 변경하기 전에 호출) ✅ 실제 지급된 사과 개수 받기
+    int earnedApples = 0;
     if(AppleManager.Instance != null)
     {
         // AppleManager 내부에서 newStars와 oldStars를 비교해 차액을 지급합니다.
-        AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
+        earnedApples = AppleManager.Instance.AddApplesFromStars(oldStars, starCount);
     }
 
 progressData = SaveManager.LoadData<ProgressData>("ProgressData");
@@ -1127,13 +1128,13 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
             }
             
             // ✅ 레벨 4는 NextLevel 버튼 비활성화
-            ShowLevelClearPopup(starCount, clearMessage, isLastLevel: true);
+            ShowLevelClearPopup(starCount, clearMessage, earnedApples, isLastLevel: true);
         }
     }
     else
     {
         // 레벨 1~3 클리어
-        ShowLevelClearPopup(starCount, clearMessage, isLastLevel: false);
+        ShowLevelClearPopup(starCount, clearMessage, earnedApples, isLastLevel: false);
     }
 }
 
@@ -1150,8 +1151,8 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
         }
     }
 
-// ✅ 팝업 생성 함수 수정
-private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel)
+// ✅ 팝업 생성 함수 수정 - earnedApples 매개변수 추가
+private void ShowLevelClearPopup(int starCount, string message, int earnedApples, bool isLastLevel)
 {
     GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/LevelClearPopup");
     LevelClearPopup popup = popupObj.GetComponent<LevelClearPopup>();
@@ -1162,6 +1163,7 @@ private void ShowLevelClearPopup(int starCount, string message, bool isLastLevel
             gameData.CurrentLevelIndex,
             starCount, 
             message,
+            earnedApples, // ✅ 실제 지급된 사과 개수 전달
                 () => GoToNextLevel(),
                 () => RestartLevel(),
                 () => GoToMainHome()

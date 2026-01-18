@@ -11,6 +11,7 @@ public class LevelClearPopup : MonoBehaviour
     public TextMeshProUGUI MessageText;
     public TMP_Text LevelText;
     public GameObject[] StarObjects;
+    public TMP_Text AppleCountText; // ✅ 사과 개수 표시
     
     [Header("버튼 연결")]
     public Button NextLevelButton; // ✅ 추가
@@ -30,10 +31,11 @@ public class LevelClearPopup : MonoBehaviour
     /// </summary>
     /// <param name="starCount">별 개수</param>
     /// <param name="message">메시지</param>
+    /// <param name="earnedApples">획득한 사과 개수</param>
     /// <param name="onNextLevel">다음 레벨 버튼 기능</param>
     /// <param name="onRetry">다시하기 버튼 기능</param>
     /// <param name="onHome">홈으로 가기 버튼 기능</param>
-    public void Setup(int levelIndex, int starCount, string message, Action onNextLevel, Action onRetry, Action onHome)
+    public void Setup(int levelIndex, int starCount, string message, int earnedApples, Action onNextLevel, Action onRetry, Action onHome)
     {
         if (LevelText != null)
         {
@@ -45,6 +47,10 @@ public class LevelClearPopup : MonoBehaviour
         // 1. 텍스트 설정
         if (MessageText != null)
             MessageText.text = message;
+
+        // ✅ 사과 개수 표시
+        if (AppleCountText != null)
+            AppleCountText.text = $"사과 +{earnedApples}개";
 
         // 2. 콜백 저장
         onNextLevelCallback = onNextLevel;
