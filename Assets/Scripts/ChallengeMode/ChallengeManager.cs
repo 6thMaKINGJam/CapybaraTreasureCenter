@@ -101,7 +101,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private Coroutine selectionTimerCoroutine;
     private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
 
-    private bool isTutorialMode = false;
+
   
     private bool startinstruction = false;
     private bool afterReqinstruction = false;
@@ -115,12 +115,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
 
     void Start()
     {
-        Debug.Log($"[ChallengeModeManager] 챌린지 모드 시작 {PlayerPrefs.GetInt("TutorialPracticeMode", 0)}");
-        if (PlayerPrefs.GetInt("TutorialPracticeMode", 0) == 2)
-        {
-            isTutorialMode = true;
-            UIManager.PauseButton.gameObject.SetActive(false);
-        }
+        
         InitChallengeMode();
     }
  private int lastCountedSecond = -1; // 중복 호출 방지용
@@ -212,26 +207,6 @@ void Update()
         }
     }
 
-    public void OnTutorialAfterRequirementSelected()
-    {
-        if (!isTutorialMode || afterReqinstruction) return;
-
-        // 안내 팝업이 뜰 동안만 시간을 멈춥니다.
-        Time.timeScale = 0f;
-            ShowTutorialPopup("도전 모드에서는 선택한 '규칙'만 만족하면 됩니다카피!\n레벨 모드처럼 모든 종류의 보석을 넣을 필요가 없어요카피.", () => {
-                ShowTutorialPopup("또한, 여기서는 '새로고침' 버튼 대신\n'조건 다시 선택' 버튼이 생깁니다카피! 신중하게 사용하세요.", () => {
-                    // 모든 튜토리얼 안내가 끝나면 시간을 흐르게 하고 게임을 시작합니다.
-                    Time.timeScale = 1f;
-                    gameData.GameState = GameState.Playing; 
-                    
-                    StopCoroutine(nameof(ChallengeTimerRoutine));
-                    StartCoroutine(ChallengeTimerRoutine()); // 여기서 타이머 시작
-                    Debug.Log("챌린지 튜토리얼 안내 종료 - 게임 시작");
-                    afterReqinstruction = true;
-                });
-            });
-
-    }
 
     private void InitChallengeMode()
     {
@@ -292,15 +267,9 @@ void Update()
         UpdateReselectUI();
         UpdateAllItemUI();
 
-        if (isTutorialMode)
-        {
-            gameData.GameState = GameState.Paused; // 상태를 일시정지로 설정
-            Debug.Log("튜토리얼 모드: 메인 타이머 시작을 보류합니다.");
-        }
-        else
-        {
+       
             StartCoroutine(ChallengeTimerRoutine());
-        }
+        
 
 
         StartCoroutine(ChallengeTimerRoutine());
@@ -640,17 +609,10 @@ void Update()
     {
         while (gameData.GameState == GameState.Playing)
         {
-            // [수정] 튜토리얼 모드일 때는 남은 시간을 줄이지 않음
-            if (!isTutorialMode)
-            {
-                currentRemainingTime -= Time.deltaTime;
-            }
-            else 
-            {
-                // 튜토리얼 중에도 타이머 바를 꽉 찬 상태로 유지하고 싶다면 추가
-                currentRemainingTime = startingTimeLimit; 
-            }
             
+                currentRemainingTime -= Time.deltaTime;
+            
+           
             // UI 타이머 슬라이더 업데이트
             if (GameUIManager.Instance.TimerSlider != null)
             {
@@ -668,13 +630,7 @@ void Update()
 
     public void ShowRequirementSelection()
     {
-        // 1. 튜토리얼 모드라면 실제 조건 선택창을 띄우지 않고 설명부터 시작
-        if (isTutorialMode && !startinstruction)
-        {
-            StartChallengeTutorial();
-            return; 
-        }
-
+       
         // 튜토리얼이 아닐 때만 즉시 실행
         ShowRequirementSelectionInternal();
     }
@@ -717,11 +673,7 @@ void Update()
 
         while (currentSelectionTimer > 0)
         {
-            if (isTutorialMode) 
-            {
-                yield return null;
-                continue;
-            }
+           
             // Time.timeScale이 0이므로 Time.unscaledDeltaTime을 사용해야 합니다.
             currentSelectionTimer -= Time.unscaledDeltaTime;
 
@@ -889,17 +841,11 @@ void Update()
     {
         ActiveRequirementDisplay.UpdateRequirement(selectedReq);
     }
-        // 튜토리얼 모드인 경우 추가 안내 실행
-        if (isTutorialMode)
-        {
-            OnTutorialAfterRequirementSelected();
-        }
-        else
-        {
+       
             Time.timeScale =1f;
             StopCoroutine(nameof(ChallengeTimerRoutine));
             StartCoroutine(ChallengeTimerRoutine());
-        }
+        
 
        
     }
@@ -1190,13 +1136,6 @@ void Update()
     // [수정] 상자 완료 시 보상 로직
     private void ProcessBoxSuccess()
     {
-        Debug.Log($"[ChallengeModeManager] 상자 완료 처리 시작 {isTutorialMode}");
-        if (isTutorialMode)
-        {
-            Debug.Log("[ChallengeModeManager] 튜토리얼 모드에서 상자 완료 처리 - 튜토리얼로 돌아갑니다.");
-            StartCoroutine(ReturnToTutorialAfterChallengeDelay());
-            return; 
-        }
         
         // 점수 계산 (상자 완료 점수 100 + 현재 남은 시간 * 10)
         // 남은 시간은 소수점이 있을 수 있으므로 반올림(Mathf.RoundToInt)하여 자연수로 만듭니다.
@@ -1257,26 +1196,6 @@ void Update()
             ShowRequirementSelection();
         });
     }
-    private IEnumerator ReturnToTutorialAfterChallengeDelay()
-    {
-        isTutorialMode = false; // 중복 진입 방지
-        ShowTopNotification("도전 모드 튜토리얼을 완료했습니다! 튜토리얼로 돌아갑니다.");
-        
-        yield return new WaitForSeconds(2.0f);
-
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.isTutorialSequenceFinished = true;
-        SaveManager.Save(progressData, "ProgressData");
-        
-        isTutorialMode = false;
-     
-        PlayerPrefs.SetInt("TutorialPracticeMode", 0);
-        PlayerPrefs.Save();
-        
-        DOTween.KillAll();
-        SceneManager.LoadScene("Tutorial"); // 튜토리얼 씬 이름 확인 필요
-    }
-
     private void HandleTimeOver()
     {
         gameData.GameState = GameState.TimeOver;

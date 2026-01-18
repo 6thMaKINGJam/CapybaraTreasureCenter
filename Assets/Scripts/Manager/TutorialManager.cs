@@ -31,10 +31,6 @@ public class TutorialManager : MonoBehaviour
     private Sprite previousBackgroundSprite;
     private bool isTransitioning = false; // 전환 중인지 확인
     public static TutorialManager Instance;
-    private bool isWaitingForAction = false;
-
-    [Header("모드 선택 UI")]
-    public GameObject ModeSelectPopup;
 
     void Awake() => Instance = this;
     
@@ -42,12 +38,7 @@ public class TutorialManager : MonoBehaviour
     {
         // 1. 튜토리얼 완료 여부 확인
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        if (progressData.isTutorialSequenceFinished)
-        {
-            ShowModeSelectPopup();
-            ShowSequence(15);
-        }
-        
+      
         
         // 초기 배경 설정 (페이드 없이)
         if(BackgroundImage != null)
@@ -68,7 +59,7 @@ public class TutorialManager : MonoBehaviour
     
     if(index >= Sequences.Count)
     {
-        ShowModeSelectPopup();
+        CompleteTutorial();
         return;
     }
     
@@ -103,27 +94,6 @@ public class TutorialManager : MonoBehaviour
     previousBackgroundSprite = sequence.BackgroundImage;
 }
 
-    private void ShowModeSelectPopup()
-    {
-        if (ModeSelectPopup != null)
-        {
-            ModeSelectPopup.SetActive(true); // 팝업 활성화
-            
-            // 필요하다면 페이드 인 효과 추가 (CanvasGroup 사용 시)
-            CanvasGroup cg = ModeSelectPopup.GetComponent<CanvasGroup>();
-            if(cg != null)
-            {
-                cg.alpha = 0;
-                cg.DOFade(1f, 0.5f); // DOTween 사용 시
-            }
-        }
-        else
-        {
-            // 팝업이 설정되지 않았다면 바로 메인홈으로 이동하는 안전장치
-            CompleteTutorial();
-        }
-    }
-
     
     // 배경 전환이 필요한 경우
     private IEnumerator TransitionSequence(TutorialSequence sequence)
@@ -156,13 +126,7 @@ public class TutorialManager : MonoBehaviour
         isTransitioning = false;
     }
 
-    public void OnTutorialSequenceFinished()
-    {
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.isTutorialSequenceFinished = true;
-        SaveManager.Save(progressData, "ProgressData");
-        ShowModeSelectPopup();
-    }
+   
     
     // 배경을 즉시 설정 (전환 불필요한 경우)
     private void SetupBackgroundImmediate(TutorialSequence sequence)
@@ -204,13 +168,9 @@ public class TutorialManager : MonoBehaviour
             Debug.LogError($"[TutorialManager] {sequence.DialogType} Prefab이 할당되지 않았습니다!");
         }
 
-        isWaitingForAction = (sequence.WaitType != TutorialWaitType.None);
+       
         
-        // 가이드 대사 중에는 버튼을 강조하는 연출을 여기에 추가할 수 있습니다.
-        if (isWaitingForAction) {
-             Debug.Log($"{sequence.WaitType} 행동을 기다리는 중...");
-        }
-
+       
         if (!string.IsNullOrEmpty(sequence.HighlightObjectName))
         {
             // LevelModeManager가 있다면 강조 실행
@@ -332,79 +292,14 @@ public class TutorialManager : MonoBehaviour
     // 창 클릭 시 다음 시퀀스로
     private void OnDialogClicked()
     {
-        if(isTransitioning || isWaitingForAction) return; // 액션 대기 중이면 클릭 무시
+        if(isTransitioning ) return; // 액션 대기 중이면 클릭 무시
         
         if(currentDialog != null) StartCoroutine(FadeOutAndNext());
     }
 
-    // 버튼 등을 눌렀을 때 외부에서 호출할 함수
-    public void ResolveAction(TutorialWaitType actionType)
-    {
-        // 저장된 진행 데이터 로드
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-
-        if (actionType == TutorialWaitType.LevelButton)
-        {
-            // 레벨 모드 실습 진입
-            PlayerPrefs.SetInt("TutorialPracticeMode", 1);
-            PlayerPrefs.Save();
-            SceneManager.LoadScene("LevelMode");
-        }
-        else if (actionType == TutorialWaitType.ChallengeButton)
-        {
-            // [수정] 레벨 모드 튜토리얼 수행 여부 확인
-            // ProgressData에 해당 플래그가 있다고 가정하거나, PlayerPrefs 등을 활용합니다.
-            // 여기서는 예시로 progressData.isLevelTutorialCleared 라는 변수가 있다고 가정합니다.
-            
-            bool isLevelCleared = PlayerPrefs.GetInt("LevelTutorialDone", 0) == 1;
-
-            if (isLevelCleared)
-            {
-                PlayerPrefs.SetInt("TutorialPracticeMode", 2);
-                PlayerPrefs.Save();
-                SceneManager.LoadScene("ChallengeMode");
-            }
-            else
-            {
-                // 아직 레벨 모드를 안 했다면 경고 팝업 표시
-                Debug.Log("레벨 모드 튜토리얼을 먼저 완료해야 합니다카피!");
-                ShowRequirementSelectionInternal_Warning("레벨 모드 튜토리얼을 먼저\n완료해야 챌린지에 도전할 수 있습니다카피!");
-
-            }
-        }
-    }
 
     // Scripts/Manager/TutorialManager.cs (371번 라인 부근 수정)
 
-    private void ShowRequirementSelectionInternal_Warning(string message)
-    {
-        // 1. 인스턴스 존재 확인
-        if (PopupParentSetHelper.Instance == null)
-        {
-            Debug.LogError("[TutorialManager] PopupParentSetHelper Instance가 씬에 없습니다!");
-            return;
-        }
-
-        // 2. 팝업 생성 시도
-        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
-        
-        if (popupObj == null)
-        {
-            Debug.LogError("[TutorialManager] 'Prefabs/BaseWarningPopup' 프리팹을 찾을 수 없거나 생성에 실패했습니다!");
-            return;
-        }
-
-        // 3. 컴포넌트 확인
-        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
-        if (popup != null)
-        {
-            popup.Setup(message, null);
-        }
-        else
-        {
-            Debug.LogError("[TutorialManager] 생성된 팝업에 BaseWarningPopup 컴포넌트가 없습니다!");
-        }
-    }
     
     // 창을 페이드 아웃한 후 다음 시퀀스로
     private IEnumerator FadeOutAndNext()
@@ -424,12 +319,9 @@ public class TutorialManager : MonoBehaviour
     private void CompleteTutorial()
     {
         Debug.Log("[TutorialManager] 튜토리얼 완료!");
-        
-        // ProgressData에 튜토리얼 완료 저장
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.isTutorialComplete = true;
-        SaveManager.Save(progressData, "ProgressData");
-        
+     
+    SaveManager.SetTutorialCompleted(TutorialType.Story, true);
+    
         // 배경과 마지막 창을 페이드 아웃한 후 Scene 전환
         StartCoroutine(FadeOutAndLoadMainHome());
     }
@@ -453,33 +345,10 @@ public class TutorialManager : MonoBehaviour
         DOTween.KillAll();
     }
 
-    // 튜토리얼 화면의 레벨 모드 버튼에 연결할 함수 예시
-    public void OnTutorialLevelButtonClick()
-    {
-        if (TutorialManager.Instance != null)
-        {
-            // TutorialManager에게 레벨 버튼이 눌렸음을 알림
-            TutorialManager.Instance.ResolveAction(TutorialWaitType.LevelButton);
-        }
-    }
+ 
 
-    // 튜토리얼 화면의 챌린지 모드 버튼에 연결할 함수 예시
-    public void OnTutorialChallengeButtonClick()
-    {
-        if (TutorialManager.Instance != null)
-        {
-            // TutorialManager에게 챌린지 버튼이 눌렸음을 알림
-            TutorialManager.Instance.ResolveAction(TutorialWaitType.ChallengeButton);
-        }
-    }
+   
 
-    public void OnMainHomeButtonClick()
-    {
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.isTutorialComplete = true;
-        SaveManager.Save(progressData, "ProgressData");
-        SceneManager.LoadScene("MainHome");
-    }
 
     
 }
