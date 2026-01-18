@@ -1453,6 +1453,28 @@ private void StopBackgroundMedia()
         
         gameData.CurrentBoxIndex--;
         
+        // ✅ [버그 수정] CurrentDisplayBundles(현재 그리드의 번들들)을 BundlePool에 돌려놓기
+        foreach (var bundle in gameData.CurrentDisplayBundles)
+        {
+            if (bundle != null && !gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
+        
+        // ✅ [버그 수정] SelectedBundles를 BundlePool에 다시 넣고 clear
+        foreach (var bundle in gameData.SelectedBundles)
+        {
+            if (!gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
+        gameData.SelectedBundles.Clear();
+        selectedBundleOriginalIndices.Clear();
+        
+        Debug.Log($"[ExecuteUndo] BundlePool 보충 후: {gameData.BundlePool.Count}개");
+        
         UpdateAllItemUI();
         
         // ✅ [버그 수정] 루프 후 한 번만 GemCountStatusPanel 업데이트
