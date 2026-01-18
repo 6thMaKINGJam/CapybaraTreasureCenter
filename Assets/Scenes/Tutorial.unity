@@ -743,55 +743,10 @@ MonoBehaviour:
     TargetUIPath: 
     HighlightObjectName: 
   - BackgroundImage: {fileID: 21300000, guid: 233e1508fdcef4a8e88f77e0dbf21ad3, type: 3}
-    DialogType: 1
-    MessageText: "\uCC4C\uB9B0\uC9C0\uBAA8\uB4DC\uC5D0\uC11C \uC0C1\uC790 100\uAC1C\uB97C
-      \uCC44\uC6B0\uBA74 \uCE74\uD53C\uBC14\uB77C \uC138\uACC4\uC758 \uCE74\uD53C\uBC14\uB77C\uB178\uBCA8\uC0C1
-      \uC218\uC0C1\uC790\uAC00 \uB418\uC5B4 \uBA85\uC608\uC758 \uC804\uB2F9\uC5D0
-      \uC62C\uB77C\uAC08 \uC218 \uC788\uCE74\uD53C!!\n"
-    YesButton1Text: Yes
-    YesButton2Text: Yes
-    LevelModeText: "\uB808\uBCA8 \uBAA8\uB4DC"
-    ChallengeModeText: "\uCC4C\uB9B0\uC9C0 \uBAA8\uB4DC"
-    UseVibration: 0
-    VibrationPattern: 0
-    VibrationDelay: 0
-    CustomVibrationPattern: 
-    WaitType: 0
-    TargetUIPath: 
-    HighlightObjectName: 
-  - BackgroundImage: {fileID: 21300000, guid: 233e1508fdcef4a8e88f77e0dbf21ad3, type: 3}
-    DialogType: 1
+    DialogType: 2
     MessageText: "\uC81C\uC548\uC744 \uC218\uB77D\uD558\uCE74\uD53C? \n"
     YesButton1Text: Yes
-    YesButton2Text: Yes
-    LevelModeText: "\uB808\uBCA8 \uBAA8\uB4DC"
-    ChallengeModeText: "\uCC4C\uB9B0\uC9C0 \uBAA8\uB4DC"
-    UseVibration: 0
-    VibrationPattern: 0
-    VibrationDelay: 0
-    CustomVibrationPattern: 
-    WaitType: 0
-    TargetUIPath: 
-    HighlightObjectName: 
-  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
-    DialogType: 2
-    MessageText: "\uC81C\uC548\uC744 \uC218\uB77D\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
-    YesButton1Text: "\uB124"
-    YesButton2Text: Yes
-    LevelModeText: "\uB808\uBCA8 \uBAA8\uB4DC"
-    ChallengeModeText: "\uCC4C\uB9B0\uC9C0 \uBAA8\uB4DC"
-    UseVibration: 0
-    VibrationPattern: 0
-    VibrationDelay: 0
-    CustomVibrationPattern: 
-    WaitType: 0
-    TargetUIPath: 
-    HighlightObjectName: 
-  - BackgroundImage: {fileID: 21300000, guid: f7efaf0d870344d3595e31b7417ed50f, type: 3}
-    DialogType: 1
-    MessageText: "\uACE0\uB9D9\uB2E4 \uCE74\uD53C.. \u3160\u3160"
-    YesButton1Text: Yes
-    YesButton2Text: Yes
+    YesButton2Text: "\uB124"
     LevelModeText: "\uB808\uBCA8 \uBAA8\uB4DC"
     ChallengeModeText: "\uCC4C\uB9B0\uC9C0 \uBAA8\uB4DC"
     UseVibration: 0
@@ -811,7 +766,6 @@ MonoBehaviour:
   DialogFadeInDuration: 0.3
   BackgroundEaseType: 7
   DialogEaseType: 27
-  ModeSelectPopup: {fileID: 1652887489}
 --- !u!4 &754177655
 Transform:
   m_ObjectHideFlags: 0

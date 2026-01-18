@@ -9,16 +9,7 @@ public enum DialogType
     Box,
     Speech,
     Choice,
-    SelectMode
-}
-public enum TutorialWaitType
-{
-    None,
-    LevelButton,
-    ChallengeButton,
-    GemSelect,      // 보석 선택 실습
-    UndoButton,     // 되돌리기 버튼 실습
-    CompleteButton  // 완료 버튼 실습
+
 }
 
 [Serializable]
@@ -50,12 +41,8 @@ public class TutorialSequence
     [Tooltip("밀리초 단위 배열: {대기, 진동, 대기, 진동, ...}")]
     public long[] CustomVibrationPattern;
 
-    [Header("진행 조건")]
-    public TutorialWaitType WaitType = TutorialWaitType.None;
 
-    [Header("강조 표시")]
-    public string TargetUIPath;
-    public string HighlightObjectName;
+   
     
 
 }

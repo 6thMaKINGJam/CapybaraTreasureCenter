@@ -171,22 +171,6 @@ public class TutorialManager : MonoBehaviour
        
         
        
-        if (!string.IsNullOrEmpty(sequence.HighlightObjectName))
-        {
-            // LevelModeManager가 있다면 강조 실행
-            if (LevelModeManager.Instance != null) 
-                LevelModeManager.Instance.HighlightUI(sequence.HighlightObjectName);
-        }
-
-        if (!string.IsNullOrEmpty(sequence.TargetUIPath))
-        {
-            GameObject target = GameObject.Find(sequence.TargetUIPath);
-            if (target != null)
-            {
-                // 타겟을 위아래로 흔들거나 크기를 키워 강조
-                target.transform.DOScale(1.1f, 0.5f).SetLoops(-1, LoopType.Yoyo);
-            }
-        }
     }
     
     // 배경 페이드 아웃
