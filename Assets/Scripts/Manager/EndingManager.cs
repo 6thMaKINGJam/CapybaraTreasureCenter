@@ -150,6 +150,26 @@ public class EndingManager : MonoBehaviour
         
         isTransitioning = false;
     }
+
+    public void OnEndingSequenceComplete()
+    {
+        // 닉네임 입력 팝업 프리팹 생성
+        GameObject dialogObj = Instantiate(Resources.Load<GameObject>("Prefabs/NicknameInputDialog"));
+        NicknameInputDialog dialog = dialogObj.GetComponent<NicknameInputDialog>();
+
+        if (dialog != null)
+        {
+            dialog.Setup(
+                successCallback: () => {
+                    // 등록 성공 시 랭킹창으로 이동
+                    SceneManager.LoadScene("HallOfFameScene");
+                },
+                failureCallback: () => {
+                    // 실패 처리는 다이얼로그 내부에서 하므로 비워두거나 추가 로직 작성
+                }
+            );
+        }
+    }
     
     private void SetupBackgroundImmediate(EndingSequence sequence)
     {

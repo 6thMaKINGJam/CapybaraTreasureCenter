@@ -15,8 +15,8 @@ public class NicknameInputDialog : MonoBehaviour
     private int retryCount = 0;
     private const int MAX_RETRY = 3;
     
-   private Action onSuccessCallback;
-private Action onFailureCallback;
+    private Action onSuccessCallback;
+    private Action onFailureCallback;
 
 public void Setup(Action successCallback, Action failureCallback)
 {

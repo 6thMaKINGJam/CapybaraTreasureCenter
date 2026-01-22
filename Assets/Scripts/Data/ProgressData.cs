@@ -24,6 +24,7 @@ public class ProgressData
     public bool EndingCompleted;
     public bool isLevel100Completed;
     public bool isLevelTutorialDone;
+    public int LastChallengeScore;
     
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     

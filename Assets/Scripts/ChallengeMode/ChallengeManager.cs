@@ -20,7 +20,7 @@ public class ChallengeModeManager : MonoBehaviour
     public GameUIManager UIManager;
 
     // 챌린지 모드는 별도의 LevelConfig 에셋 없이 코드 내에서 기본값을 정의합니다 (소프트 코딩)
-    public int totalChallengeBoxes = 1000;
+    public int totalChallengeBoxes = 100;
     public float startingTimeLimit = 20f;
     public int challengeMaxRequired = 12;
 
@@ -1144,6 +1144,15 @@ void Update()
         currentTotalScore += (boxScore);
 
         Debug.Log($"[ChallengeModeManager] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
+
+        gameData.CurrentBoxIndex++;
+
+        // 3. [수정] 100개 상자 모두 클리어 여부 확인
+        if (gameData.CurrentBoxIndex >= totalChallengeBoxes)
+        {
+            HandleChallengeComplete(); // 챌린지 완전 클리어 처리
+            return;
+        }
         // 1. 시간 보상 (설정된 10초 등 반영)
         currentRemainingTime += currentActiveRequirement.RewardTime;
 
@@ -1196,6 +1205,26 @@ void Update()
             ShowRequirementSelection();
         });
     }
+
+    private void HandleChallengeComplete()
+    {
+        gameData.GameState = GameState.Paused; // 게임 정지
+        Time.timeScale = 0f;
+        int finalScore = currentTotalScore + timeBonus;//최종점수
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        if(progressData.BestTime < finalScore)
+        {
+            progressData.BestTime = finalScore; //최고점수 갱신
+        }
+        SaveManager.Save(progressData, "ProgressData");
+
+        Debug.Log($"[ChallengeModeManager] 모든 챌린지 클리어! 최종 점수: {progressData.BestTime}");
+
+        // 2. 엔딩 시퀀스 씬으로 전환
+        // EndingManager가 있는 "EndingScene"으로 이동하거나 엔딩 프리팹을 활성화합니다.
+        SceneManager.LoadScene("EndingScene"); 
+    }
+
     private void HandleTimeOver()
     {
         gameData.GameState = GameState.TimeOver;
