@@ -1136,29 +1136,18 @@ void Update()
     // [수정] 상자 완료 시 보상 로직
     private void ProcessBoxSuccess()
     {
-        
-        // 점수 계산 (상자 완료 점수 100 + 현재 남은 시간 * 10)
-        // 남은 시간은 소수점이 있을 수 있으므로 반올림(Mathf.RoundToInt)하여 자연수로 만듭니다.
+        // 1. 점수 계산
         int boxScore = 100;
         timeBonus = Mathf.RoundToInt(currentRemainingTime * 10f);
-        currentTotalScore += (boxScore);
+        currentTotalScore += boxScore;
 
-        Debug.Log($"[ChallengeModeManager] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
+        Debug.Log($"[ChallengeModeManager] 상자 완료! 총 점수: {currentTotalScore}");
 
-        gameData.CurrentBoxIndex++;
+        // [중요] 기존 코드에서 여기서 index를 먼저 올렸던 부분을 삭제합니다.
+        // 보상을 다 처리한 후에 인덱스를 올려야 현재 상자의 데이터를 정확히 참조할 수 있습니다.
 
-        // 3. [수정] 100개 상자 모두 클리어 여부 확인
-        if (gameData.CurrentBoxIndex >= totalChallengeBoxes)
-        {
-            HandleChallengeComplete(); // 챌린지 완전 클리어 처리
-            return;
-        }
-        // 1. 시간 보상 (설정된 10초 등 반영)
+        // 2. 시간 및 보석 보상 로직
         currentRemainingTime += currentActiveRequirement.RewardTime;
-
-        // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
-        int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
-       // int currentCount = 0;
 
         if (currentActiveRequirement.RewardGemCounts != null)
         {
@@ -1166,8 +1155,11 @@ void Update()
             {
                 GemType type = currentActiveRequirement.RewardGemTypes[i];
                 int count = currentActiveRequirement.RewardGemCounts[i];
+                
+                // 데이터 수치 업데이트
                 gameData.RemainingGems[type] += count;
 
+                // 추가된 수치만큼 새로운 번들을 생성하여 풀(Pool)에 추가
                 int allocated = 0;
                 while (allocated < count)
                 {
@@ -1177,30 +1169,40 @@ void Update()
                         GemType = type,
                         GemCount = size
                     };
-                    
-                    // 생성 즉시 Pool에 추가
-                    if (!gameData.BundlePool.Contains(newBundle))
-                        gameData.BundlePool.Add(newBundle);
-                    
+                    gameData.BundlePool.Add(newBundle);
                     allocated += size;
                 }
             }
         }
 
-        gameData.CurrentBoxIndex++;
+        // 3. 인덱스 증가 및 클리어 체크
+        gameData.CurrentBoxIndex++; 
+        if (gameData.CurrentBoxIndex >= totalChallengeBoxes)
+        {
+            HandleChallengeComplete();
+            return;
+        }
+
+        // 4. 시각적 초기화 및 UI 갱신
         signboard?.PlaySuccessO();
 
         UIManager.AnimateBoxChange(() => {
+            // [초기화 핵심] 선택된 리스트와 인덱스 기록을 완전히 비웁니다.
             gameData.SelectedBundles.Clear();
             selectedBundleOriginalIndices.Clear();
             
-            // [핵심] 상자 교체 시점에 화면 데이터(CurrentDisplayBundles)와 Pool을 완전히 재동기화
+            // 보석 이미지 패널(상자 안) 초기화
+            if (UIManager.SelectionPanel != null)
+                UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+
+            // 풀을 다시 섞고 화면용 번들을 새로 추출하여 그리드를 갱신합니다.
             gameData.BundlePool = gameData.BundlePool.OrderBy(x => UnityEngine.Random.value).ToList();
-            
-            // 현재 화면에 빈 자리가 생겼거나 보충이 필요하므로 다시 추출
             ExtractDisplayBundles(); 
             
-            // UI 갱신
+            // 보석 개수 UI(GemCountPanel) 전체 새로고침
+            if (GemCountStatusPanel != null)
+                GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
+
             RefreshUI();
             ShowRequirementSelection();
         });
