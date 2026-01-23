@@ -1,10 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class HallOfFamePanel : MonoBehaviour
 {
     public Button closeButton;
+
+    [Header("1등 ~ 5등 닉네임 텍스트 (인스펙터 연결)")]
+    public List<TMP_Text> NicknameTexts; // 인스펙터에서 5개의 TextMeshPro 요소를 드래그하세요.
+
+    [Header("1등 ~ 5등 점수 텍스트 (인스펙터 연결)")]
+    public List<TMP_Text> ScoreTexts; // 인스펙터에서 5개의 TextMeshPro 요소를 드래그하세요. 
+
+    [Header("My Ranking UI")]
+    public TMP_Text MyNicknameText;
+    public TMP_Text MyScoreText;
+    public TMP_Text MyRankText;
     
     [Header("Ranking Areas")]
     [SerializeField] private Transform topRankContent; // 상위 5명 부모
@@ -38,36 +50,56 @@ public void OnEnable()
         });
     }
 
-    private void UpdateUI(List<Dictionary<string, object>> top5, Dictionary<string, object> myData, int myRank)
+    public void UpdateUI(List<Dictionary<string, object>> top5, Dictionary<string, object> myData, int myRank)
     {
-        Debug.Log($"받아온 데이터 개수: {top5.Count}"); // 0이 출력된다면 Firebase 연결 문제
-    
-        foreach (var data in top5) {
-            foreach (var key in data.Keys) {
-                Debug.Log($"키: {key}, 값: {data[key]}"); // 데이터 구조 확인
+        // 1. 1등부터 5등까지 반복하며 텍스트 업데이트
+        for (int i = 0; i < 5; i++)
+        {
+            // 인스펙터에 리스트 크기가 5개로 설정되어 있는지 확인
+            if (i >= NicknameTexts.Count || i >= ScoreTexts.Count) break;
+
+            if (i < top5.Count)
+            {
+                // 데이터가 있는 경우
+                var entry = top5[i];
+                
+                // KeyNotFoundException 방지를 위해 ContainsKey 확인
+                string name = entry.ContainsKey("nickname") ? entry["nickname"].ToString() : "Unknown";
+                string score = entry.ContainsKey("score") ? entry["score"].ToString() : "0";
+
+                NicknameTexts[i].text = name;
+                ScoreTexts[i].text = score;
+                
+                // 해당 줄 활성화
+                NicknameTexts[i].gameObject.SetActive(true);
+                ScoreTexts[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                // 데이터가 없는 빈 등수는 텍스트를 비우거나 비활성화
+                NicknameTexts[i].text = "-";
+                ScoreTexts[i].text = "-";
             }
         }
-        // 기존 리스트 청소
-        foreach (Transform child in topRankContent) Destroy(child.gameObject);
-        foreach (Transform child in myRankContent) Destroy(child.gameObject);
 
-        if (top5.Count == 0) { emptyText?.SetActive(true); return; }
-
-        // 1. 상위 5명 생성
-        for (int i = 0; i < top5.Count; i++)
-        {
-            CreateItem(topRankContent, i + 1, top5[i], top5[i]["nickname"].ToString() == PlayerPrefs.GetString("playerId"));
-        }
-
-        // 2. 내 랭킹 하단 고정 생성 (상위에 내가 있더라도 또 생성)
-        if (myData != null)
-        {
-            CreateItem(myRankContent, myRank, myData, true);
-        }
+        // 2. 내 점수 정보 업데이트
+        UpdateMyDataUI(myData, myRank);
     }
 
-    private void CreateItem(Transform parent, int rank, Dictionary<string, object> data, bool isMine)
+    private void UpdateMyDataUI(Dictionary<string, object> myData, int myRank)
     {
+        if (myData == null) return;
+
+        // 'id'나 'nickname' 중 있는 것을 사용하도록 안전하게 처리
+        string myName = "기록 없음";
+        if (myData.ContainsKey("nickname")) myName = myData["nickname"].ToString();
+        else if (myData.ContainsKey("id")) myName = myData["id"].ToString();
+
+        string myScore = myData.ContainsKey("score") ? myData["score"].ToString() : "0";
+
+        if (MyNicknameText != null) MyNicknameText.text = myName;
+        if (MyScoreText != null) MyScoreText.text = myScore;
+        if (MyRankText != null) MyRankText.text = myRank > 0 ? $"{myRank}위" : "순위 밖";
     }
 }
 
