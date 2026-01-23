@@ -11821,6 +11821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb490e8e15daac48bcdfa7df636b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Canvas: {fileID: 637300474}
   GridManager: {fileID: 347816904}
   SelectionPanel: {fileID: 302145879}
   GemCountStatusPanel: {fileID: 1006858061}
@@ -14677,12 +14678,13 @@ MonoBehaviour:
   ChunkGenerator: {fileID: 629570687}
   GridManager: {fileID: 347816904}
   UIManager: {fileID: 637300471}
-  totalChallengeBoxes: 100
+  totalChallengeBoxes: 3
   startingTimeLimit: 60
   challengeMaxRequired: 12
   RequirementCardPrefab: {fileID: 6763445550043822803, guid: 2d2662e1070708c4a8357d3bbfef9d79, type: 3}
   RequirementParentPanel: {fileID: 39537991}
   RequirementPopupObject: {fileID: 1713593722}
+  EndingPrefab: {fileID: 8302227360289270326, guid: 6268fc120d5c74a60a6110be53c58b19, type: 3}
   CapyDialogue: {fileID: 1517742757}
   CapyDialogueText: {fileID: 1953211490}
   GemCountStatusPanel: {fileID: 1006858061}

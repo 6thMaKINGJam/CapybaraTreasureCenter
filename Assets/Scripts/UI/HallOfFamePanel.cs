@@ -56,7 +56,7 @@ public void OnEnable()
         // 1. 상위 5명 생성
         for (int i = 0; i < top5.Count; i++)
         {
-            CreateItem(topRankContent, i + 1, top5[i], top5[i]["id"].ToString() == PlayerPrefs.GetString("playerId"));
+            CreateItem(topRankContent, i + 1, top5[i], top5[i]["nickname"].ToString() == PlayerPrefs.GetString("playerId"));
         }
 
         // 2. 내 랭킹 하단 고정 생성 (상위에 내가 있더라도 또 생성)

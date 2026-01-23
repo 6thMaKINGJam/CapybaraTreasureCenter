@@ -21,6 +21,8 @@ public class MainHomeManager : MonoBehaviour
 
     private ProgressData currentProgress;
     private const string SaveKey = "ProgressData";
+    // 외부에서 접근 가능한 정적 변수
+    public static bool ShowHallOfFameOnStart = false;
 
     void Start()
     {
@@ -42,17 +44,12 @@ public class MainHomeManager : MonoBehaviour
         // 3. 초기 화면 설정
         mainHomeUI.ShowMain();
 
-        // ===== 엔딩 완료 후 랭킹 자동 열기 =====
-        if(PlayerPrefs.GetInt("ShowRankingOnStart", 0) == 1)
+        if (ShowHallOfFameOnStart)
         {
-            PlayerPrefs.SetInt("ShowRankingOnStart", 0); // 초기화
             OnClickHallOfFame(); // 명예의 전당 자동 열기
+            ShowHallOfFameOnStart = false; // 플래그 초기화
         }
-        else
-        {
-            // 4. 레벨 4 클리어 시 엔딩 표시
-            CheckAndRunEndingSequence();
-        }
+        
     }
      
     void OnDestroy()

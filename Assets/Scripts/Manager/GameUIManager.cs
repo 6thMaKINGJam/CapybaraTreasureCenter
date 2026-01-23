@@ -10,7 +10,9 @@ public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance { get; private set; }
 
-
+    [Header("UI Root")]
+    public Canvas Canvas;
+    
     [Header("세부 매니저 연결")]
     public BundleGridManager GridManager; // 하단 12개 그리드 관리
     public SelectedBundlesUIPanel SelectionPanel; // 선택된 묶음 패널 관리

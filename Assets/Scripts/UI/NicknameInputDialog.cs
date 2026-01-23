@@ -60,6 +60,12 @@ private IEnumerator CheckAndRegister(string nickname)
     }
     
     RegisterToRanking(nickname);
+
+    // 1. 메인 홈 진입 시 명예의 전당을 열도록 설정
+    MainHomeManager.ShowHallOfFameOnStart = true;
+
+    // 2. 메인 홈 씬 로드
+    UnityEngine.SceneManagement.SceneManager.LoadScene("MainHome");
 }
 
     
@@ -122,8 +128,9 @@ private void ShowRetryWarning()
 }
 
     private void ShowLoading()
-    {
-        LoadingPanel.SetActive(true);
+    {   
+        if(LoadingPanel != null)
+            LoadingPanel.SetActive(true);
     
         ConfirmButton.interactable = false;
         NicknameInputField.interactable = false;
@@ -131,7 +138,8 @@ private void ShowRetryWarning()
     
     private void HideLoading()
     {
-        LoadingPanel.SetActive(false);
+        if(LoadingPanel != null)
+            LoadingPanel.SetActive(false);
         ConfirmButton.interactable = true;
         NicknameInputField.interactable = true;
     }

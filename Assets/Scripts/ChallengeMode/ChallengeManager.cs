@@ -29,6 +29,9 @@ public class ChallengeModeManager : MonoBehaviour
     public Transform RequirementParentPanel;
     public GameObject RequirementPopupObject;
 
+    [Header("Ending Sequence")]
+    public GameObject EndingPrefab; // 엔딩 시퀀스 프리팹
+
     [Header("Game Data")]
     private GameData gameData;
     private ChallengeRequirement currentActiveRequirement;
@@ -1211,7 +1214,7 @@ void Update()
     private void HandleChallengeComplete()
     {
         gameData.GameState = GameState.Paused; // 게임 정지
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         int finalScore = currentTotalScore + timeBonus;//최종점수
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
         if(progressData.BestTime < finalScore)
@@ -1222,9 +1225,18 @@ void Update()
 
         Debug.Log($"[ChallengeModeManager] 모든 챌린지 클리어! 최종 점수: {progressData.BestTime}");
 
-        // 2. 엔딩 시퀀스 씬으로 전환
-        // EndingManager가 있는 "EndingScene"으로 이동하거나 엔딩 프리팹을 활성화합니다.
-        SceneManager.LoadScene("EndingScene"); 
+        // 2. 엔딩 시퀀스 프리팹을 로드하고 활성화합니다.
+        if (EndingPrefab != null)
+        {
+            GameObject endingPrefab = Instantiate(EndingPrefab);
+            endingPrefab.transform.SetParent(UIManager.Canvas.transform, false);
+            endingPrefab.name = "EndingSequence"; // 프리팹 인스턴스 이름 설정
+            Debug.Log("[ChallengeModeManager] 엔딩 시퀀스 프리팹이 로드되었습니다.");
+        }
+        else
+        {
+            Debug.LogWarning("[ChallengeModeManager] EndingPrefab이 Inspector에 할당되지 않았습니다!");
+        }
     }
 
     private void HandleTimeOver()
