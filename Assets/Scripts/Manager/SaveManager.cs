@@ -12,6 +12,7 @@ public class TutorialProgress
     public bool storyCompleted;
     public bool appleCompleted;
     public bool challengeTutoCompleted;
+    public bool levelTutoCompleted;
     
     // 아이템 튜토리얼
     public bool undo1TutorialShown;
@@ -95,6 +96,7 @@ public static class SaveManager
         {
             TutorialType.Story => progress.storyCompleted,
             TutorialType.Apple => progress.appleCompleted,
+            TutorialType.LevelTuto => progress.levelTutoCompleted,
             TutorialType.ChallengeTuto => progress.challengeTutoCompleted,
             _ => false
         };
@@ -114,6 +116,9 @@ public static class SaveManager
                 break;
             case TutorialType.Apple:
                 progress.appleCompleted = value;
+                break;
+            case TutorialType.LevelTuto:
+                progress.levelTutoCompleted = value;
                 break;
             case TutorialType.ChallengeTuto:
                 progress.challengeTutoCompleted = value;

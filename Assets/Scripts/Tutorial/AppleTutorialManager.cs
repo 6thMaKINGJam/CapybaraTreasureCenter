@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class AppleTutorialManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class AppleTutorialManager : MonoBehaviour
     
     private int currentStepIndex = 0;
     private bool isTutorialActive = false;
+
+   
     
     private void Awake()
     {
@@ -35,13 +38,9 @@ public class AppleTutorialManager : MonoBehaviour
     
     private void Start()
     {
-        // Story Tutorial 완료 & Apple Tutorial 미완료 시 자동 시작
-        if (SaveManager.IsTutorialCompleted(TutorialType.Story) &&
-            !SaveManager.IsTutorialCompleted(TutorialType.Apple))
-        {
-            Debug.Log("[AppleTutorialManager] Starting Apple Tutorial");
+        
             StartTutorial();
-        }
+        
     }
     
     public void StartTutorial()
@@ -49,7 +48,7 @@ public class AppleTutorialManager : MonoBehaviour
         if (SaveManager.IsTutorialCompleted(TutorialType.Apple))
             return;
         
-        Debug.Log(isTutorialActive);
+       
         if (isTutorialActive)
             return;
         
@@ -103,7 +102,7 @@ public class AppleTutorialManager : MonoBehaviour
     
     private void CompleteTutorial()
     {
-        SaveManager.SetTutorialCompleted(TutorialType.Apple, true);
+        
         
         if (dimBackground != null)
             dimBackground.SetActive(false);
@@ -112,6 +111,18 @@ public class AppleTutorialManager : MonoBehaviour
             skipButton.gameObject.SetActive(false);
         
         isTutorialActive = false;
+
+        // ✅ Level 1 설정 후 LevelMode 씬으로 이동
+    
+   
+   SaveManager.SetTutorialCompleted(TutorialType.Apple, true);
+
+        Destroy(gameObject);
+        PlayerPrefs.SetInt("SelectedLevel", 1);
+    PlayerPrefs.Save();
+   
+   SceneManager.LoadScene("LevelMode");
+
     }
     
     private void OnDestroy()

@@ -68,6 +68,11 @@ private bool hasUsedRefresh = false;
     [Header("Visual Management")]
     [SerializeField] private ChapterVisualController chapterVisualController;
 
+       [Header("튜토리얼")]
+public GameObject LevelModeTutorialPrefab; // Inspector에서 할당
+
+
+
         // 연속 성공 카운트
         private int consecutiveSuccessCount = 0;
         private int lastCountedSecond = -1; // 중복 호출 방지용
@@ -78,8 +83,7 @@ private bool hasUsedRefresh = false;
         = new Dictionary<GemBundle, int>(); // Bundle → 원래 Grid 인덱스
 
     private HintManager hintManager;
-    
-
+ 
 private bool shouldCheckUndo1 = false;
 private bool shouldCheckRefresh = false;
 private bool shouldCheckUndo = false;
@@ -147,6 +151,10 @@ private bool shouldCheckUndo = false;
     {
         Time.timeScale = 1f;
         
+        // ✅ Level1이면 튜토리얼 체크
+    int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
+    
+
         // ✅ 기존 음악 즉시 정리
         if(SoundManager.Instance != null)
         {
@@ -154,12 +162,8 @@ private bool shouldCheckUndo = false;
         }
         
         
-        // 레벨 선택 정보 로드
-        int selectedLevel = PlayerPrefs.GetInt("SelectedLevel", 1);
-        if(PlayerPrefs.GetInt("TutorialPracticeMode", 0) != 0)
-        {
-            selectedLevel = 0; // 튜토리얼 전용
-        }
+      
+        
         LoadLevelConfig(selectedLevel);
         
         // ✅ 난이도 계산 (챕터 내 레벨 번호)
@@ -225,9 +229,65 @@ private bool shouldCheckUndo = false;
 
         UIManager.TimerSlider.gameObject.SetActive(true);
         isTimeAddUsed = false;
+        if(selectedLevel == 1)
+    {TutorialProgress tutorialprogress = SaveManager.LoadData<TutorialProgress>("TutorialProgress");
+        if(!tutorialprogress.levelTutoCompleted)
+        {
+            ShowLevelModeTutorial();
+            return; // ✅ 튜토리얼이 끝날 때까지 게임 시작 중단
+        }
+    }
+
         
     }
     
+    private void ShowLevelModeTutorial()
+{
+    Debug.Log("[LevelModeManager] 레벨 모드 튜토리얼 시작");
+    
+    // 게임 진행 일시정지
+    Time.timeScale = 0f;
+    
+    // 배경 비디오 일시정지
+    if(backgroundVideoPlayer != null && backgroundVideoPlayer.isPlaying)
+    {
+        backgroundVideoPlayer.Pause();
+    }
+    
+    // 튜토리얼 프리팹 생성
+    GameObject tutorialObj = PopupParentSetHelper.Instance.CreatePopup(LevelModeTutorialPrefab);
+    LevelModeTutorial tutorial = tutorialObj.GetComponent<LevelModeTutorial>();
+    
+    if(tutorial != null)
+    {
+        // 튜토리얼 완료 시 게임 시작
+        tutorial.OnTutorialCompleted += OnLevelModeTutorialCompleted;
+    }
+    else
+    {
+        Debug.LogError("[LevelModeManager] LevelModeTutorial 컴포넌트를 찾을 수 없습니다!");
+        // 튜토리얼 실패 시 강제로 게임 시작
+        OnLevelModeTutorialCompleted();
+    }
+}
+
+private void OnLevelModeTutorialCompleted()
+{
+    Debug.Log("[LevelModeManager] 튜토리얼 완료 - 게임 시작");
+    
+    // 시간 재개
+    Time.timeScale = 1f;
+    
+    // 배경 비디오 재생
+    if(backgroundVideoPlayer != null && !backgroundVideoPlayer.isPlaying)
+    {
+        backgroundVideoPlayer.Play();
+    }
+    
+    // 게임 초기화 재개
+    InitGame();
+}
+
 // ✅ 난이도 적용된 게임 설정
    // SetupNewGameWithDifficulty() 메서드 내부
 private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)

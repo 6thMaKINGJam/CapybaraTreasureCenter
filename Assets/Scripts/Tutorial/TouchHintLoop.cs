@@ -51,6 +51,7 @@ public class TouchHintLoop : MonoBehaviour
 
         _handIdlePos = _handRect.anchoredPosition;
         ResetState(); // 초기값 세팅만 (재생은 안 함)
+        Play();
     }
 
     private void OnDisable()
@@ -168,4 +169,5 @@ Debug.Log("TouchHintLoop starting playback");
 
         _seq.SetLoops(-1, LoopType.Restart);
     }
+
 }

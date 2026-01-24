@@ -51,9 +51,7 @@ public class SaveDataEditorWindow : EditorWindow
         {
             EditorGUI.BeginChangeCheck();
             
-            // 튜토리얼 완료 여부
-            bool istutorialComplete = EditorGUILayout.Toggle("튜토리얼 완료", progressData.isTutorialComplete);
-            
+          
             // 마지막 클리어 레벨
             int lastClearedLevel = EditorGUILayout.IntField("마지막 클리어 레벨", progressData.LastClearedLevel);
 
@@ -64,7 +62,6 @@ public class SaveDataEditorWindow : EditorWindow
            
             if(EditorGUI.EndChangeCheck())
             {
-                progressData.isTutorialComplete = istutorialComplete;
                 progressData.LastClearedLevel = lastClearedLevel;
                 progressData.BestTime = bestTime;
              

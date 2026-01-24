@@ -14821,6 +14821,7 @@ MonoBehaviour:
   NotificationText: {fileID: 314398620}
   NotificationDuration: 0.5
   chapterVisualController: {fileID: 2022880285}
+  LevelModeTutorialPrefab: {fileID: 7571354094623888612, guid: 72822389a4e49400ea57a77ce52fe37b, type: 3}
 --- !u!4 &877127996
 Transform:
   m_ObjectHideFlags: 0
@@ -16377,8 +16378,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 592469688}
-  - {fileID: 1768813379}
   - {fileID: 1898324141}
+  - {fileID: 1768813379}
   - {fileID: 1648687988}
   m_Father: {fileID: 457756273}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -21207,10 +21208,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 637300475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: -4}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2093661591
 GameObject:

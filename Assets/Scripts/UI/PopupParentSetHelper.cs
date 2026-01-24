@@ -23,6 +23,26 @@ public class PopupParentSetHelper : MonoBehaviour
         }
     }
     
+    public GameObject CreatePopup(GameObject prefab)
+{
+    if(prefab == null)
+    {
+        Debug.LogError("[PopupParentSetHelper] Prefab이 null입니다!");
+        return null;
+    }
+    
+    GameObject popup = Instantiate(prefab, PopupParentTransform);
+    
+    RectTransform rectTransform = popup.GetComponent<RectTransform>();
+    if(rectTransform != null)
+    {
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.localScale = Vector3.one;
+    }
+    
+    return popup;
+}
+
     public GameObject CreatePopup(string prefabPath)
     {
         Debug.Log($"[PopupParentSetHelper] CreatePopup 호출: {prefabPath}");

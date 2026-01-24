@@ -20,11 +20,8 @@ public class ProgressData
     public int LastClearedLevel;
     public int BestTime;
   
-    public bool isTutorialComplete;         // 튜토리얼 전체(메인홈 버튼 클릭) 완료 여부
     public bool EndingCompleted;
     public bool isLevel100Completed;
-    public bool isLevelTutorialDone;
-    
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     
     // ✅ 추가: 사과 개수
@@ -33,15 +30,11 @@ public class ProgressData
     public ProgressData()
     {
         LastClearedLevel = 0;
-        BestTime = 0;
-        isTutorialComplete = false;
-     
-       
+        BestTime = 0; 
         EndingCompleted = false;
         isLevel100Completed = false;
         LevelStars = new List<LevelStarData>();
         TotalApples = 0;
-        isLevelTutorialDone = false;
     }
     
     // 별 개수 가져오기

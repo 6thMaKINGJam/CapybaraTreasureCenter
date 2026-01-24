@@ -17,6 +17,8 @@ public class MainHomeManager : MonoBehaviour
     [Header("사과 UI")]
     [SerializeField] private TextMeshProUGUI AppleCountText;
 
+[Header("튜토리얼")]
+[SerializeField] private GameObject AppleTutorialPrefab;
 
 
     private ProgressData currentProgress;
@@ -52,9 +54,18 @@ public class MainHomeManager : MonoBehaviour
         }
         else
         {
-            // 4. 레벨 4 클리어 시 엔딩 표시
+            // 4. 레벨 100 클리어 시 엔딩 표시
             CheckAndRunEndingSequence();
         }
+
+        if (!SaveManager.IsTutorialCompleted(TutorialType.Apple))
+    {
+        GameObject tutorialObj = PopupParentSetHelper.Instance.CreatePopup(AppleTutorialPrefab);
+        AppleTutorialManager appleTutorial = tutorialObj.GetComponent<AppleTutorialManager>();
+        
+        return;
+    }
+
     }
      
     void OnDestroy()
