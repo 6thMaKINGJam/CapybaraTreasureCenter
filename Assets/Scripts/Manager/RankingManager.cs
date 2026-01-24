@@ -171,18 +171,29 @@ public class RankingManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(json) || json == "null") return list;
 
-        // 외부 라이브러리 없이 단순 문자열 파싱 (Firebase 특정 구조 처리)
-        // 각 사용자의 데이터를 분리하여 처리
+        // 1. 데이터가 하나일 때와 여러 개일 때를 모두 대응하기 위해 콤마와 따옴표로 분리 시도
         string[] items = json.Split(new string[] { "},\"" }, StringSplitOptions.None);
 
         foreach (var item in items)
         {
             try
             {
-                // ID 추출
-                string id = item.Split('"')[0].Replace("{", "").Replace("\"", "").Replace(":", "");
+                // [수정 핵심] ID 추출 로직 개선
+                // "ID_VALUE":{"nickname":"..." 구조에서 첫 번째 큰따옴표 사이의 값만 가져옴
+                string id = "";
+                if (item.Contains("\":{")) 
+                {
+                    id = item.Split(new string[] { "\":{" }, StringSplitOptions.None)[0];
+                }
+                else 
+                {
+                    id = item.Split(':')[0];
+                }
                 
-                // Nickname 추출 (단순 문자열 찾기)
+                // 불필요한 문자({, ", :) 제거 및 공백 정리
+                id = id.Replace("{", "").Replace("\"", "").Replace(":", "").Trim();
+                
+                // Nickname 추출
                 int nickStart = item.IndexOf("\"nickname\":\"") + 12;
                 int nickEnd = item.IndexOf("\"", nickStart);
                 string nickname = item.Substring(nickStart, nickEnd - nickStart);

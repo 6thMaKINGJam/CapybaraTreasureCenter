@@ -21,10 +21,12 @@ public class ProgressData
     public int BestTime;
   
     public bool isTutorialComplete;         // 튜토리얼 전체(메인홈 버튼 클릭) 완료 여부
-    public bool EndingCompleted;
+    public bool EndingCompleted; //챌린지모드
     public bool isLevel100Completed;
     public bool isLevelTutorialDone;
     public int LastChallengeScore;
+    public string MyNickname = "";
+    public int MyLastRank = 0;
     
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     
@@ -42,6 +44,8 @@ public class ProgressData
         LevelStars = new List<LevelStarData>();
         TotalApples = 0;
         isLevelTutorialDone = false;
+        MyNickname = "";
+        MyLastRank = 0;
     }
     
     // 별 개수 가져오기

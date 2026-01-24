@@ -85,19 +85,29 @@ private IEnumerator CheckAndRegister(string nickname)
 
 
     
-   private void OnRegistrationSuccess()
-{
-    Debug.Log("[NicknameInputDialog] 랭킹 등록 성공!");
-    HideLoading();
-    
-    // ===== 내 닉네임 저장 (HallOfFame에서 강조 표시용) =====
-    string nickname = NicknameInputField.text.Trim();
-    PlayerPrefs.SetString("MyNickname", nickname);
-    PlayerPrefs.Save();
-    
-    onSuccessCallback?.Invoke();
-}
+    private void OnRegistrationSuccess()
+    {
+        string nickname = NicknameInputField.text.Trim();
+        
+        // 1. PlayerPrefs에 즉시 저장 (json 저장 실패 대비 백업)
+        PlayerPrefs.SetString("MyNickname", nickname);
+        PlayerPrefs.Save();
+        
+        // 2. ProgressData 저장
+        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        if (progressData != null)
+        {
+            progressData.MyNickname = nickname;
+            progressData.EndingCompleted = true;
+            SaveManager.Save(progressData, "ProgressData");
+        }
+        
+        HideLoading();
+        onSuccessCallback?.Invoke();
 
+        MainHomeManager.ShowHallOfFameOnStart = true;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainHome");
+    }
     private void OnRegistrationFailed(string error)
 {
     Debug.LogError($"[NicknameInputDialog] 랭킹 등록 실패: {error}");

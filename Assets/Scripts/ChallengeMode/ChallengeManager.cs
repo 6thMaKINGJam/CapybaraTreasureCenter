@@ -1214,28 +1214,41 @@ void Update()
     private void HandleChallengeComplete()
     {
         gameData.GameState = GameState.Paused; // 게임 정지
-        //Time.timeScale = 0f;
         int finalScore = currentTotalScore + timeBonus;//최종점수
         ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
         if(progressData.BestTime < finalScore)
         {
             progressData.BestTime = finalScore; //최고점수 갱신
         }
+        progressData.LastChallengeScore = finalScore;
         SaveManager.Save(progressData, "ProgressData");
 
         Debug.Log($"[ChallengeModeManager] 모든 챌린지 클리어! 최종 점수: {progressData.BestTime}");
 
-        // 2. 엔딩 시퀀스 프리팹을 로드하고 활성화합니다.
-        if (EndingPrefab != null)
+        if (!string.IsNullOrEmpty(progressData.MyNickname))
         {
-            GameObject endingPrefab = Instantiate(EndingPrefab);
-            endingPrefab.transform.SetParent(UIManager.Canvas.transform, false);
-            endingPrefab.name = "EndingSequence"; // 프리팹 인스턴스 이름 설정
-            Debug.Log("[ChallengeModeManager] 엔딩 시퀀스 프리팹이 로드되었습니다.");
+            // 이미 닉네임이 있는 경우: 서버에 점수만 갱신하고 엔딩 표시
+            RankingManager.Instance.RegisterRanking(progressData.MyNickname, finalScore, () => {
+                ShowEndingSequence();
+            }, (err) => {
+                Debug.LogError("점수 갱신 실패: " + err);
+                ShowEndingSequence(); 
+            });
         }
         else
         {
-            Debug.LogWarning("[ChallengeModeManager] EndingPrefab이 Inspector에 할당되지 않았습니다!");
+            // 닉네임이 없는 경우: 엔딩 시퀀스에서 닉네임 입력창이 뜨도록 유도
+            ShowEndingSequence();
+        }
+    }
+
+    private void ShowEndingSequence()
+    {
+        if (EndingPrefab != null)
+        {
+            GameObject endingObj = Instantiate(EndingPrefab);
+            endingObj.transform.SetParent(UIManager.Canvas.transform, false);
+            endingObj.name = "EndingSequence";
         }
     }
 
