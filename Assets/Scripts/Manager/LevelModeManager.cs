@@ -1372,34 +1372,13 @@ private void StopBackgroundMedia()
     // ========== Undo/Refresh/Hint ==========
     public void ProcessUndo()
     {
-        if(gameData.CompletedBoxes.Count == 0)
+        if (gameData.CompletedBoxes.Count == 0)
         {
             ShowWarning("되돌릴 상자가 없습니다카피!");
             return;
         }
-        
-        gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
-        
-        
-        if(gameData.UndoCount > CurrentLevelConfig.MaxUndoCount)
-        {
-            // [수정됨] 확인 팝업 먼저 표시
-            ShowAdConfirmationPopup(() =>
-            {
-                // Yes 클릭 시에만 광고 호출
-                AdManager.Instance.ShowRewardedAd((success) =>
-                {
-                    if(success)  StartCoroutine(ExecuteUndoWithCancle());
-                    // ✅ 실패해도 Count 원복 안 함 (누적 카운터이므로)
-                });
-            }, 
-            null); // ✅ No 버튼도 Count 원복 안 함
-        }
-        else
-        {
-            StartCoroutine(ExecuteUndoWithCancle());
-        }
-       
+        // [수정] 확인 팝업 호출
+        ShowItemPurchaseConfirmation("전체 되돌리기", () => StartCoroutine(ExecuteUndoWithCancle()));
     }
 
     private IEnumerator ExecuteUndoWithCancle()
@@ -1501,27 +1480,9 @@ private void StopBackgroundMedia()
     }
     
     public void ProcessRefresh()
-{
-    gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
-        
-    if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
     {
-        ShowAdConfirmationPopup(() =>
-        {
-            AdManager.Instance.ShowRewardedAd((success) =>
-            {
-                if(success) ExecuteRefresh();
-                // ✅ Count 원복 없음
-            });
-        },
-        null); // ✅ Count 원복 없음
+        ShowItemPurchaseConfirmation("재배열", () => ExecuteRefresh());
     }
-    else
-    {
-        ExecuteRefresh();
-    }
-  
-}
 
     
     private void ExecuteRefresh()
@@ -1543,34 +1504,66 @@ private void StopBackgroundMedia()
         
         ShowTopNotification("카드가 재배열되었습니다카피!");
     }
+
+    private void ShowItemPurchaseConfirmation(string itemName, Action onConfirm)
+    {
+        if (AppleManager.Instance == null || PopupParentSetHelper.Instance == null) return;
+
+        int appleCount = AppleManager.Instance.GetAppleCount();
+        
+        // 시간 일시정지
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+
+        if (appleCount > 0)
+        {
+            string message = $"사과 1개를 사용하여 '{itemName}' 기능을 사용하시겠습니까?\n(현재 보유 사과: {appleCount}개)";
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+
+            popup.Setup(message,
+                () => {
+                    Time.timeScale = originalTimeScale;
+                    AppleManager.Instance.TryPurchaseItem(itemName, onConfirm);
+                },
+                () => {
+                    Time.timeScale = originalTimeScale;
+                }
+            );
+        }
+        else
+        {
+            string message = $"사과가 부족합니다카피!\n광고를 시청하고 '{itemName}' 기능을 사용하시겠습니까?";
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+
+            popup.Setup(message,
+                () => {
+                    Time.timeScale = originalTimeScale;
+                    AdManager.Instance.ShowRewardedAd((success) => {
+                        if (success) {
+                            AppleManager.Instance.AddApplesFromAd();
+                            onConfirm?.Invoke();
+                        }
+                    });
+                },
+                () => {
+                    Time.timeScale = originalTimeScale;
+                }
+            );
+        }
+    }
    
 
     public void Process1Undo()
     {
-        // 1. 현재 선택된 보석이 하나도 없다면 되돌릴 수 없음
         if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
         {
             ShowWarning("되돌릴 보석이 없습니다카피!");
             return;
         }
-
-        // 2. 횟수 제한 체크 및 광고 로직
-        // 무료 횟수를 다 썼다면 광고 확인 팝업을 띄움
-        if (gameData.Undo1Count >= CurrentLevelConfig.MaxUndo1Count)
-        {
-            ShowAdConfirmationPopup(() =>
-            {
-                AdManager.Instance.ShowRewardedAd((success) =>
-                {
-                    if (success) Execute1Undo(); // 광고 성공 시 실행
-                });
-            }, null);
-        }
-        else
-        {
-            gameData.Undo1Count++; // 무료 사용 횟수 증가
-            Execute1Undo();
-        }
+        // [수정] 확인 팝업 호출
+        ShowItemPurchaseConfirmation("마지막 선택 취소", () => Execute1Undo());
        
     }
 

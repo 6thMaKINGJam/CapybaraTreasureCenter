@@ -9,8 +9,8 @@ using System;
 public class ItemPurchasePopup : MonoBehaviour
 {
     [Header("UI 요소")]
-    public TextMeshProUGUI MessageText;
-    public TextMeshProUGUI AppleCountText; // 현재 보유 사과
+    public TMP_Text MessageText;
+    public TMP_Text AppleCountText; // 현재 보유 사과
     public Button PurchaseButton; // 사과로 구매
     public Button AdButton; // 광고로 구매
     public Button CancelButton;
@@ -23,7 +23,7 @@ public class ItemPurchasePopup : MonoBehaviour
         this.itemName = itemName;
         onPurchaseSuccess = purchaseSuccessCallback;
         
-        MessageText.text = $"{itemName} 횟수를 모두 사용했습니다.\n사과로 구매하시겠습니까?";
+        MessageText.text = $"사과로 {itemName}를 구매하시겠습니까?";
         
         UpdateAppleUI();
         
@@ -44,35 +44,48 @@ public class ItemPurchasePopup : MonoBehaviour
     {
         if(AppleManager.Instance == null) return;
         
-        bool success = AppleManager.Instance.TryPurchaseItem(itemName, () =>
+        // 버튼 중복 클릭 방지
+        PurchaseButton.interactable = false;
+
+        // [수정] 콜백 내부에서 팝업이 확실히 닫히도록 로직 강화
+        AppleManager.Instance.TryPurchaseItem(itemName, () =>
         {
             onPurchaseSuccess?.Invoke();
-            Destroy(gameObject);
+            Destroy(gameObject); // 기능 실행 후 팝업 제거
         });
-        
-        if(!success)
+
+        // 만약 사과가 부족하다면 (TryPurchaseItem이 false를 반환할 경우를 대비)
+        if (AppleManager.Instance.GetAppleCount() <= 0)
         {
-            // 사과 부족 → 광고 제안으로 자동 전환
-            MessageText.text = "사과가 부족합니다.\n광고를 시청하시겠습니까?";
+            MessageText.text = "사과가 부족합니다카피!\n광고를 시청하시겠습니까?";
             PurchaseButton.gameObject.SetActive(false);
         }
     }
     
     private void OnClickAd()
     {
+        AdButton.interactable = false; // 광고 버튼 비활성화
+
         AdManager.Instance.ShowRewardedAd((success) =>
         {
             if(success)
             {
+                // 1. 광고 보상 사과 지급
                 AppleManager.Instance.AddApplesFromAd();
                 UpdateAppleUI();
                 
-                // 사과 획득 후 자동 구매
+                // 2. [수정] 사과 획득 후 즉시 해당 아이템 구매 로직 재시도
                 AppleManager.Instance.TryPurchaseItem(itemName, () =>
                 {
                     onPurchaseSuccess?.Invoke();
-                    Destroy(gameObject);
+                    if (this != null && gameObject != null)
+                        Destroy(gameObject);
                 });
+            }
+            else
+            {
+                // 광고 실패 시 다시 버튼 활성화
+                AdButton.interactable = true;
             }
         });
     }

@@ -13018,6 +13018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb490e8e15daac48bcdfa7df636b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Canvas: {fileID: 0}
   GridManager: {fileID: 347816904}
   SelectionPanel: {fileID: 302145879}
   GemCountStatusPanel: {fileID: 1006858061}
@@ -14801,7 +14802,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2521421863f8c84dbe6bad2b1e5cb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsTutorialScene: 0
   ChunkGenerator: {fileID: 629570687}
   UIManager: {fileID: 637300471}
   GridManager: {fileID: 347816904}
@@ -20993,8 +20993,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: -4}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 7.1904, y: 24.4467}
+  m_SizeDelta: {x: 900.06, y: 756.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2093661591
 GameObject:

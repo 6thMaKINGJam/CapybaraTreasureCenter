@@ -14746,12 +14746,12 @@ MonoBehaviour:
   CapyDialogueText: {fileID: 1953211490}
   GemCountStatusPanel: {fileID: 1006858061}
   backgroundVideoPlayer: {fileID: 1665326963}
-  Undo1Current: 3
+  Undo1Current: 0
   NotificationPanel: {fileID: 263552383}
   NotificationText: {fileID: 314398620}
   NotificationDuration: 2
   ActiveRequirementDisplay: {fileID: 417477033}
-  MaxFreeRequirementReselect: 2
+  MaxFreeRequirementReselect: 0
   ReselectCountText: {fileID: 1684604504}
   MinRequirementValue: 2
   MaxRequirementValue: 5
@@ -20318,8 +20318,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: -4}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 16.5348, y: 20.029}
+  m_SizeDelta: {x: 881.3644, y: 692.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2119182063
 GameObject:

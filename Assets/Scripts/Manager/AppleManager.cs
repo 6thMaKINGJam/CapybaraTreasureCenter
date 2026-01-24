@@ -109,6 +109,22 @@ public class AppleManager : MonoBehaviour
         Debug.Log($"[AppleManager] 사과 부족! 현재: {progressData.TotalApples}개");
         return false;
     }
+    public void TryPurchaseItem(string itemName, Action onSuccess, Action onNoApples)
+    {
+        int currentApples = GetAppleCount();
+        if (currentApples >= 1)
+        {
+            // 사과 1개 차감 (기존 로직 사용)
+            progressData.SpendApples(1); 
+            onSuccess?.Invoke();
+            Debug.Log($"[AppleManager] {itemName} 구매 성공");
+        }
+        else
+        {
+            // 사과 부족 시 콜백 실행
+            onNoApples?.Invoke();
+        }
+    }
     
     /// <summary>
     /// 시간추가 구매 시도

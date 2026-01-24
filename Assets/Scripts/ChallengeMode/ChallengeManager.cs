@@ -1006,30 +1006,14 @@ void Update()
 
     public void Process1Undo()
     {
-        // 1. 현재 선택된 보석이 하나도 없다면 되돌릴 수 없음
         if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
         {
             ShowWarning("되돌릴 보석이 없습니다카피!");
             return;
         }
 
-        // 2. 횟수 제한 체크 및 광고 로직
-        // 무료 횟수를 다 썼다면 광고 확인 팝업을 띄움
-        if (gameData.Undo1Count >= Undo1Current)
-        {
-            ShowAdConfirmationPopup(() =>
-            {
-                AdManager.Instance.ShowRewardedAd((success) =>
-                {
-                    if (success) Execute1Undo(); // 광고 성공 시 실행
-                });
-            }, null);
-        }
-        else
-        {
-            gameData.Undo1Count++; // 무료 사용 횟수 증가
-            Execute1Undo();
-        }
+        // [수정] 즉시 구매 확인 팝업 호출
+        ShowItemPurchaseConfirmation("마지막 선택 취소", () => Execute1Undo());
     }
 
     public void Execute1Undo()
@@ -1332,23 +1316,7 @@ void Update()
     // [추가] 조건 재선택 버튼 클릭 시 호출될 함수
     public void OnClickReselectRequirement()
     {
-        // 1. 무료 횟수 체크
-        if (currentReselectCount < MaxFreeRequirementReselect)
-        {
-            currentReselectCount++;
-            ExecuteReselect();
-        }
-        else
-        {
-            // 2. 무료 횟수 초과 시 광고 팝업
-            ShowAdConfirmationPopup(() =>
-            {
-                AdManager.Instance.ShowRewardedAd((success) =>
-                {
-                    if (success) ExecuteReselect();
-                });
-            }, null);
-        }
+        ShowItemPurchaseConfirmation("조건 재선택", () => ExecuteReselect());
     }
 
     // [추가] 실제 재선택 실행 로직
@@ -1366,6 +1334,57 @@ void Update()
         {
             int leftCount = Mathf.Max(0, MaxFreeRequirementReselect - currentReselectCount);
             ReselectCountText.text = $"{leftCount}";
+        }
+    }
+
+    private void ShowItemPurchaseConfirmation(string itemName, Action onConfirm)
+    {
+        if (AppleManager.Instance == null || PopupParentSetHelper.Instance == null) return;
+
+        int appleCount = AppleManager.Instance.GetAppleCount();
+        
+        // 현재 게임 시간 정지 (원래 상태 저장)
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+
+        if (appleCount > 0)
+        {
+            // 사과가 있을 때: 구매 확인 팝업
+            string message = $"사과 1개를 사용하여 '{itemName}' 기능을 사용하시겠습니까?\n(현재 보유 사과: {appleCount}개)";
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+
+            popup.Setup(message,
+                () => {
+                    Time.timeScale = originalTimeScale; // 시간 복구
+                    AppleManager.Instance.TryPurchaseItem(itemName, onConfirm);
+                },
+                () => {
+                    Time.timeScale = originalTimeScale; // 취소 시 시간 복구
+                }
+            );
+        }
+        else
+        {
+            // 사과가 없을 때: 광고 유도 팝업
+            string message = $"사과가 부족합니다카피!\n광고를 시청하고 '{itemName}' 기능을 사용하시겠습니까?";
+            GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseConfirmationPopup");
+            BaseConfirmationPopup popup = popupObj.GetComponent<BaseConfirmationPopup>();
+
+            popup.Setup(message,
+                () => {
+                    Time.timeScale = originalTimeScale;
+                    AdManager.Instance.ShowRewardedAd((success) => {
+                        if (success) {
+                            AppleManager.Instance.AddApplesFromAd();
+                            onConfirm?.Invoke();
+                        }
+                    });
+                },
+                () => {
+                    Time.timeScale = originalTimeScale;
+                }
+            );
         }
     }
 

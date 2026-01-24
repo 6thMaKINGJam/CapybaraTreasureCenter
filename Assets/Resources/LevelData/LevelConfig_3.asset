@@ -19,9 +19,9 @@ MonoBehaviour:
   MinTime: 130
   GemTypeCount: 5
   MaxRequiredPerBox: 15
-  MaxRefreshCount: 1
-  MaxUndoCount: 5
-  MaxUndo1Count: 3
+  MaxRefreshCount: 0
+  MaxUndoCount: 0
+  MaxUndo1Count: 0
   TimeAddAmount: 10
   BackgroundVideoFileName: gamescreen_tang.mp4
   AdditionalBGMLayer: {fileID: 8300000, guid: becc934b3d612dc49bccb522822c017e, type: 3}
