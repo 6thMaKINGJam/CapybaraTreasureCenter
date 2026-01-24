@@ -35,6 +35,7 @@ public class ProgressData
         LastClearedLevel = 0;
         BestTime = 0;
         isTutorialComplete = false;
+     
        
         EndingCompleted = false;
         isLevel100Completed = false;

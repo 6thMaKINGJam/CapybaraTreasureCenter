@@ -57,6 +57,9 @@ public class LevelModeManager : MonoBehaviour
     private float levelStartTime;
     private Coroutine timeCheckCoroutine;
 
+private bool hasUsedUndo1 = false;
+private bool hasUsedUndo = false;
+private bool hasUsedRefresh = false;
 
     [Header("상태 관리")]
     private bool isTimeAddUsed = false;
@@ -76,6 +79,12 @@ public class LevelModeManager : MonoBehaviour
 
     private HintManager hintManager;
     
+
+private bool shouldCheckUndo1 = false;
+private bool shouldCheckRefresh = false;
+private bool shouldCheckUndo = false;
+
+
     void Awake()
     {
         if(Instance == null)
@@ -188,6 +197,15 @@ public class LevelModeManager : MonoBehaviour
             Debug.Log($"[LevelModeManager] Video 재생: {videoPath}");
         }
         
+         var progress = SaveManager.LoadData<TutorialProgress>("TutorialProgress");
+    shouldCheckUndo1 = !progress.undo1TutorialShown;
+    shouldCheckRefresh = !progress.refreshTutorialShown;
+    shouldCheckUndo = !progress.undoTutorialShown;
+    
+     hasUsedUndo1 = false;
+    hasUsedUndo = false;
+    hasUsedRefresh = false;
+    
         // ✅ 카피바라 의상 전환 
         // 게임 설정 (계산된 난이도 적용)
         SetupNewGameWithDifficulty(boxCount, timeLimit);
@@ -344,7 +362,92 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         }
         
         GridManager.RefreshGrid(gameData.CurrentDisplayBundles, OnBundleClicked);
+        
+
     }
+
+    private void CheckRefreshTrigger()
+{
+    if (!shouldCheckRefresh) return; // ← 빠른 체크
+    if (ItemTutorialManager.Instance == null) return;
+    if (gameData.CurrentBoxIndex >= gameData.Boxes.Count) return;
+      if (ItemTutorialManager.Instance.IsTutorialActive()) return;
+    if (hasUsedRefresh) return;
+    
+    if (!CanSolveCurrentBoxWithDisplay())
+    {
+        ItemTutorialManager.Instance.SetTriggeredByCondition(true);
+        ItemTutorialManager.Instance.ShowRefreshTutorial();
+    }
+}
+
+private bool CanSolveCurrentBoxWithDisplay()
+{
+    Box currentBox = GetCurrentBox();
+    int requiredAmount = currentBox.RequiredAmount;
+    int gemTypeCount = CurrentLevelConfig.GemTypeCount;
+    
+    // 각 색깔별로 최소 1개씩 필요
+    for (int i = 0; i < gemTypeCount; i++)
+    {
+        GemType type = (GemType)i;
+        int availableCount = gameData.CurrentDisplayBundles
+            .Where(b => b != null && b.GemType == type)
+            .Sum(b => b.GemCount);
+        
+        // 해당 색깔이 화면에 1개도 없으면 불가능
+        if (availableCount == 0)
+            return false;
+    }
+    
+    // 간단한 휴리스틱: 최소 조합 가능 여부
+    // (각 색 최소 1개씩 선택 시 총량이 요구량 이하인지)
+    List<int> minCounts = new List<int>();
+    for (int i = 0; i < gemTypeCount; i++)
+    {
+        GemType type = (GemType)i;
+        var bundles = gameData.CurrentDisplayBundles
+            .Where(b => b != null && b.GemType == type)
+            .OrderBy(b => b.GemCount)
+            .ToList();
+        
+        if (bundles.Count > 0)
+            minCounts.Add(bundles[0].GemCount);
+    }
+    
+    int minTotal = minCounts.Sum();
+    
+    // 최소 조합으로도 요구량 초과하면 불가능
+    return minTotal    <= requiredAmount;
+}
+
+
+public void UpdateTutorialFlags()
+{
+    var progress = SaveManager.LoadData<TutorialProgress>("TutorialProgress");
+    shouldCheckUndo1 = !progress.undo1TutorialShown;
+    shouldCheckRefresh = !progress.refreshTutorialShown;
+    shouldCheckUndo = !progress.undoTutorialShown;
+}
+private void CheckUndoTrigger()
+{
+    if (!shouldCheckUndo) return; // ← 빠른 체크
+    if (ItemTutorialManager.Instance == null) return;
+      if (ItemTutorialManager.Instance.IsTutorialActive()) return;
+    if (hasUsedUndo) return;
+    
+    // 마지막 상자면 트리거 안 함
+    int remainingBoxes = gameData.Boxes.Count - gameData.CurrentBoxIndex;
+    if (remainingBoxes <= 1) return;
+    
+    if (CheckIfSolvable()) return;
+    
+    // 각 색깔별로 남은 Bundle 개수 체크
+  
+                ItemTutorialManager.Instance.SetTriggeredByCondition(true);
+                ItemTutorialManager.Instance.ShowUndoTutorial();
+       
+}
     
 
    // ===== OnBundleClicked() - 완전 재작성 =====
@@ -392,6 +495,7 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         else
         {
             gameData.SelectedBundles.Add(bundle);
+            
             selectedBundleOriginalIndices[bundle] = gridIndex;
 
             // [수정] 보충할 새 번들을 가져오기 전, 클릭된 번들을 확실히 Pool에서 제거
@@ -411,10 +515,37 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
                 GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
             }
 
+
             GridManager.ReplaceBundleAtIndex(gridIndex, newBundle, OnBundleClicked, isRestoring: false);
             StartCoroutine(UpdateSelectionUIAfterAnimation());
+            // ✅ Undo1 트리거 체크
+       
+
         }
+
+        
+        
     }
+
+    private void CheckUndo1Trigger()
+{
+    if (!shouldCheckUndo1) return; // ← 빠른 체크
+    if (ItemTutorialManager.Instance == null) return;
+      if (ItemTutorialManager.Instance.IsTutorialActive()) return;
+    if (hasUsedUndo1) return;
+    
+    Box currentBox = GetCurrentBox();
+    int selectedTotal = CalculateSelectedTotal();
+    int requiredAmount = currentBox.RequiredAmount;
+    
+    // 요구량 초과 시 트리거
+    if (selectedTotal > requiredAmount)
+    {
+        ItemTutorialManager.Instance.SetTriggeredByCondition(true);
+        ItemTutorialManager.Instance.ShowUndo1Tutorial();
+    }
+}
+
 // ✅ 새 메서드: 애니메이션 완료 후 UI 업데이트
 private IEnumerator UpdateSelectionUIAfterAnimation()
 {
@@ -434,6 +565,7 @@ private IEnumerator UpdateSelectionUIAfterAnimation()
         GetCurrentBox().RequiredAmount,
         gameData.Boxes.Count
     );
+    CheckUndo1Trigger();
 }
 
 // ========== 색상 순환 시스템 ==========
@@ -602,7 +734,7 @@ public void CancelSelection()
     
     UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
     UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount, gameData.Boxes.Count);
-    GridManager.ClearAllSelections();
+  
 }
 
 
@@ -766,12 +898,13 @@ private class BundleRestoreInfo
             }
         }
 
-        // 7. 게임오버 체크 (보석이 말랐는지 확인)
-        if (CheckGameOver())
-        {
-            HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
-            return;
-        }
+        // // 7. 게임오버 체크 (보석이 말랐는지 확인)
+        // if (CheckGameOver())
+        // {
+        //     HandleGameOver("특정 보석이 0개가 되어 더 이상 진행할 수 없습니다카피!");
+        //     return;
+        // }
+        
 
     signboard?.PlaySuccessO();
         // 8. [시각적 연출] 상자 교체 애니메이션 실행
@@ -816,8 +949,20 @@ private class BundleRestoreInfo
         RefreshUI();
         if (gameData.CurrentBoxIndex >= gameData.Boxes.Count) HandleLevelClear();
     }
+
+StartCoroutine(CallCheckTriggerAfterDelay());
+
+     
+
+
 }
- 
+ IEnumerator CallCheckTriggerAfterDelay()
+{
+    yield return new WaitForSeconds(3f);
+    CheckUndoTrigger();
+    CheckRefreshTrigger();
+    
+}
 
 
     // ========== 게임오버/클리어 체크 ==========
@@ -1086,17 +1231,17 @@ private void StopBackgroundMedia()
         if(clearTime <= fastCutoff)
         {
             // 제한시간의 절반보다 빨리 깸 (매우 빠름)
-            return $"대단하다카피! 소요시간: {clearTime:F1}초\n제한시간의 절반도 안 썼어카피!";
+            return $"대단하다카피! \n 제한시간의 절반도 안 썼어카피!";
         }
         else if(clearTime <= normalCutoff)
         {
             // 제한시간의 2/3 안쪽으로 깸 (적당함)
-            return $"잘했다카피! 소요시간: {clearTime:F1}초\n다음 레벨도 화이팅카피!";
+            return $"잘했다카피! \n다음 레벨도 화이팅카피!";
         }
         else
         {
             // 제한시간이 거의 다 되어서 깸 (느림)
-            return $"클리어카피! 소요시간: {clearTime:F1}초\n 조금 느리지만.. 괜찮다카피~";
+            return $"클리어카피! 조금 느리지만.. 괜찮다카피~";
         }
     }
 
@@ -1374,9 +1519,12 @@ private void StopBackgroundMedia()
     {
         if(gameData.CompletedBoxes.Count == 0)
         {
-            ShowWarning("되돌릴 상자가 없습니다카피!");
+            ShowWarning("되돌릴 상자가 없습니다!");
             return;
         }
+        
+
+ hasUsedUndo = true;
         
         gameData.UndoCount++;  // ✅ 횟수는 무조건 증가 (원복 X)
         
@@ -1492,18 +1640,17 @@ private void StopBackgroundMedia()
         
         // ✅ [버그 수정] 먼저 그리드 추출 및 갱신
         ExtractDisplayBundles();
-        GridManager.ClearAllSelections(); // ✅ 그리드의 선택 상태도 초기화
-        
+       
         RefreshUI();
         
         Debug.Log($"[ExecuteUndo] 완료 - CurrentBoxIndex: {gameData.CurrentBoxIndex}, RemainingBoxes: {RemainingBoxes}");
-        ShowTopNotification("이전 상태로 되돌아갔습니다카피!");
+        ShowTopNotification("이전 상태로 되돌아갔습니다!");
     }
     
     public void ProcessRefresh()
 {
     gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
-        
+         hasUsedRefresh = true;
     if(gameData.RefreshCount > CurrentLevelConfig.MaxRefreshCount)
     {
         ShowAdConfirmationPopup(() =>
@@ -1541,7 +1688,7 @@ private void StopBackgroundMedia()
         ExtractDisplayBundles();
         RefreshUI();
         
-        ShowTopNotification("카드가 재배열되었습니다카피!");
+        ShowTopNotification("카드가 재배열되었습니다!");
     }
    
 
@@ -1550,10 +1697,10 @@ private void StopBackgroundMedia()
         // 1. 현재 선택된 보석이 하나도 없다면 되돌릴 수 없음
         if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
         {
-            ShowWarning("되돌릴 보석이 없습니다카피!");
+            ShowWarning("되돌릴 보석이 없습니다!");
             return;
         }
-
+ hasUsedUndo1 = true;
         // 2. 횟수 제한 체크 및 광고 로직
         // 무료 횟수를 다 썼다면 광고 확인 팝업을 띄움
         if (gameData.Undo1Count >= CurrentLevelConfig.MaxUndo1Count)
@@ -2343,13 +2490,13 @@ private IEnumerator NotificationCoroutine(string message)
     
     // 페이드 인
     canvasGroup.alpha = 0f;
-    yield return canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+    yield return canvasGroup.DOFade(1f, 0.1f).SetEase(Ease.OutQuad).WaitForCompletion();
     
     // 유지
-    yield return new WaitForSeconds(NotificationDuration + 0.5f);
+    yield return new WaitForSeconds(NotificationDuration + 0.2f);
     
     // 페이드 아웃
-    yield return canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();
+    yield return canvasGroup.DOFade(0f, 0.1f).SetEase(Ease.InQuad).WaitForCompletion();
     
     NotificationPanel.SetActive(false);
 }

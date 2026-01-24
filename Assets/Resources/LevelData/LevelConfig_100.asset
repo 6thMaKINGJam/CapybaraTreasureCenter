@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LevelConfig_100
   m_EditorClassIdentifier: 
   ChapterNumber: 4
-  MinBox: 5
+  MinBox: 8
   MaxBox: 15
-  MaxTime: 120
+  MaxTime: 60
   MinTime: 60
   GemTypeCount: 5
   MaxRequiredPerBox: 15
-  MaxRefreshCount: 1
-  MaxUndoCount: 10
+  MaxRefreshCount: 3
+  MaxUndoCount: 5
   MaxUndo1Count: 3
-  TimeAddAmount: 10
+  TimeAddAmount: 15
   BackgroundVideoFileName: gamescreen_jungle.mp4
   AdditionalBGMLayer: {fileID: 8300000, guid: 2ed01174eb7dcf94a90ce2bec84079af, type: 3}

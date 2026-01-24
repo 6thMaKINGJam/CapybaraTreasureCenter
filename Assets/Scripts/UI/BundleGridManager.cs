@@ -33,7 +33,25 @@ public class BundleGridManager : MonoBehaviour
 
 
 
+public void SetAllBundlesInteractable(bool interactable)
+{
+    foreach (Transform child in GridParent)
+    {
+        GemBundlePrefab bundlePrefab = child.GetComponent<GemBundlePrefab>();
+        if (bundlePrefab != null)
+        {
+            Button button = bundlePrefab.GetComponent<Button>();
+            if (button != null)
+                {button.interactable = interactable;
+                if (interactable)
+                    button.image.color = Color.white;
+                else
+                button.image.color = new Color32(200, 200, 200, 255);
 
+                }
+        }
+    }
+}
     // ========== 그리드 갱신 (12개 묶음 표시) ==========
    public void RefreshGrid(List<GemBundle> newBundles, Action<GemBundlePrefab> clickCallback)
 {
@@ -66,7 +84,7 @@ public class BundleGridManager : MonoBehaviour
         {
             prefab.SetData(bundleData);
             prefab.OnClickBundle += onBundleClickCallback;
-            prefab.SetSelected(false);
+    
             
             // 투명도 복원 (혹시 Placeholder였을 경우)
             CanvasGroup cg = prefab.GetComponent<CanvasGroup>();
@@ -109,7 +127,7 @@ public void ReplaceBundleAtIndex(
     {
         // 복원: 애니메이션 없이 즉시
         targetPrefab.SetData(newData);
-        targetPrefab.SetSelected(false);
+  
         
         // 투명도 복원
         CanvasGroup cg = targetPrefab.GetComponent<CanvasGroup>();
@@ -138,7 +156,7 @@ public void ReplaceBundleAtIndex(
                     targetPrefab.SetData(newData);
                     targetPrefab.OnClickBundle -= clickCallback;
                     targetPrefab.OnClickBundle += clickCallback;
-                    targetPrefab.SetSelected(false);
+                    
                     
                     // 투명도 복원
                     CanvasGroup cg = targetPrefab.GetComponent<CanvasGroup>();
@@ -179,14 +197,7 @@ private void SetupAsPlaceholder(GemBundlePrefab prefab)
 
    
     // ========== 모든 선택 해제 ==========
-    public void ClearAllSelections()
-    {
-        foreach(var prefab in activeBundles)
-        {
-            prefab.SetSelected(false);
-        }
-    }
-
+  
     // ========== 힌트: 특정 묶음들 흔들기 (제자리 회전) ==========
     public void ShakeBundles(List<GemBundle> bundlesToShake)
     {

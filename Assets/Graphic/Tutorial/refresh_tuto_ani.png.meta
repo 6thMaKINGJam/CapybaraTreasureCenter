@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: caca98bf5d1d24e12b334386453bf05a
+guid: 1b53b100a612e428aad078ff8bfed948
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rail_front_0
+      name: refresh_tuto_ani_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 71
-        width: 289
-        height: 239
+        y: 0
+        width: 424
+        height: 310
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aaa4f6692c29b4fe5b429de083b9389f
-      internalID: 1291728361
+      spriteID: 129aad1e565cf4dd3a9574a785c68207
+      internalID: -1973833129
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rail_front_1
+      name: refresh_tuto_ani_1
       rect:
         serializedVersion: 2
-        x: 17
-        y: 10
-        width: 330
-        height: 72
+        x: 424
+        y: 0
+        width: 424
+        height: 310
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,8 +171,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef29fedf7d9344bf59533ec10c222b3d
-      internalID: -973087864
+      spriteID: a08a34244f53c4e8f83b013045944225
+      internalID: -1020076183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: refresh_tuto_ani_2
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 0
+        width: 424
+        height: 310
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00650af5b35374f05a17f063a8f1c9b2
+      internalID: 1101254296
       vertices: []
       indices: 
       edges: []
@@ -181,15 +202,16 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      rail_front_0: 1291728361
-      rail_front_1: -973087864
+      refresh_tuto_ani_0: -1973833129
+      refresh_tuto_ani_1: -1020076183
+      refresh_tuto_ani_2: 1101254296
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

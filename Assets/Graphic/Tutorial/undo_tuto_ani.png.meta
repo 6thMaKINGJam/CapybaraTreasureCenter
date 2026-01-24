@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: caca98bf5d1d24e12b334386453bf05a
+guid: da1cb0f76c4c347c98d238dc46496dee
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -136,43 +136,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rail_front_0
+      name: undo_tuto_ani_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 71
-        width: 289
-        height: 239
+        x: 8
+        y: 118
+        width: 106
+        height: 57
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aaa4f6692c29b4fe5b429de083b9389f
-      internalID: 1291728361
+      spriteID: c029abf09c0c7481f93858aeae918ace
+      internalID: 1140296988
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rail_front_1
+      name: undo_tuto_ani_1
       rect:
         serializedVersion: 2
-        x: 17
-        y: 10
-        width: 330
-        height: 72
+        x: 146
+        y: 0
+        width: 146
+        height: 176
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef29fedf7d9344bf59533ec10c222b3d
-      internalID: -973087864
+      spriteID: da792ef37ba9d42469ab109f7c6c85af
+      internalID: -1476578441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: undo_tuto_ani_2
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 119
+        width: 106
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 456337990130c48f89083f1351d7d8fa
+      internalID: -1695033543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: undo_tuto_ani_3
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 0
+        width: 146
+        height: 176
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa6b0442ec9b4433994a228f3918e5e8
+      internalID: -363297021
       vertices: []
       indices: 
       edges: []
@@ -181,15 +223,17 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      rail_front_0: 1291728361
-      rail_front_1: -973087864
+      undo_tuto_ani_0: 1140296988
+      undo_tuto_ani_1: -1476578441
+      undo_tuto_ani_2: -1695033543
+      undo_tuto_ani_3: -363297021
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

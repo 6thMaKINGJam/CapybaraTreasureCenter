@@ -2,15 +2,21 @@ using UnityEngine;
 using System.IO;
 
 // 튜토리얼 타입 enum 추가
-public enum TutorialType { Story, Apple, Game }
+public enum TutorialType { Story, Apple, LevelTuto, ChallengeTuto }
 
 // 튜토리얼 진행도 클래스 추가
 [System.Serializable]
+
 public class TutorialProgress
 {
     public bool storyCompleted;
     public bool appleCompleted;
-    public bool gameCompleted;
+    public bool challengeTutoCompleted;
+    
+    // 아이템 튜토리얼
+    public bool undo1TutorialShown;
+    public bool undoTutorialShown;
+    public bool refreshTutorialShown;
 }
 
 public static class SaveManager
@@ -89,7 +95,7 @@ public static class SaveManager
         {
             TutorialType.Story => progress.storyCompleted,
             TutorialType.Apple => progress.appleCompleted,
-            TutorialType.Game => progress.gameCompleted,
+            TutorialType.ChallengeTuto => progress.challengeTutoCompleted,
             _ => false
         };
     }
@@ -109,8 +115,8 @@ public static class SaveManager
             case TutorialType.Apple:
                 progress.appleCompleted = value;
                 break;
-            case TutorialType.Game:
-                progress.gameCompleted = value;
+            case TutorialType.ChallengeTuto:
+                progress.challengeTutoCompleted = value;
                 break;
         }
         

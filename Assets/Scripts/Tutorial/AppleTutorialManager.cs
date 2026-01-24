@@ -39,6 +39,7 @@ public class AppleTutorialManager : MonoBehaviour
         if (SaveManager.IsTutorialCompleted(TutorialType.Story) &&
             !SaveManager.IsTutorialCompleted(TutorialType.Apple))
         {
+            Debug.Log("[AppleTutorialManager] Starting Apple Tutorial");
             StartTutorial();
         }
     }
@@ -48,6 +49,7 @@ public class AppleTutorialManager : MonoBehaviour
         if (SaveManager.IsTutorialCompleted(TutorialType.Apple))
             return;
         
+        Debug.Log(isTutorialActive);
         if (isTutorialActive)
             return;
         

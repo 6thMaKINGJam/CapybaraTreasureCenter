@@ -350,9 +350,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 387
-        y: 798
-        width: 693
-        height: 477
+        y: 1103
+        width: 291
+        height: 172
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -412,10 +412,10 @@ TextureImporter:
       name: mixBundle_14
       rect:
         serializedVersion: 2
-        x: 98
-        y: 355
-        width: 559
-        height: 378
+        x: 431
+        y: 356
+        width: 226
+        height: 220
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -425,27 +425,6 @@ TextureImporter:
       bones: []
       spriteID: b8cec50037f7d4c0eb9d72907097e201
       internalID: 1705998029
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: mixBundle_15
-      rect:
-        serializedVersion: 2
-        x: 93
-        y: 610
-        width: 93
-        height: 6
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1a9476aadda7b474da36584f5cf46799
-      internalID: 459659580
       vertices: []
       indices: 
       edges: []
@@ -492,6 +471,69 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: mixBundle_9
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 791
+        width: 400
+        height: 420
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd09056b91e414966a2e5ce90e5d958a
+      internalID: 2144490814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mixBundle_17
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 942
+        width: 22
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b9286954b99c4132ad81d93dc170c81
+      internalID: -251976949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mixBundle_19
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 641
+        width: 215
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d11b14222542f4cbbaed1fe0e37753df
+      internalID: -1701888118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -514,6 +556,7 @@ TextureImporter:
       mixBundle_16: -1465460223
       mixBundle_17: -251976949
       mixBundle_18: -2121086044
+      mixBundle_19: -1701888118
       mixBundle_2: 247166282
       mixBundle_3: -943269707
       mixBundle_4: -1268849684

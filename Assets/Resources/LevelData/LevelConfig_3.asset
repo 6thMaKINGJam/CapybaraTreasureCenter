@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LevelConfig_3
   m_EditorClassIdentifier: 
   ChapterNumber: 3
-  MinBox: 5
+  MinBox: 7
   MaxBox: 12
-  MaxTime: 300
-  MinTime: 130
+  MaxTime: 120
+  MinTime: 60
   GemTypeCount: 5
   MaxRequiredPerBox: 15
-  MaxRefreshCount: 1
+  MaxRefreshCount: 3
   MaxUndoCount: 5
   MaxUndo1Count: 3
-  TimeAddAmount: 10
+  TimeAddAmount: 15
   BackgroundVideoFileName: gamescreen_tang.mp4
   AdditionalBGMLayer: {fileID: 8300000, guid: becc934b3d612dc49bccb522822c017e, type: 3}

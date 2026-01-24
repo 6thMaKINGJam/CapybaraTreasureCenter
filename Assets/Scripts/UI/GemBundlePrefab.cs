@@ -5,8 +5,6 @@ using System;
 public class GemBundlePrefab : MonoBehaviour
 {
     public Image GemIcon;
-    public Outline Outline;
-    
     [Header("스프라이트 데이터베이스")]
     [Tooltip("Resources/GemSpriteDatabase를 할당하세요")]
     public GemSpriteDatabase SpriteDatabase;
@@ -76,10 +74,7 @@ public class GemBundlePrefab : MonoBehaviour
     
     public GemBundle GetData() => bundleData;
     
-    public void SetSelected(bool isSelected)
-    {
-        if(Outline != null) Outline.enabled = isSelected;
-    }
+   
     
     // Button onClick에서 호출됨
     private void OnClick()

@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: LevelConfig_2
   m_EditorClassIdentifier: 
   ChapterNumber: 2
-  MinBox: 5
-  MaxBox: 15
-  MaxTime: 200
-  MinTime: 100
+  MinBox: 6
+  MaxBox: 11
+  MaxTime: 120
+  MinTime: 60
   GemTypeCount: 4
   MaxRequiredPerBox: 12
-  MaxRefreshCount: 1
+  MaxRefreshCount: 3
   MaxUndoCount: 3
   MaxUndo1Count: 3
-  TimeAddAmount: 10
+  TimeAddAmount: 13
   BackgroundVideoFileName: gamescreen_beach.mp4
   AdditionalBGMLayer: {fileID: 8300000, guid: dd458590636f2d145a783d8ae5589080, type: 3}

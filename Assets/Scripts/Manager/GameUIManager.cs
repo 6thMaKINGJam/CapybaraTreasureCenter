@@ -211,7 +211,7 @@ public void AnimateBoxFailure(System.Action onFinished)
         target.transform.localPosition = Vector3.zero; // 위치 초기화 (부모 기준)
     }
 
-    public void StopWigggleInTutorial (GameObject target)
+    public void StopWiggleInTutorial (GameObject target)
     {
         target.transform.DOKill();
     }

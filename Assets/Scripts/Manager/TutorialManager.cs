@@ -32,23 +32,55 @@ public class TutorialManager : MonoBehaviour
     private bool isTransitioning = false; // 전환 중인지 확인
     public static TutorialManager Instance;
 
+[Header("Skip 버튼")]
+    public Button skipButton;  // ← 추가
+    
+
     void Awake() => Instance = this;
     
     void Start()
+    {// Story Tutorial 이미 완료했으면 바로 MainHome으로
+    if (SaveManager.IsTutorialCompleted(TutorialType.Story))
     {
-        // 1. 튜토리얼 완료 여부 확인
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-      
-        
-        // 초기 배경 설정 (페이드 없이)
-        if(BackgroundImage != null)
-        {
-            Color initialColor = BackgroundImage.color;
-            initialColor.a = 0f;
-            BackgroundImage.color = initialColor;
-        }
+        SceneManager.LoadScene("MainHome");
+        return;
+    }
 
-        ShowSequence(0);
+     
+        // Skip 버튼 설정
+        if (skipButton != null)
+        {
+            skipButton.onClick.AddListener(OnSkipClicked);
+            skipButton.gameObject.SetActive(true);
+        }
+        
+
+    
+    // 초기 배경 설정 (페이드 없이)
+    if(BackgroundImage != null)
+    {
+        Color initialColor = BackgroundImage.color;
+        initialColor.a = 0f;
+        BackgroundImage.color = initialColor;
+    }
+
+    ShowSequence(0);
+
+    }
+
+ // Skip 버튼 클릭 시
+    private void OnSkipClicked()
+    {
+        if (isTransitioning) return;
+        
+        // 현재 창 즉시 정리
+        if (currentDialog != null)
+        {
+            Destroy(currentDialog);
+            currentDialog = null;
+        }
+        
+        CompleteTutorial();
     }
 
     
@@ -327,6 +359,9 @@ public class TutorialManager : MonoBehaviour
     private void OnDestroy()
     {
         DOTween.KillAll();
+           if (skipButton != null)
+            skipButton.onClick.RemoveListener(OnSkipClicked);
+   
     }
 
  

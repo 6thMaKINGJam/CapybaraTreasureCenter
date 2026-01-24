@@ -27,6 +27,8 @@ public class MainHomeManager : MonoBehaviour
         // 1. 데이터 로드
         currentProgress = SaveManager.LoadData<ProgressData>(SaveKey);
         
+     
+
         // 2. UI 버튼들에 기능 연결
         SetupButtons();
 
