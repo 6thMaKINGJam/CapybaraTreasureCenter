@@ -4209,7 +4209,7 @@ MonoBehaviour:
   MyNicknameText: {fileID: 1303280025}
   MyScoreText: {fileID: 759309457}
   MyRankText: {fileID: 1837690892}
-  topRankContent: {fileID: 1490699099}
+  topRankContent: {fileID: 746650822}
   myRankContent: {fileID: 1316376521}
   myRankingCloseButton: {fileID: 2007626121}
   loadingUI: {fileID: 1998550076}
@@ -18796,7 +18796,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1808419577
 RectTransform:
   m_ObjectHideFlags: 0
