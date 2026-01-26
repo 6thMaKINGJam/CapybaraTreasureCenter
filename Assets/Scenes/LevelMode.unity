@@ -15789,7 +15789,7 @@ MonoBehaviour:
   DangerSlider: {fileID: 1943210022}
   GemCountItemPrefab: {fileID: 2273705045484454930, guid: 250755b41ab46d144b4fa3bf378e1fb7, type: 3}
   SpriteDatabase: {fileID: 11400000, guid: 383b110ef0be59247b645b2218c51e12, type: 2}
-  sliderExposureRange: 5
+  sliderExposureRange: 3
 --- !u!1 &1011092405 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5420718110635403377, guid: 870cef5fb9bdf47468f8d58608cd742f, type: 3}

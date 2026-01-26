@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Scripts.UI;
 using TMPro;
+using UnityEngine.UI;
 
 public class MainHomeManager : MonoBehaviour
 {
@@ -33,9 +34,12 @@ public class MainHomeManager : MonoBehaviour
 
         // 2. UI 버튼들에 기능 연결
         SetupButtons();
-
+UpdateChallengeModeButtonState();
+    BouncyEffect LevelSelectEffect = mainHomeUI.levelSelectButton.GetComponent<BouncyEffect>();
+    LevelSelectEffect.StartBounce();
  // ✅ 사과 UI 초기화
         UpdateAppleUI();
+        
         
         // ✅ 사과 변경 이벤트 구독
         if(AppleManager.Instance != null)
@@ -54,7 +58,7 @@ public class MainHomeManager : MonoBehaviour
         }
         else
         {
-            // 4. 레벨 100 클리어 시 엔딩 표시
+            // 4. 레벨 34 클리어 시 엔딩 표시
             CheckAndRunEndingSequence();
         }
 
@@ -68,6 +72,31 @@ public class MainHomeManager : MonoBehaviour
 
     }
      
+     private void UpdateChallengeModeButtonState()
+{
+  BouncyEffect bouncyEffect = mainHomeUI.ChallengeModeLockedScript;
+   if(bouncyEffect != null)
+    {
+        if(currentProgress.IsChallengeModeUnlocked)
+        {
+            bouncyEffect.StartBounce();
+        }
+        else
+        {
+            bouncyEffect.StopBounce();
+        }
+    }
+    
+    // 알림 이미지
+    if(mainHomeUI.ChallengeModeUnlockImage != null)
+    {
+        mainHomeUI.ChallengeModeUnlockImage.SetActive(currentProgress.IsChallengeModeUnlocked);
+    }
+}
+
+
+
+
     void OnDestroy()
     {
         // ✅ 이벤트 구독 해제
@@ -121,7 +150,7 @@ public class MainHomeManager : MonoBehaviour
     private void CheckAndRunEndingSequence()
     {
         // 레벨 4 클리어했지만 엔딩 미시청
-        if(currentProgress.LastClearedLevel >= 100 && !currentProgress.EndingCompleted)
+        if(currentProgress.LastClearedLevel >= 34 && !currentProgress.EndingCompleted)
         {
             if(NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())
             {
@@ -173,6 +202,20 @@ public class MainHomeManager : MonoBehaviour
 
     public void OnClickChallengeMode()
     {
+        // ✅ 알림 이미지 끄기 (플래그는 건드리지 않음)
+    if(mainHomeUI.ChallengeModeUnlockImage != null)
+    {
+        mainHomeUI.ChallengeModeUnlockImage.SetActive(false);
+    }
+    
+    if(!currentProgress.IsChallengeModeUnlocked)
+    {
+        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
+        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
+        popup.Setup("Chapter 1을 먼저 전부 클리어해야 도전할 수 있습니다!", null);
+        return;
+    }
+    
         if (AppleManager.Instance != null)
         {
             // 1. 사과 1개 소모 시도

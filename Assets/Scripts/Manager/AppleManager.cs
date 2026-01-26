@@ -48,14 +48,14 @@ public class AppleManager : MonoBehaviour
     
     /// <summary>
     /// 레벨 클리어 시 별 개수에 따른 사과 지급
-    /// 공식: 사과 = 별개수 - 1 (별1=사과0, 별2=사과1, 별3=사과2)
+    /// 공식: 사과 = 별개수  (별1=사과1, 별2=사과2, 별3=사과3)
     /// 재플레이: 증가분만 지급
     /// </summary>
     public int AddApplesFromStars(int oldStars, int newStars)
     {
-        // 공식: 별1(0개), 별2(1개), 별3(2개)
-        int oldApples = Mathf.Max(0, oldStars - 1);
-        int newApples = Mathf.Max(0, newStars - 1);
+        // 공식: 별1(1개), 별2(2개), 별3(3개)
+        int oldApples = Mathf.Max(0, oldStars );
+        int newApples = Mathf.Max(0, newStars );
         
         // 기존 기록보다 더 많은 별을 땄을 때만 차액 지급
         int earnedApples = Mathf.Max(0, newApples - oldApples);

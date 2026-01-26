@@ -18,6 +18,10 @@ namespace Scripts.UI
         public Button hallOfFameButton;
         public Button ChallengeButton;
 
+        public GameObject ChallengeModeUnlockImage;
+        [Header("Challenge Mode Lock")]
+public BouncyEffect ChallengeModeLockedScript; // Inspector에서 비활성화할 스크립트 할당 (예: BouncyEffect)
+
         public void ShowMain()
         {
             SetAllPanelsInactive();

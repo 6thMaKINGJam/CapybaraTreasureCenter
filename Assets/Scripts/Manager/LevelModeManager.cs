@@ -343,9 +343,9 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
         {
             case 0: return 0;
             case 1: return 1;
-            case 2: return 34;
-            case 3: return 67;
-            case 100: return 100;
+            case 2: return 12;
+            case 3: return 23;
+            case 34: return 34;
             default: return 1;
         }
     }
@@ -376,15 +376,15 @@ private void SetupNewGameWithDifficulty(int boxCount, float timeLimit)
 
         // ✅ 챕터별 LevelConfig 로드
         int chapterNumber;
-        if(levelIndex == 100)
+        if(levelIndex == 34)
         {
-            chapterNumber = 100;
+            chapterNumber = 34;
         }
-        else if(levelIndex >= 67)
+        else if(levelIndex >= 23)
         {
             chapterNumber = 3;
         }
-        else if(levelIndex >= 34)
+        else if(levelIndex >= 12)
         {
             chapterNumber = 2;
         }
@@ -1143,20 +1143,26 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
     {
         progressData.LastClearedLevel = currentLevel;
     }
-    
+    if(currentLevel == 11 && !progressData.IsChallengeModeUnlocked)
+{
+    progressData.IsChallengeModeUnlocked = true;
+    Debug.Log("[LevelModeManager] ChallengeMode 해금!");
+}
+
+
     SaveManager.Save(progressData, "ProgressData");
     
     SoundManager.Instance.PlayFX(SoundType.GameClear);
 
     // 3. 레벨별 분기 처리 //수정필요 엔딩프리팹으로 연결해야함
-    if (gameData.CurrentLevelIndex == 100)
+    if (gameData.CurrentLevelIndex == 34)
     {
         int clearTimeMs = Mathf.RoundToInt(clearTime * 1000);
 
-        if (!progressData.isLevel100Completed)
+        if (!progressData.isLevel34Completed)
         {
             // 최초 클리어
-            progressData.isLevel100Completed = true;
+            progressData.isLevel34Completed = true;
             progressData.BestTime = clearTimeMs;
             
             SaveManager.Save(progressData, "ProgressData");
@@ -1172,7 +1178,7 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
                 SaveManager.Save(progressData, "ProgressData");
             }
             
-            // ✅ 레벨 4는 NextLevel 버튼 비활성화
+            // ✅ 레벨 34는 NextLevel 버튼 비활성화
             ShowLevelClearPopup(starCount, clearMessage, earnedApples, isLastLevel: true);
         }
     }
@@ -1181,6 +1187,8 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
         // 레벨 1~3 클리어
         ShowLevelClearPopup(starCount, clearMessage, earnedApples, isLastLevel: false);
     }
+
+  
 }
 
 
@@ -1222,15 +1230,15 @@ public void GoToNextLevel()
 
         // ✅ 다음 챕터 LevelConfig 확인
         int nextChapter;
-        if(nextLevel == 100)
+        if(nextLevel == 34)
         {
-            nextChapter = 100;
+            nextChapter = 34;
         }
-        else if(nextLevel >= 67)
+        else if(nextLevel >= 23)
         {
             nextChapter = 3;
         }
-        else if(nextLevel >= 34)
+        else if(nextLevel >= 12)
         {
             nextChapter = 2;
         }

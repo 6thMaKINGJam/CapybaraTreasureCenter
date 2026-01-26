@@ -130,8 +130,8 @@ public class ChapterLevelListPopup : MonoBehaviour
         switch(chapterNumber)
         {
             case 1: return 1;
-            case 2: return 34;
-            case 3: return 67;
+            case 2: return 12;
+            case 3: return 22;
             default: return 1;
         }
     }
@@ -140,9 +140,9 @@ public class ChapterLevelListPopup : MonoBehaviour
     {
         switch(chapterNumber)
         {
-            case 1: return 33;
-            case 2: return 66;
-            case 3: return 99;
+            case 1: return 11;
+            case 2: return 22;
+            case 3: return 33;
             default: return 33;
         }
     }

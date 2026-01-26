@@ -6,7 +6,7 @@ using UnityEngine;
 public class LevelConfig : ScriptableObject
 {
     [Header("레벨 기본 정보")]
-    public int ChapterNumber; // 1, 2, 3, 100
+    public int ChapterNumber; // 1, 2, 3, 34
     
     [Header("난이도 범위")]
     public int MinBox = 5;
@@ -30,7 +30,7 @@ public class LevelConfig : ScriptableObject
     public int MaxUndo1Count = 3;
     
     [Header("시간추가 설정")]
-    public float TimeAddAmount = 10f; // 10초 고정
+    public float TimeAddAmount = 15f; // 15초 고정
     
     [Header("배경 설정")]
     public string BackgroundVideoFileName = "bg_chapter1.mp4";
@@ -39,14 +39,14 @@ public class LevelConfig : ScriptableObject
     /// <summary>
     /// 챕터 내 레벨 번호에 따른 난이도 계산
     /// </summary>
-    /// <param name="levelInChapter">챕터 내 레벨 (1~33 또는 1)</param>
+    /// <param name="levelInChapter">챕터 내 레벨 (1~11 또는 1)</param>
     /// <returns>(상자 개수, 제한 시간)</returns>
     public (int boxCount, float timeLimit) CalculateDifficulty(int levelInChapter)
     {
-        // 레벨100은 특수 처리
-        if(ChapterNumber == 100)
+        // 레벨34은 특수 처리
+        if(ChapterNumber == 34)
         {
-            return (MaxBox, MinTime);
+            return (MinBox, MinTime);
         }
         
         int boxCount;
@@ -58,19 +58,19 @@ public class LevelConfig : ScriptableObject
             boxCount = MinBox;
             timeLimit = MaxTime;
         }
-        else if(levelInChapter <= 11)
+        else if(levelInChapter <= 5)
         {
-            // 레벨 1~11: 상자만 증가 (5→15)
+            // 레벨 1~5: 상자만 증가 5->10
             boxCount = MinBox + (levelInChapter - 1);
             timeLimit = MaxTime;
         }
         else
         {
-            // 레벨 12~33: 시간만 감소 (비선형)
-            boxCount = MaxBox;
+            // 레벨 ~11: 시간만 감소 (비선형)
+            boxCount = MinBox + (levelInChapter - 1);
             
-            float progress = (levelInChapter - 12) / 21f; // 0.0 ~ 1.0
-            float curve = Mathf.Pow(progress, 1.5f); // 초반 완만, 후반 가파름
+            float progress = (levelInChapter - 6) / 5f; // 0.0 ~ 1.0
+            float curve = 1f - Mathf.Pow(1f - progress, 1.5f); // 초반 가파름, 후반 완만
             timeLimit = Mathf.Lerp(MaxTime, MinTime, curve);
         }
         

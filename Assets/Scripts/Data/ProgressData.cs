@@ -21,7 +21,8 @@ public class ProgressData
     public int BestTime;
   
     public bool EndingCompleted;
-    public bool isLevel100Completed;
+    public bool isLevel34Completed;
+    public bool IsChallengeModeUnlocked = false;
     public List<LevelStarData> LevelStars = new List<LevelStarData>();
     
     // ✅ 추가: 사과 개수
@@ -32,7 +33,7 @@ public class ProgressData
         LastClearedLevel = 0;
         BestTime = 0; 
         EndingCompleted = false;
-        isLevel100Completed = false;
+        isLevel34Completed = false;
         LevelStars = new List<LevelStarData>();
         TotalApples = 0;
     }

@@ -6,7 +6,7 @@ public class ChapterVisualController : MonoBehaviour
     [System.Serializable]
     public class ConfigVisuals
     {
-        [Tooltip("LevelConfig의 파일명 (LevelConfig_1, LevelConfig_2, LevelConfig_3, LevelConfig_100)")]
+        [Tooltip("LevelConfig의 파일명 (LevelConfig_1, LevelConfig_2, LevelConfig_3, LevelConfig_34)")]
         public string configName;
         
         [Header("GameObject Management")]
@@ -37,9 +37,9 @@ public class ChapterVisualController : MonoBehaviour
         
          string currentConfigName = currentConfig.name;
 
-       if  (currentConfig.name  == "LevelConfig_100")
+       if  (currentConfig.name  == "LevelConfig_34")
         {
-            currentConfigName = "LevelConfig_1"; // level100테마는 level1과 동일 
+            currentConfigName = "LevelConfig_1"; // level34테마는 level1과 동일 
         }
 
         
