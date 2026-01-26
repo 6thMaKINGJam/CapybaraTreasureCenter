@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 using System;
 
-public class EndingManager : MonoBehaviour
+public class ChallengeEndingManager : MonoBehaviour
 {
     [Header("엔딩 시퀀스")]
     public List<EndingSequence> Sequences = new List<EndingSequence>();
@@ -344,15 +344,19 @@ public class EndingManager : MonoBehaviour
     
     private void CompleteEnding()
     {
-        Debug.Log("[EndingManager] 엔딩 완료!");
+        Debug.Log("[ChallengeEnding] 챌린지 모드 엔딩 완료!");
         
-        // ProgressData에 엔딩 완료 저장
-        ProgressData progressData = SaveManager.LoadData<ProgressData>("ProgressData");
-        progressData.EndingCompleted = true;
-        SaveManager.Save(progressData, "ProgressData");
-        
-        // 배경과 마지막 창 페이드 아웃 후 콜백 호출
-        StartCoroutine(FadeOutAndComplete());
+        ProgressData data = SaveManager.LoadData<ProgressData>("ProgressData");
+        data.isChallengeEndingViewed = true; // 챌린지 엔딩 완료 저장
+        SaveManager.Save(data, "ProgressData");
+
+        // 닉네임 입력 팝업 띄우기 (기본 로직 유지)
+        GameObject dialogObj = Instantiate(Resources.Load<GameObject>("Prefabs/NicknameInputDialog"));
+        NicknameInputDialog dialog = dialogObj.GetComponent<NicknameInputDialog>();
+        dialog.Setup(
+            successCallback: () => SceneManager.LoadScene("HallOfFameScene"),
+            failureCallback: null
+        );
     }
     
     private IEnumerator FadeOutAndComplete()

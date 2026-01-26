@@ -23,6 +23,8 @@ public class ProgressData
     public bool isTutorialComplete;         // 튜토리얼 전체(메인홈 버튼 클릭) 완료 여부
     public bool EndingCompleted; //챌린지모드
     public bool isLevel100Completed;
+    public bool isLevelEndingViewed;      // 레벨 모드(100레벨) 엔딩 시청 완료 여부
+    public bool isChallengeEndingViewed;  // 챌린지 모드(100상자) 엔딩 시청 완료 여부
     public bool isLevelTutorialDone;
     public int LastChallengeScore;
     public string MyNickname = "";
@@ -32,6 +34,7 @@ public class ProgressData
     
     // ✅ 추가: 사과 개수
     public int TotalApples = 0;
+    public string LastAppleUpdateTime = "";
     
     public ProgressData()
     {
@@ -40,9 +43,12 @@ public class ProgressData
         isTutorialComplete = false;
        
         EndingCompleted = false;
-        isLevel100Completed = false;
+        isLevel100Completed = false;//좌연주 수정필요
+        isLevelEndingViewed = false;
+        isChallengeEndingViewed = false;
         LevelStars = new List<LevelStarData>();
         TotalApples = 0;
+        LastAppleUpdateTime = DateTime.Now.ToString();
         isLevelTutorialDone = false;
         MyNickname = "";
         MyLastRank = 0;

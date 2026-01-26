@@ -942,7 +942,7 @@ progressData = SaveManager.LoadData<ProgressData>("ProgressData");
     SaveManager.Save(progressData, "ProgressData");
     
     SoundManager.Instance.PlayFX(SoundType.GameClear);
-
+    //수정필요 좌연주
     // 3. 레벨별 분기 처리 //수정필요 엔딩프리팹으로 연결해야함
     if (gameData.CurrentLevelIndex == 100)
     {
@@ -1110,7 +1110,7 @@ private void StopBackgroundMedia()
         }
         
         GameObject endingObj = Instantiate(EndingPrefab, EndingPopupTransfrom);
-        EndingManager endingManager = endingObj.GetComponent<EndingManager>();
+        LevelEndingManager endingManager = endingObj.GetComponent<LevelEndingManager>();
         
         if(endingManager != null)
         {

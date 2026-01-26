@@ -16,6 +16,12 @@ public class MainHomeManager : MonoBehaviour
     // ✅ 추가: 사과 UI
     [Header("사과 UI")]
     [SerializeField] private TextMeshProUGUI AppleCountText;
+    [SerializeField] private TextMeshProUGUI AppleRegenTimerText;
+
+    [Header("Ending Settings")]
+    [SerializeField] private GameObject levelEndingPrefab;      // 레벨 모드 엔딩 프리팹
+    [SerializeField] private GameObject challengeEndingPrefab;  // 챌린지 모드 엔딩 프리팹
+    [SerializeField] private Transform endingParent;
 
 
 
@@ -34,6 +40,7 @@ public class MainHomeManager : MonoBehaviour
 
  // ✅ 사과 UI 초기화
         UpdateAppleUI();
+        CheckAndRunEndings();
         
         // ✅ 사과 변경 이벤트 구독
         if(AppleManager.Instance != null)
@@ -51,6 +58,39 @@ public class MainHomeManager : MonoBehaviour
         }
         
     }
+
+    void Update()
+    {
+        UpdateRegenTimerUI();
+    }
+
+    private void UpdateRegenTimerUI()
+    {
+        if (AppleRegenTimerText == null || AppleManager.Instance == null) return;
+
+        int currentApples = AppleManager.Instance.GetAppleCount();
+        
+        // 5개 미만이고 레벨 100 클리어 시에만 타이머 표시
+        if (currentApples < 5) 
+        {
+            float remainingSeconds = AppleManager.Instance.GetRemainingRegenSeconds();
+            if (remainingSeconds > 0)
+            {
+                int minutes = (int)(remainingSeconds / 60);
+                int seconds = (int)(remainingSeconds % 60);
+                AppleRegenTimerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+                AppleRegenTimerText.gameObject.SetActive(true);
+            }
+            else
+            {
+                AppleRegenTimerText.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            AppleRegenTimerText.gameObject.SetActive(false); // 5개 이상이면 타이머 숨김
+        }
+    }
      
     void OnDestroy()
     {
@@ -58,6 +98,32 @@ public class MainHomeManager : MonoBehaviour
         if(AppleManager.Instance != null)
         {
             AppleManager.Instance.OnAppleCountChanged -= OnAppleCountChanged;
+        }
+    }
+
+    private void CheckAndRunEndings()
+    {
+        // 1. 레벨 모드: 100레벨 클리어 & 엔딩 미시청
+        if (currentProgress.LastClearedLevel >= 100 && !currentProgress.isLevelEndingViewed)
+        {
+            if (levelEndingPrefab != null)
+            {
+                Debug.Log("미시청한 레벨 엔딩 프리팹을 생성합니다.");
+                Instantiate(levelEndingPrefab, endingParent != null ? endingParent : transform);
+            }
+            return;
+        }
+
+        // 2. 챌린지 모드: 100상자 클리어 & 엔딩 미시청
+        // (주의: currentProgress.isChallengeCleared 등 챌린지 전용 클리어 변수인지 확인 필요)
+        if (currentProgress.isLevel100Completed && !currentProgress.isChallengeEndingViewed)
+        {
+            if (challengeEndingPrefab != null)
+            {
+                Debug.Log("미시청한 챌린지 엔딩 프리팹을 생성합니다.");
+                Instantiate(challengeEndingPrefab, endingParent != null ? endingParent : transform);
+            }
+            return;
         }
     }
 
@@ -103,8 +169,8 @@ public class MainHomeManager : MonoBehaviour
     }
 
     private void CheckAndRunEndingSequence()
-    {
-        // 레벨 4 클리어했지만 엔딩 미시청
+    {//수정필요 좌연주
+        // 레벨 100 클리어했지만 엔딩 미시청
         if(currentProgress.LastClearedLevel >= 100 && !currentProgress.EndingCompleted)
         {
             if(NetworkManager.Instance != null && NetworkManager.Instance.IsNetworkAvailable())

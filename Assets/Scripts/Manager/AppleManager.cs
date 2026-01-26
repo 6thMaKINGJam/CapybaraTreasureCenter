@@ -17,6 +17,10 @@ public class AppleManager : MonoBehaviour
     public event Action<int> OnAppleCountChanged;
     
     private ProgressData progressData;
+
+    // ✅ 상수 설정
+    private const int MAX_REGEN_APPLES = 5;       // 자동 충전 최대치
+    private const int REGEN_TIME_MINUTES = 20;    // 충전 간격 (20분)
     
     void Awake()
     {
@@ -35,7 +39,73 @@ public class AppleManager : MonoBehaviour
     private void LoadData()
     {
         progressData = SaveManager.LoadData<ProgressData>("ProgressData");
+        RefreshAppleRegen();
         Debug.Log($"[AppleManager] 초기화 완료. 현재 사과: {progressData.TotalApples}개");
+    }
+
+    private void Update()
+    {//좌연주 수정필요
+        // 매 프레임마다 충전 시간이 되었는지 체크 (레벨 100 클리어 시에만)
+        if (progressData.isLevel100Completed)
+        {
+            RefreshAppleRegen();
+        }
+    }
+
+    /// <summary>
+    /// 사과 자동 충전 로직 (오프라인/실시간 공용)
+    /// </summary>
+    public void RefreshAppleRegen()
+    {//수정 필요 좌연주
+        // 레벨 100 미만이거나 이미 사과가 5개 이상이면 시간만 갱신하고 리턴
+        if (progressData.LastClearedLevel < 100 || progressData.TotalApples >= MAX_REGEN_APPLES)
+        {
+            progressData.LastAppleUpdateTime = DateTime.Now.ToString();
+            return;
+        }
+
+        DateTime lastTime;
+        if (!DateTime.TryParse(progressData.LastAppleUpdateTime, out lastTime))
+        {
+            lastTime = DateTime.Now;
+        }
+
+        TimeSpan elapsed = DateTime.Now - lastTime;
+        int applesToAdd = (int)(elapsed.TotalMinutes / REGEN_TIME_MINUTES);
+
+        if (applesToAdd > 0)
+        {
+            int currentApples = progressData.TotalApples;
+            // 5개를 넘지 않도록 계산
+            int newApples = Mathf.Min(MAX_REGEN_APPLES, currentApples + applesToAdd);
+            int actualAdded = newApples - currentApples;
+
+            if (actualAdded > 0)
+            {
+                progressData.TotalApples = newApples;
+                // 남은 자투리 시간은 보존하여 다음 충전에 반영
+                DateTime nextLastTime = lastTime.AddMinutes(actualAdded * REGEN_TIME_MINUTES);
+                progressData.LastAppleUpdateTime = nextLastTime.ToString();
+                
+                SaveManager.Save(progressData, "ProgressData");
+                OnAppleCountChanged?.Invoke(progressData.TotalApples);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 다음 충전까지 남은 시간을 초 단위로 반환
+    /// </summary>
+    public float GetRemainingRegenSeconds()
+    {//수정필요 좌연주
+        if (!progressData.isLevel100Completed || progressData.TotalApples >= MAX_REGEN_APPLES)
+            return 0;
+
+        DateTime lastTime;
+        DateTime.TryParse(progressData.LastAppleUpdateTime, out lastTime);
+        
+        DateTime nextUpdateTime = lastTime.AddMinutes(REGEN_TIME_MINUTES);
+        return (float)(nextUpdateTime - DateTime.Now).TotalSeconds;
     }
     
     /// <summary>
