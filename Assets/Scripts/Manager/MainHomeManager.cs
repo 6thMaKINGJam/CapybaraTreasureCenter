@@ -41,6 +41,7 @@ public class MainHomeManager : MonoBehaviour
  // ✅ 사과 UI 초기화
         UpdateAppleUI();
         CheckAndRunEndings();
+        Debug.Log("checkandrunendings 완료");
         
         // ✅ 사과 변경 이벤트 구독
         if(AppleManager.Instance != null)
@@ -104,24 +105,47 @@ public class MainHomeManager : MonoBehaviour
     private void CheckAndRunEndings()
     {
         // 1. 레벨 모드: 100레벨 클리어 & 엔딩 미시청
-        if (currentProgress.LastClearedLevel >= 100 && !currentProgress.isLevelEndingViewed)
+        if (currentProgress.isLevel100Completed && !currentProgress.isLevelEndingViewed)
         {
             if (levelEndingPrefab != null)
             {
                 Debug.Log("미시청한 레벨 엔딩 프리팹을 생성합니다.");
+                
+                // ✅ 배경음악 정지
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.StopAllBGM();
+                }
+
+                // ✅ 프리팹 생성
                 Instantiate(levelEndingPrefab, endingParent != null ? endingParent : transform);
+
+                // ✅ 시청 완료 상태로 변경 및 저장
+                currentProgress.isLevelEndingViewed = true;
+                SaveManager.Save(currentProgress, SaveKey);
             }
             return;
         }
 
-        // 2. 챌린지 모드: 100상자 클리어 & 엔딩 미시청
-        // (주의: currentProgress.isChallengeCleared 등 챌린지 전용 클리어 변수인지 확인 필요)
-        if (currentProgress.isLevel100Completed && !currentProgress.isChallengeEndingViewed)
+        // 2. 챌린지 모드: 100상자 클리어 & 엔딩 미시청 (가정된 조건)
+        if (currentProgress.isChallengeCompleted && !currentProgress.isChallengeEndingViewed)
         {
             if (challengeEndingPrefab != null)
             {
                 Debug.Log("미시청한 챌린지 엔딩 프리팹을 생성합니다.");
+                
+                // ✅ 배경음악 정지
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.StopAllBGM();
+                }
+
+                // ✅ 프리팹 생성
                 Instantiate(challengeEndingPrefab, endingParent != null ? endingParent : transform);
+
+                // ✅ 시청 완료 상태로 변경 및 저장
+                currentProgress.isChallengeEndingViewed = true;
+                SaveManager.Save(currentProgress, SaveKey);
             }
             return;
         }

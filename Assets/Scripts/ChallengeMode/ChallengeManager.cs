@@ -1205,6 +1205,7 @@ void Update()
             progressData.BestTime = finalScore; //최고점수 갱신
         }
         progressData.LastChallengeScore = finalScore;
+        progressData.isChallengeCompleted = true;
         SaveManager.Save(progressData, "ProgressData");
 
         Debug.Log($"[ChallengeModeManager] 모든 챌린지 클리어! 최종 점수: {progressData.BestTime}");

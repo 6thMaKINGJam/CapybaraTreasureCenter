@@ -23,6 +23,7 @@ public class ProgressData
     public bool isTutorialComplete;         // 튜토리얼 전체(메인홈 버튼 클릭) 완료 여부
     public bool EndingCompleted; //챌린지모드
     public bool isLevel100Completed;
+    public bool isChallengeCompleted;
     public bool isLevelEndingViewed;      // 레벨 모드(100레벨) 엔딩 시청 완료 여부
     public bool isChallengeEndingViewed;  // 챌린지 모드(100상자) 엔딩 시청 완료 여부
     public bool isLevelTutorialDone;
@@ -44,6 +45,7 @@ public class ProgressData
        
         EndingCompleted = false;
         isLevel100Completed = false;//좌연주 수정필요
+        isChallengeCompleted = false;
         isLevelEndingViewed = false;
         isChallengeEndingViewed = false;
         LevelStars = new List<LevelStarData>();
