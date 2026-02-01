@@ -119,8 +119,8 @@ private bool shouldCheckUndo = false;
         {
             float remainingTime = GetDynamicTimeLimit() - gameData.ElapsedTime;
 
-            // 5.5초 이하일 때 카운트다운 시작
-            if (remainingTime <= 5.5f && remainingTime > 0)
+            // 3.5초 이하일 때 카운트다운 시작
+            if (remainingTime <= 3.5f && remainingTime > 0)
             {
                 int currentSecond = Mathf.CeilToInt(remainingTime);
 

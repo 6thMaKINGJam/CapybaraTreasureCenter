@@ -271,6 +271,8 @@ public GameObject DialogueBubble; // Inspector에 할당
             case DialogueType.Warning:
             case DialogueType.TimeLowWarning:
             case DialogueType.AlreadyFailed:
+            case DialogueType.UnmatchGemWarning:
+            case DialogueType.DifficientWarning:
                 targetText.color = Color.red;
              outlineColor = Color.red;
              targetText.fontSizeMax = 55f;

@@ -46,6 +46,8 @@ public class ChallengeModeManager : MonoBehaviour
     public VideoPlayer backgroundVideoPlayer;
     [Header("Undo1 횟수")]
     public int Undo1Current = 3;
+    [Header("Refresh 횟수")]
+    public int RefreshCurrent = 3;
     [Header("알림")]
     public GameObject NotificationPanel; // Inspector 할당
     public TextMeshProUGUI NotificationText; // Panel 내부 텍스트
@@ -69,6 +71,7 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     [Header("Initial Gem Settings")]
     public int InitialGemCountPerType = 10; // 타입별 초기 보석 개수
     private float currentRemainingTime; // 챌린지 전용 남은 시간 계산용
+    private float runTime;
     private int RemainingBoxes => gameData.Boxes.Count - gameData.CurrentBoxIndex;
 
     [Header("Challenge Score")]
@@ -101,7 +104,17 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
     private Coroutine selectionTimerCoroutine;
     private List<ChallengeRequirement> generatedRequirements = new List<ChallengeRequirement>();
 
+// 한 번의 선택 이력 (선택 전 상태 저장)
 
+[System.Serializable]
+public class RequirementSelectionState
+{
+    public ChallengeRequirement[] DisplayedRequirements; // 3개 조건
+    public ChallengeRequirement SelectedRequirement; // 선택된 조건
+}
+
+private Stack<RequirementSelectionState> selectionHistory = new Stack<RequirementSelectionState>();
+private ChallengeRequirement[] currentDisplayedRequirements = new ChallengeRequirement[3];
   
     private bool startinstruction = false;
     private bool afterReqinstruction = false;
@@ -121,93 +134,29 @@ public ActiveRequirementDisplay ActiveRequirementDisplay; // 현재 화면에 �
  private int lastCountedSecond = -1; // 중복 호출 방지용
   
 void Update()
+{
+
+
+    // gameData가 생성된 상태이고 게임 상태가 Playing일 때만 작동
+    if (gameData != null && gameData.GameState == GameState.Playing)
     {
-        // gameData가 생성된 상태이고 게임 상태가 Playing일 때만 작동
-        if (gameData != null && gameData.GameState == GameState.Playing)
+        runTime += Time.deltaTime;
+
+        // Challenge Mode는 currentRemainingTime 직접 사용
+        if (currentRemainingTime <= 3.5f && currentRemainingTime > 0)
         {
-            float remainingTime = startingTimeLimit - gameData.ElapsedTime;
+            int currentSecond = Mathf.CeilToInt(currentRemainingTime);
 
-            // 5.5초 이하일 때 카운트다운 시작
-            if (remainingTime <= 5.5f && remainingTime > 0)
+            if (currentSecond != lastCountedSecond)
             {
-                int currentSecond = Mathf.CeilToInt(remainingTime);
-
-                if (currentSecond != lastCountedSecond)
-                {
-                    lastCountedSecond = currentSecond;
-                    GameUIManager.Instance.StartCountdownEffect(currentSecond);
-                }
+                lastCountedSecond = currentSecond;
+                GameUIManager.Instance.StartCountdownEffect(currentSecond);
             }
         }
     }
-
-    private void StartChallengeTutorial()
-    {
-        // 튜토리얼 단계 설정 및 시간 완전 정지
-     
-        Time.timeScale = 0f; 
-        ShowTutorialPopup("도전 모드에 오신 걸 환영합니다카피!\n 도전모드는 사과 한개를 사용해 진입할 수 있다카피",() => {
-            ShowTutorialPopup("이 모드에서는 먼저 적용될 '규칙'을 직접 선택해야 합니다카피.", () => {
-                ShowTutorialPopup("규칙 선택 화면에서 시간이 모두 지나면\n규칙이 랜덤으로 선택되니 주의하세요카피!", () => {
-                    // [추가] 모든 설명이 끝난 뒤에 실제 조건 선택 팝업을 띄웁니다.
-                    Debug.Log("튜토리얼 안내 완료. 조건 선택 팝업을 표시합니다.");
-                    startinstruction = true;
-                    ShowRequirementSelectionInternal(); 
-                });
-            });
-        });
-    }
-
- private IEnumerator CheckTimeOver()
-    {
-        float timeLimit = startingTimeLimit;
-        bool lowTimeWarningShown = false;
-
-        // gameData.ElapsedTime을 0으로 시작하거나 유지
-        while(true)
-        {
-            if(gameData.GameState == GameState.Playing)
-            {
-                // 매 프레임 흐른 시간을 누적 (timeScale이 0이면 0이 더해짐)
-                gameData.ElapsedTime += Time.deltaTime; 
-                
-                float remaining = timeLimit - gameData.ElapsedTime;
-                
-                // UI 업데이트
-                if (UIManager.TimerSlider != null)
-                    UIManager.TimerSlider.value = Mathf.Clamp01(remaining / timeLimit);
-
-                // 경고 로직
-                if(!lowTimeWarningShown && remaining <= 30f && remaining > 0f)
-                {
-                    if(CapyDialogue != null && CapyDialogueText != null)
-                        CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.TimeLowWarning);
-                    lowTimeWarningShown = true;
-                   
-                }
-
-                // 타임오버
-                if(remaining <= 0)
-                {
-                    HandleTimeOver();
-                    yield break;
-                }
-            }
-            yield return null; // 다음 프레임까지 대기
-        }
-    }
-        private void ShowTutorialPopup(string message, System.Action onConfirm)
-    {
-        // BaseConfirmationPopup 대신 확인 버튼만 있는 BaseWarningPopup 사용 권장
-        GameObject popupObj = PopupParentSetHelper.Instance.CreatePopup("Prefabs/BaseWarningPopup");
-        BaseWarningPopup popup = popupObj.GetComponent<BaseWarningPopup>();
-        if (popup != null)
-        {
-            popup.Setup(message, onConfirm);
-        }
-    }
-
-
+}
+ 
+ 
     private void InitChallengeMode()
     {
         Time.timeScale = 1f;
@@ -314,39 +263,95 @@ void Update()
         }
     }
 
-    // 비우기(선택 취소) 기능 구현
-    public void CancelSelection()
+    
+public void CancelSelection()
+{
+    if (gameData.SelectedBundles.Count == 0)
     {
-        if (gameData.SelectedBundles.Count == 0) return;
-
-        // 선택된 보석들을 하나씩 되돌림 (Undo1 로직 활용)
-        // 역순으로 처리하여 그리드 위치를 정확히 복구합니다.
-        for (int i = gameData.SelectedBundles.Count - 1; i >= 0; i--)
-        {
-            GemBundle bundle = gameData.SelectedBundles[i];
-            gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
-
-            if (selectedBundleOriginalIndices.TryGetValue(bundle, out int gridIndex))
-            {
-                gameData.CurrentDisplayBundles[gridIndex] = bundle;
-                GridManager.ReplaceBundleAtIndex(gridIndex, bundle, OnBundleClicked, true);
-            }
-        }
-
-        // 데이터 초기화
-        gameData.SelectedBundles.Clear();
-        selectedBundleOriginalIndices.Clear();
-
-        // UI 일괄 갱신
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
         UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount, gameData.Boxes.Count);
+        return;
+    }
+    
+    List<BundleRestoreInfo> restoreInfos = new List<BundleRestoreInfo>();
+    
+    foreach (var bundle in gameData.SelectedBundles)
+    {
+        if (!selectedBundleOriginalIndices.ContainsKey(bundle)) continue;
+
+        int originalIndex = selectedBundleOriginalIndices[bundle];
+        
+        // ✅ [버그 수정] 인덱스 범위 체크 추가
+        if (originalIndex < 0 || originalIndex >= gameData.CurrentDisplayBundles.Count)
+        {
+            Debug.LogError($"[CancelSelection] 인덱스 범위 초과: {originalIndex}");
+            continue;
+        }
+
+        // 중복 복구 방지: RemainingGems는 여기서 한 번만 복구
+        gameData.RemainingGems[bundle.GemType] += bundle.GemCount;
         
         if (GemCountStatusPanel != null)
         {
-            // 보석 개수 전체 다시 그리기
-            GemCountStatusPanel.InitLevelGemStatus(gameData.RemainingGems, 5);
+            GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
         }
+
+        GemBundle currentBundle = gameData.CurrentDisplayBundles[originalIndex];
+        
+        restoreInfos.Add(new BundleRestoreInfo
+        {
+            OriginalBundle = bundle,
+            OriginalIndex = originalIndex,
+            CurrentBundle = currentBundle
+        });
     }
+    
+    restoreInfos.Sort((a, b) => a.OriginalIndex.CompareTo(b.OriginalIndex));
+    
+    foreach (var info in restoreInfos)
+    {
+        if (!gameData.BundlePool.Contains(info.OriginalBundle))
+        {
+            gameData.BundlePool.Add(info.OriginalBundle);
+        }
+        
+        if (info.CurrentBundle != null && info.CurrentBundle != info.OriginalBundle)
+        {
+            if (!gameData.BundlePool.Contains(info.CurrentBundle))
+            {
+                gameData.BundlePool.Add(info.CurrentBundle);
+            }
+        }
+        
+        gameData.CurrentDisplayBundles[info.OriginalIndex] = info.OriginalBundle;
+        
+        GridManager.ReplaceBundleAtIndex(
+            info.OriginalIndex,
+            info.OriginalBundle,
+            OnBundleClicked,
+            isRestoring: true
+        );
+    }
+    
+
+    gameData.SelectedBundles.Clear();
+    selectedBundleOriginalIndices.Clear();
+    
+    UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
+    UIManager.UpdateBoxUI(gameData.CurrentBoxIndex, 0, GetCurrentBox().RequiredAmount, gameData.Boxes.Count);
+  UpdateRequirementUIColors();
+}
+
+
+// ===== 복원 정보 클래스 =====
+private class BundleRestoreInfo
+{
+    public GemBundle OriginalBundle;
+    public int OriginalIndex;
+    public GemBundle CurrentBundle;
+}
+   
+
     public void ExtractDisplayBundles()
     {
         gameData.CurrentDisplayBundles.Clear();
@@ -549,7 +554,7 @@ void Update()
             {
                 GemCountStatusPanel.UpdateGemCount(bundle.GemType, gameData.RemainingGems[bundle.GemType], RemainingBoxes);
             }
-            
+             
             // Grid 교체 시작 (애니메이션 포함)
             GridManager.ReplaceBundleAtIndex(
                 gridIndex,
@@ -561,6 +566,8 @@ void Update()
             // 애니메이션 완료 후 UI 업데이트 (0.5초 딜레이)
             StartCoroutine(UpdateSelectionUIAfterAnimation());
         }
+
+        UpdateRequirementUIColors();
     }
 
     private GemBundle GetRandomFromRemainingPool()
@@ -588,10 +595,8 @@ void Update()
     private IEnumerator UpdateSelectionUIAfterAnimation()
     {
         // BundleGridManager의 애니메이션 시간과 동기화
-        // - 축소: 0.3초
-        // - 팝업: 0.2초
-        // 총 0.5초 대기
-        yield return new WaitForSeconds(0.25f);
+        
+        yield return new WaitForSeconds(0.1f);
         
         // 선택 패널 업데이트
         UIManager.SelectionPanel.UpdateUI(gameData.SelectedBundles);
@@ -643,69 +648,152 @@ void Update()
 
         float calculatedTime = initialSelectionLimitTime - (gameData.CurrentBoxIndex * selectionTimeStep);
         selectionLimitTime = Mathf.Max(minSelectionLimitTime, calculatedTime); // 최소 10초 보장
-        RestricText.text = $"제한시간은 {selectionLimitTime}초!";
-
+        
         Debug.Log($"[Challenge] 현재 상자: {gameData.CurrentBoxIndex + 1}, 선택 제한 시간: {selectionLimitTime}초");
 
         RequirementPopupObject.SetActive(true);
         
         // 기존 카드 제거 및 데이터 초기화
-        foreach (Transform child in RequirementParentPanel) Destroy(child.gameObject);
-        generatedRequirements.Clear();
-
-        // 카드 3개 생성
+       // 기존 카드 제거
+    foreach (Transform child in RequirementParentPanel) Destroy(child.gameObject);
+    
+    // 첫 호출인지 확인 (배열이 비어있으면)
+  // 첫 호출 시에만 새로 생성 + 스택 저장
+    if (currentDisplayedRequirements[0] == null)
+    {
         for (int i = 0; i < 3; i++)
         {
-            var req = GenerateRandomRequirement();
-            generatedRequirements.Add(req);
-            GameObject cardObj = Instantiate(RequirementCardPrefab, RequirementParentPanel);
-            cardObj.GetComponent<RequirementCard>().Setup(req, OnRequirementSelected);
+            currentDisplayedRequirements[i] = GenerateRandomRequirement();
         }
-
-        // 2. 선택 전용 타이머 코루틴 시작 (Time.unscaledDeltaTime 사용으로 시각적으로 정지됨)
-        if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
-        selectionTimerCoroutine = StartCoroutine(SelectionTimerRoutine());
-        Time.timeScale = 1f;
+        
+        // 초기 상태 저장
+        RequirementSelectionState initialState = new RequirementSelectionState
+        {
+            DisplayedRequirements = (ChallengeRequirement[])currentDisplayedRequirements.Clone(),
+            SelectedRequirement = null
+        };
+        selectionHistory.Push(initialState);
     }
+    
+    // 카드 UI 생성 (현재 배열 사용)
+    for (int i = 0; i < 3; i++)
+    {
+        GameObject cardObj = Instantiate(RequirementCardPrefab, RequirementParentPanel);
+        int index = i;
+        cardObj.GetComponent<RequirementCard>().Setup(
+            currentDisplayedRequirements[i], 
+            (req) => OnRequirementSelected(req, index)
+        );
+    }
+
+    // 타이머 시작
+    if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
+    selectionTimerCoroutine = StartCoroutine(SelectionTimerRoutine());
+    Time.timeScale = 1f;
+
+    }
+
+    /// <summary>
+/// 선택된 gem들을 기반으로 조건 및 개수 충족 여부를 체크하고 UI 색상 업데이트
+/// OnBundleClicked 마지막에 호출
+/// </summary>
+private void UpdateRequirementUIColors()
+{
+    if (currentActiveRequirement == null) return;
+    if (ActiveRequirementDisplay == null) return;
+
+
+    // 1. 조건 충족 여부 체크
+    bool isConditionSatisfied = currentActiveRequirement.Validate(gameData.SelectedBundles);
+    
+    // 2. ActiveRequirementDisplay 색상 업데이트
+    ActiveRequirementDisplay.UpdateConditionColors(isConditionSatisfied);
+
+    Box currentBox = GetCurrentBox();
+        int selectedTotal = CalculateSelectedTotal();
+
+        // 1. 상자 수량 확인
+        if (selectedTotal != currentBox.RequiredAmount)
+        {
+            isConditionSatisfied = false;
+        }
+        else isConditionSatisfied = true;
+   
+   UIManager.UpdateGemCountColor(isConditionSatisfied);
+        
+    
+}
+
+private void OnRequirementSelected(ChallengeRequirement selectedReq, int selectedIndex)
+{
+    isSelectionActive = false;
+    if (selectionTimerCoroutine != null) StopCoroutine(selectionTimerCoroutine);
+    
+    // 선택 전 상태 저장
+    RequirementSelectionState state = new RequirementSelectionState
+    {
+        DisplayedRequirements = (ChallengeRequirement[])currentDisplayedRequirements.Clone(),
+        SelectedRequirement = selectedReq
+    };
+    selectionHistory.Push(state);
+    
+    // 선택된 위치만 새 조건으로 교체
+    currentDisplayedRequirements[selectedIndex] = GenerateRandomRequirement();
+    
+    currentActiveRequirement = selectedReq;
+    RequirementPopupObject.SetActive(false);
+    gameData.GameState = GameState.Playing;
+    
+    StopCoroutine(nameof(ChallengeTimerRoutine));
+    StartCoroutine(ChallengeTimerRoutine());
+    
+    if (ActiveRequirementDisplay != null)
+    {
+        ActiveRequirementDisplay.UpdateRequirement(selectedReq);
+    }
+    
+    Time.timeScale = 1f;
+}
     private IEnumerator SelectionTimerRoutine()
     {
         currentSelectionTimer = selectionLimitTime;
 
         while (currentSelectionTimer > 0)
         {
-           
+           RestricText.text = $"{currentSelectionTimer:F0}초!";
+
             // Time.timeScale이 0이므로 Time.unscaledDeltaTime을 사용해야 합니다.
             currentSelectionTimer -= Time.unscaledDeltaTime;
 
             float remaining01 = Mathf.Clamp01(currentSelectionTimer / selectionLimitTime); // 1 -> 0
-    float progress01  = 1f - remaining01;                                          // 0 -> 1
+            float progress01  = 1f - remaining01;                                          // 0 -> 1
 
-    // (선택) 곡선 적용: 모래가 더 자연스럽게 떨어지는 느낌
-    float p = SandCurve != null ? SandCurve.Evaluate(progress01) : progress01;
-    p = Mathf.Clamp01(p);
+            // (선택) 곡선 적용: 모래가 더 자연스럽게 떨어지는 느낌
+            float p = SandCurve != null ? SandCurve.Evaluate(progress01) : progress01;
+            p = Mathf.Clamp01(p);
 
- 
-    // 모래시계 업데이트
-    if (SandTopImage != null)
-        SandTopImage.fillAmount = Mathf.Max(0, 1f - p);
+        
+            // 모래시계 업데이트
+            if (SandTopImage != null)
+                SandTopImage.fillAmount = Mathf.Max(0, 1f - p);
 
-    if (SandBottomImage != null)
-        SandBottomImage.fillAmount = p;
+            if (SandBottomImage != null)
+                SandBottomImage.fillAmount = p;
 
-    // (선택) 가운데 줄 연출: 진행 중에만 보이게 + 살짝 펄스
-    if (SandStreamImage != null)
-    {
-        // 시작/끝에 서서히 꺼지게(미니멀에 잘 어울림)
-        float fadeIn  = Mathf.InverseLerp(0f, 0.06f, p);        // 초반 6% 구간 페이드인
-        float fadeOut = 1f - Mathf.InverseLerp(0.94f, 1f, p);   // 마지막 6% 구간 페이드아웃
-        float fade = Mathf.Clamp01(fadeIn * fadeOut);
+            // (선택) 가운데 줄 연출: 진행 중에만 보이게 + 살짝 펄스
+            if (SandStreamImage != null)
+            {
+                // 시작/끝에 서서히 꺼지게(미니멀에 잘 어울림)
+                float fadeIn  = Mathf.InverseLerp(0f, 0.06f, p);        // 초반 6% 구간 페이드인
+                float fadeOut = 1f - Mathf.InverseLerp(0.94f, 1f, p);   // 마지막 6% 구간 페이드아웃
+                float fade = Mathf.Clamp01(fadeIn * fadeOut);
 
-        float pulse = 0.85f + 0.15f * Mathf.Sin(Time.unscaledTime * 16f);
+                float pulse = 0.85f + 0.15f * Mathf.Sin(Time.unscaledTime * 16f);
 
-        var c = SandStreamImage.color;
-        c.a = fade * pulse;
-        SandStreamImage.color = c;
-    }
+                var c = SandStreamImage.color;
+                c.a = fade * pulse;
+                SandStreamImage.color = c;
+            }
 
 
             yield return null;
@@ -719,6 +807,31 @@ void Update()
         }
     }
 
+ public void Resume()
+    {
+        gameData.GameState = GameState.Playing;
+        Time.timeScale = 1f;
+        
+        if (UIManager.PausePopupPanel != null)
+        {
+            UIManager.PausePopupPanel.transform.DOKill();
+            UIManager.PausePopupPanel.SetActive(false);
+        }
+        
+        // ===== 추가: VideoPlayer + BGM 재개 =====
+        if(backgroundVideoPlayer != null && !backgroundVideoPlayer.isPlaying)
+        {
+            backgroundVideoPlayer.Play();
+        }
+        
+        if(SoundManager.Instance != null)
+        {
+            SoundManager.Instance.ResumeBGM();
+        }
+            CapyDialogue.ShowDialogue(CapyDialogueText, DialogueType.Default);
+    }
+    
+    
     // 사용자가 직접 클릭했을 때 호출
     public void OnRequirementClicked(int index)
     {
@@ -789,8 +902,8 @@ void Update()
         if (targetBox != null)
         {
             int totalToGive = targetBox.RequiredAmount;
-            // 1~3가지 종류의 보석으로 배분
-            int typeCount = UnityEngine.Random.Range(1, 4);
+            // 1~4가지 종류의 보석으로 배분
+            int typeCount = UnityEngine.Random.Range(1, 5);
             req.RewardGemTypes = new GemType[typeCount];
             req.RewardGemCounts = new int[typeCount];
 
@@ -861,7 +974,7 @@ void Update()
 
         Box currentBox = GetCurrentBox();
         int selectedTotal = CalculateSelectedTotal();
-
+UpdateRequirementUIColors();
         // 1. 상자 수량 확인
         if (selectedTotal != currentBox.RequiredAmount)
         {
@@ -870,9 +983,9 @@ void Update()
              signboard?.PlayFailX(); // ✅ 전광판 X
              UIManager?.AnimateBoxFailure(null);
              if(gameData.SelectedBundles.Count > 0)
-    {
-        CancelSelection();
-    }
+                {
+                    CancelSelection();
+                }
             return;
         }
 
@@ -885,53 +998,64 @@ void Update()
         }
         else
         {
-            // 실패: 진동 및 알림
-            VibrationManager.Instance.Vibrate(VibrationPattern.Warning);
-            
-            ShowWarning("조건에 맞지 않습니다카피!");
-             signboard?.PlayFailX(); // ✅ 전광판 X
-             UIManager?.AnimateBoxFailure(null);
-             if(gameData.SelectedBundles.Count > 0)
-    {
-        CancelSelection();
-    }
            
+            ShowWarning("조건에 맞지 않습니다카피!");
+             signboard?.PlaySemo(); // ✅ 전광판 semo
+             ProcessSemiBoxSuccess();
+                    
         }
+
+        CancelSelection();
+         UpdateRequirementUIColors();
+
     }
-    // 조건 검사 로직 예시
-    private bool CheckRequirementMet()
+   
+
+       public void ProcessRefresh()
+{
+    gameData.RefreshCount++;  // ✅ 횟수는 무조건 증가
+         
+    if(gameData.RefreshCount > RefreshCurrent)
     {
-        if (currentActiveRequirement == null) return true; // 조건이 없으면 통과
-
-        // 현재 상자에 담긴 보석들의 색상별 개수 합산
-        Dictionary<GemType, int> counts = new Dictionary<GemType, int>();
-        foreach (var bundle in gameData.SelectedBundles)
+        ShowAdConfirmationPopup(() =>
         {
-            if (!counts.ContainsKey(bundle.GemType)) counts[bundle.GemType] = 0;
-            counts[bundle.GemType] += bundle.GemCount;
-        }
-
-        int leftVal = counts.ContainsKey(currentActiveRequirement.LeftType) ? counts[currentActiveRequirement.LeftType] : 0;
-        int rightVal = 0;
-
-        if (currentActiveRequirement.IsValueComparison)
-        {
-            rightVal = currentActiveRequirement.RightValue;
-        }
-        else
-        {
-            rightVal = counts.ContainsKey(currentActiveRequirement.RightType) ? counts[currentActiveRequirement.RightType] : 0;
-        }
-
-        // 부등호 판별
-        switch (currentActiveRequirement.Op)
-        {
-            case ComparisonOperator.Equal: return leftVal == rightVal;
-            case ComparisonOperator.LessThan: return leftVal < rightVal;
-            case ComparisonOperator.GreaterThan: return leftVal > rightVal;
-            default: return false;
-        }
+            AdManager.Instance.ShowRewardedAd((success) =>
+            {
+                if(success) ExecuteRefresh();
+                // ✅ Count 원복 없음
+            });
+        },
+        null); // ✅ Count 원복 없음
     }
+    else
+    {
+        ExecuteRefresh();
+    }
+  
+}
+
+    private void ExecuteRefresh()
+    {
+        foreach(var bundle in gameData.CurrentDisplayBundles)
+        {
+            if(!gameData.BundlePool.Contains(bundle))
+            {
+                gameData.BundlePool.Add(bundle);
+            }
+        }
+        
+        System.Random rng = new System.Random();
+        gameData.BundlePool = gameData.BundlePool.OrderBy(x => rng.Next()).ToList();
+        UpdateAllItemUI();
+        
+        ExtractDisplayBundles();
+        RefreshUI();
+        
+        ShowTopNotification("카드가 재배열되었습니다!");
+    }
+   
+
+
     private void ShowWarning(string message)
     {
         if(CapyDialogue != null && CapyDialogueText != null)
@@ -989,9 +1113,9 @@ void Update()
     
         // Undo/Refresh는 기존 방식
     int undoLeft = Mathf.Max(0, 3 - gameData.UndoCount);
+    int refreshLeft = Mathf.Max(0, RefreshCurrent - gameData.RefreshCount);
     int undo1Left = Mathf.Max(0, Undo1Current - gameData.Undo1Count);
-    int refreshLeft = Mathf.Max(0, 3 - gameData.RefreshCount);
-    
+
      // ✅ 수정: 최대 횟수도 함께 전달
     UIManager.UpdateHintAndItemUI(
         refreshLeft,
@@ -1029,49 +1153,69 @@ void Update()
         }
     }
 
-    public void Execute1Undo()
+      public void Execute1Undo()
     {
-        // 1. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
+        // 1. 안전 장치: 선택된 보석이 없는 경우
+        if (gameData.SelectedBundles == null || gameData.SelectedBundles.Count == 0)
+        {
+            ShowWarning("되돌릴 보석이 없습니다카피!");
+            return;
+        }
+
+        // 2. 가장 마지막에 추가된 보석 묶음 데이터 가져오기
         int lastIndex = gameData.SelectedBundles.Count - 1;
         GemBundle lastBundle = gameData.SelectedBundles[lastIndex];
 
-        // 2. 데이터 복구
+        // 3. 데이터 복구
         gameData.SelectedBundles.RemoveAt(lastIndex); // 선택 리스트에서 제거
-        gameData.RemainingGems[lastBundle.GemType] += lastBundle.GemCount; // 보석 총량 복구
+        gameData.RemainingGems[lastBundle.GemType] += lastBundle.GemCount; // 보석 총량 복구 (GemCountPanel용)
 
+        // 4. 그리드 위치(Index) 정보 확인 및 복구
         if (selectedBundleOriginalIndices.TryGetValue(lastBundle, out int originalGridIndex))
         {
-            // 4. 상자 안의 가장 최근 보석 이미지 제거
+            // A. 상자(선택창) UI에서 이미지 제거
             if (UIManager != null && UIManager.SelectionPanel != null)
             {
                 UIManager.SelectionPanel.RemoveLastGem();
             }
 
-            // 5. 그리드 데이터 복구 (나머지 보석 유지)
+            // B. 현재 그리드 칸에 있는 데이터(보통 빈 칸/Placeholder일 것임)를 다시 Pool로 반환
+            GemBundle currentOccupant = gameData.CurrentDisplayBundles[originalGridIndex];
+            if (currentOccupant != null && !gameData.BundlePool.Contains(currentOccupant))
+            {
+                gameData.BundlePool.Add(currentOccupant);
+            }
+
+            // C. 그리드 데이터 리스트에 원래 보석 데이터 복구
             gameData.CurrentDisplayBundles[originalGridIndex] = lastBundle;
 
-            // 6. 해당 칸만 시각적으로 복구 (isRestoring: true 사용)
+            // D. [핵심] GridManager를 통해 실제 UI 프리팹을 다시 보이게 함
             if (GridManager != null)
             {
+                // isRestoring: true를 전달하여 투명도와 인터랙션을 즉시 복구함
                 GridManager.ReplaceBundleAtIndex(
                     originalGridIndex,
                     lastBundle,
                     OnBundleClicked,
-                    isRestoring: true
+                    isRestoring: true 
                 );
             }
 
-            // 사용한 인덱스 정보 삭제
+            // 사용한 인덱스 정보 삭제 (중복 방지)
             selectedBundleOriginalIndices.Remove(lastBundle);
         }
+        else
+        {
+            // 만약 인덱스 정보를 잃어버렸다면 전체 그리드를 다시 그림 (강제 동기화)
+            Debug.LogWarning($"[Execute1Undo] {lastBundle.BundleID}의 인덱스 정보를 찾지 못해 그리드를 전체 갱신합니다.");
+            ExtractDisplayBundles();
+        }
 
-        // B. 되돌리기 버튼의 남은 숫자 줄이기
-        UpdateAllItemUI(); // 아이템 카운트 텍스트 갱신 (UndoCount 반영)
-        
-        // D. 상자 진행도 텍스트(예: 3/5 -> 2/5) 및 기타 UI 갱신
+        // 5. 기타 UI 및 아이템 카운트 갱신
+        UpdateAllItemUI();
         RefreshUI();
         
-        // 위험도 패널(GemCountPanel) 숫자 업데이트
+        // GemCountPanel(위험도/보석개수) 숫자 업데이트
         if (GemCountStatusPanel != null)
         {
             GemCountStatusPanel.UpdateGemCount(
@@ -1080,9 +1224,10 @@ void Update()
                 RemainingBoxes
             );
         }
-
+UpdateRequirementUIColors();
         ShowTopNotification("마지막 보석 선택을 취소했습니다카피!");
     }
+
 
     private void ShowTopNotification(string message)
     {
@@ -1106,7 +1251,10 @@ void Update()
 
         // ✅ UpdateAllItemUI() 호출로 통일
         UpdateAllItemUI();
+
+        UpdateRequirementUIColors();
     }
+    
     private IEnumerator NotificationCoroutine(string message)
     {
         NotificationText.text = message;
@@ -1122,13 +1270,13 @@ void Update()
         
         // 페이드 인
         canvasGroup.alpha = 0f;
-        yield return canvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutQuad).WaitForCompletion();
+        yield return canvasGroup.DOFade(1f, 0.1f).SetEase(Ease.OutQuad).WaitForCompletion();
         
         // 유지
         yield return new WaitForSeconds(NotificationDuration);
         
         // 페이드 아웃
-        yield return canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad).WaitForCompletion();
+        yield return canvasGroup.DOFade(0f, 0.1f).SetEase(Ease.InQuad).WaitForCompletion();
         
         NotificationPanel.SetActive(false);
     }
@@ -1140,16 +1288,17 @@ void Update()
         // 점수 계산 (상자 완료 점수 100 + 현재 남은 시간 * 10)
         // 남은 시간은 소수점이 있을 수 있으므로 반올림(Mathf.RoundToInt)하여 자연수로 만듭니다.
         int boxScore = 100;
-        timeBonus = Mathf.RoundToInt(currentRemainingTime * 10f);
+        timeBonus = Mathf.Clamp(
+            Mathf.RoundToInt(currentRemainingTime * 10000),0, 3000000 );
         currentTotalScore += (boxScore);
 
-        Debug.Log($"[ChallengeModeManager] 상자 완료! 획득 점수: {boxScore + timeBonus}, 총 점수: {currentTotalScore}");
         // 1. 시간 보상 (설정된 10초 등 반영)
         currentRemainingTime += currentActiveRequirement.RewardTime;
 
         // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
         int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
        // int currentCount = 0;
+       
 
         if (currentActiveRequirement.RewardGemCounts != null)
         {
@@ -1196,6 +1345,73 @@ void Update()
             ShowRequirementSelection();
         });
     }
+
+
+    // [수정] 상자 완료 시 보상 로직
+    private void ProcessSemiBoxSuccess()
+    {
+        
+
+        int boxScore = 50;
+        timeBonus = Mathf.Clamp(
+            Mathf.RoundToInt(currentRemainingTime * 10000),0, 3000000 );
+        currentTotalScore += (boxScore);
+
+       // 1. 시간 보상 (설정된 10초 등 반영)
+        currentRemainingTime += currentActiveRequirement.RewardTime;
+
+        // 2. 보석 보상: 현재 완료한 상자의 요구량(RequiredAmount)만큼 보충
+        int totalGemsToReplenish = GetCurrentBox().RequiredAmount; 
+       // int currentCount = 0;
+       
+
+        if (currentActiveRequirement.RewardGemCounts != null)
+        {
+            for (int i = 0; i < currentActiveRequirement.RewardGemCounts.Length; i++)
+            {
+                GemType type = currentActiveRequirement.RewardGemTypes[i];
+                int count = currentActiveRequirement.RewardGemCounts[i];
+                gameData.RemainingGems[type] += count;
+
+                int allocated = 0;
+                while (allocated < count)
+                {
+                    int size = UnityEngine.Random.Range(1, Mathf.Min(5, count - allocated + 1));
+                    GemBundle newBundle = new GemBundle {
+                        BundleID = Guid.NewGuid().ToString(),
+                        GemType = type,
+                        GemCount = size
+                    };
+                    
+                    // 생성 즉시 Pool에 추가
+                    if (!gameData.BundlePool.Contains(newBundle))
+                        gameData.BundlePool.Add(newBundle);
+                    
+                    allocated += size;
+                }
+            }
+        }
+
+        gameData.CurrentBoxIndex++;
+        signboard?.PlaySuccessO();
+
+        UIManager.AnimateBoxChange(() => {
+            gameData.SelectedBundles.Clear();
+            selectedBundleOriginalIndices.Clear();
+            
+            // [핵심] 상자 교체 시점에 화면 데이터(CurrentDisplayBundles)와 Pool을 완전히 재동기화
+            gameData.BundlePool = gameData.BundlePool.OrderBy(x => UnityEngine.Random.value).ToList();
+            
+            // 현재 화면에 빈 자리가 생겼거나 보충이 필요하므로 다시 추출
+            ExtractDisplayBundles(); 
+            
+            // UI 갱신
+            RefreshUI();
+            ShowRequirementSelection();
+        });
+    }
+
+
     private void HandleTimeOver()
     {
         gameData.GameState = GameState.TimeOver;
@@ -1206,8 +1422,7 @@ void Update()
         StopBackgroundMedia();
         CapyDialogue.StopDialogue(CapyDialogueText);
         
-        // string randomMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
-
+       
         // 점수를 포함한 결과 메시지 생성
         string scoreMessage = $"\n\n최종 점수: {currentTotalScore + timeBonus}점!";
         string capyMsg = CapyDialogue.GetRandomMessage(DialogueType.TimeOverGameOver);
@@ -1273,36 +1488,58 @@ void Update()
         }
     }
 
-    // [추가] 조건 재선택 버튼 클릭 시 호출될 함수
-    public void OnClickReselectRequirement()
+    // 기존 OnClickReselectRequirement() 완전 교체
+public void OnClickReselectRequirement()
+{
+    // 되돌릴 이력이 없으면 불가
+    if (selectionHistory.Count <= 1)
     {
-        // 1. 무료 횟수 체크
-        if (currentReselectCount < MaxFreeRequirementReselect)
+        ShowTopNotification("되돌릴 선택이 없습니다카피!");
+        return;
+    }
+    
+    if (currentReselectCount < MaxFreeRequirementReselect)
+    {
+        currentReselectCount++;
+        ExecuteReselect();
+    }
+    else
+    {
+        ShowAdConfirmationPopup(() =>
         {
-            currentReselectCount++;
-            ExecuteReselect();
-        }
-        else
-        {
-            // 2. 무료 횟수 초과 시 광고 팝업
-            ShowAdConfirmationPopup(() =>
+            AdManager.Instance.ShowRewardedAd((success) =>
             {
-                AdManager.Instance.ShowRewardedAd((success) =>
-                {
-                    if (success) ExecuteReselect();
-                });
-            }, null);
+                if (success) ExecuteReselect();
+            });
+        }, null);
+    }
+}
+
+private void ExecuteReselect()
+{
+   UpdateReselectUI();
+    
+    // 현재 상태 제거
+    selectionHistory.Pop();
+    
+    // 이전 상태 복원
+    RequirementSelectionState prevState = selectionHistory.Peek();
+    currentDisplayedRequirements = (ChallengeRequirement[])prevState.DisplayedRequirements.Clone();
+    
+    // 이전 선택 조건 복원
+    if (prevState.SelectedRequirement != null)
+    {
+        currentActiveRequirement = prevState.SelectedRequirement;
+        if (ActiveRequirementDisplay != null)
+        {
+            ActiveRequirementDisplay.UpdateRequirement(prevState.SelectedRequirement);
         }
     }
-
-    // [추가] 실제 재선택 실행 로직
-    private void ExecuteReselect()
-    {
-        UpdateReselectUI();
-        ShowRequirementSelection(); // 기존에 만든 팝업 띄우기 함수 호출
-        ShowTopNotification("조건을 다시 선택합니다카피!");
-    }
-
+    
+    // 팝업 재표시
+    ShowRequirementSelectionInternal();
+    ShowTopNotification("조건을 되돌렸습니다카피!");
+}
     // [추가] UI 업데이트 로직
     private void UpdateReselectUI()
     {

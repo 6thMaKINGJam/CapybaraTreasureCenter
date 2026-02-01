@@ -12,7 +12,7 @@ public class RequirementCard : MonoBehaviour
     public TextMeshProUGUI RightValueText; // 오른쪽이 숫자일 때
     
     [Header("보상 표시 UI")]
-    public TextMeshProUGUI RewardTimeText;
+
     public Transform RewardGemPanel; // HorizontalLayoutGroup이 붙은 부모
     public GameObject RewardGemItemPrefab; // RewardGemItem 프리팹
     
@@ -34,7 +34,7 @@ public class RequirementCard : MonoBehaviour
         SetupCondition(req);
         
         // 보상 시간 표시
-        RewardTimeText.text = $"{req.RewardTime}초";
+      
         
         // 보상 보석 표시
         SetupRewardGems(req);

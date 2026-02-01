@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System.Collections;
+using Coffee.UIEffects;
 
 
 public class GameUIManager : MonoBehaviour
@@ -19,6 +20,7 @@ public class GameUIManager : MonoBehaviour
     [Header("상자 정보")]
     public TMP_Text BoxIndexText; // 상자 #번호
     public TMP_Text BoxProgressText; // 담은 개수 / 총개수
+    public Image GemIconImage; // 왼쪽 보석 아이콘
 
     [Header("상단/하단 버튼들")]
     public Button PauseButton;
@@ -78,7 +80,17 @@ public class GameUIManager : MonoBehaviour
             isChallengeMode = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "ChallengeMode";
 
     }
+private Color satisfiedColor = new Color(0x0A / 255f, 0xFF / 255f, 0x00 / 255f); // #0AFF00
+    private Color normalColor = Color.white; // #FFFFFF
+    
+public void UpdateGemCountColor(bool isSatisfied)
+{
+    BoxProgressText.color =isSatisfied ? satisfiedColor : normalColor;
 
+GemIconImage.color = isSatisfied ? satisfiedColor : normalColor;
+  
+      
+}
 // 팝업 생성 헬퍼 함수
 // ★ 연출 실행용 래퍼 함수 추가
     public void AnimateBoxChange(System.Action onFinished)
@@ -167,10 +179,9 @@ public class GameUIManager : MonoBehaviour
             if (CancelSelectButton != null) {
                 CancelSelectButton.onClick.AddListener(() => ChallengeModeManager.Instance.CancelSelection());
             }
-            if (GridManager != null)
-            {
-                // ChallengeModeManager가 보관 중인 현재 디스플레이 데이터를 사용하여 클릭 이벤트를 연결합니다.
-                // (ChallengeModeManager.InitChallengeMode에서 수행하지만, UI 설정 시 확답을 위해 추가)
+             if (RefreshButton != null) {
+                RefreshButton.onClick.RemoveAllListeners();
+                RefreshButton.onClick.AddListener(() => ChallengeModeManager.Instance.ProcessRefresh());
             }
             if (GridManager != null) {
                 // ChallengeModeManager가 이미 생성한 데이터를 사용하여 그리드를 다시 그려주며 콜백을 확실히 연결합니다.

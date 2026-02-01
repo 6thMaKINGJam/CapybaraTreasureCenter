@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Coffee.UIEffects ;
 
 /// <summary>
 /// 현재 선택된 챌린지 조건을 화면에 표시하는 UI
@@ -8,7 +9,6 @@ using TMPro;
 public class ActiveRequirementDisplay : MonoBehaviour
 {
     [Header("UI 요소")]
-
     public Image LeftGemIcon;
     public TextMeshProUGUI OperatorText;
     public Image RightGemIcon; // 오른쪽이 보석일 때
@@ -16,6 +16,10 @@ public class ActiveRequirementDisplay : MonoBehaviour
     
     [Header("데이터베이스")]
     public GemSpriteDatabase SpriteDatabase; // Inspector에서 할당
+
+    [Header("색상 설정")]
+    private Color satisfiedColor = new Color(0x0A / 255f, 0xFF / 255f, 0x00 / 255f); // #0AFF00
+    private Color unsatisfiedColor = Color.white; // #FFFFFF
 
     /// <summary>
     /// 조건 업데이트
@@ -45,10 +49,11 @@ public class ActiveRequirementDisplay : MonoBehaviour
             LeftGemIcon.enabled = true;
         }
 
-        // 2. 연산자
+        // 2. 연산자 - 색상 초기화
         if (OperatorText != null)
         {
             OperatorText.text = GetOperatorSymbol(req.Op);
+            OperatorText.color = unsatisfiedColor;
         }
 
         // 3. 오른쪽 항 (보석 vs 숫자)
@@ -58,6 +63,7 @@ public class ActiveRequirementDisplay : MonoBehaviour
             if (RightValueText != null)
             {
                 RightValueText.text = req.RightValue.ToString();
+                RightValueText.color = unsatisfiedColor;
                 RightValueText.gameObject.SetActive(true);
             }
             if (RightGemIcon != null)
@@ -79,6 +85,35 @@ public class ActiveRequirementDisplay : MonoBehaviour
                 RightValueText.gameObject.SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// 조건 충족 여부에 따라 텍스트 색상 업데이트
+    /// </summary>
+    public void UpdateConditionColors(bool isConditionSatisfied)
+    {
+        Color targetColor = isConditionSatisfied ? satisfiedColor : unsatisfiedColor;
+
+        if (OperatorText != null)
+        {
+            OperatorText.color = targetColor;
+        }
+
+        if (RightValueText != null && RightValueText.gameObject.activeSelf)
+        {
+            RightValueText.color = targetColor;
+        }
+        UIEffect LeftGemIconUiEffect = LeftGemIcon.GetComponent<UIEffect>();
+        if (LeftGemIconUiEffect != null)
+        {
+            LeftGemIconUiEffect.enabled = isConditionSatisfied;  
+        }
+        UIEffect RightGemIconUiEffect = RightGemIcon.GetComponent<UIEffect>();
+        if (RightGemIconUiEffect != null)
+        {
+            RightGemIconUiEffect.enabled = isConditionSatisfied;  
+        }
+
     }
 
     /// <summary>

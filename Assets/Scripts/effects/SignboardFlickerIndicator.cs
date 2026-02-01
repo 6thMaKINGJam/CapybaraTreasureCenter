@@ -11,6 +11,8 @@ public class SignboardFlickerIndicator : MonoBehaviour
     [Header("연결")]
     [SerializeField] private Image oImage;
     [SerializeField] private Image xImage;
+
+    [SerializeField] private Image semoImage;
     [SerializeField] private GameObject gemInfo;
 
     [Header("연출 기본값")]
@@ -36,6 +38,7 @@ public class SignboardFlickerIndicator : MonoBehaviour
 
     public void PlaySuccessO() => Play(oImage);
     public void PlayFailX()    => Play(xImage);
+        public void PlaySemo()    => Play(semoImage);
 
     private void Play(Image target)
     {

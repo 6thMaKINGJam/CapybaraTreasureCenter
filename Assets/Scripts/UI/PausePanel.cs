@@ -24,7 +24,11 @@ public class PausePanel : MonoBehaviour
     // 이어하기
     public void ResumeGame()
     {
+        if (LevelModeManager.Instance != null)
         LevelModeManager.Instance.Resume();
+
+        if (ChallengeModeManager.Instance != null)
+        ChallengeModeManager.Instance.Resume();
     }
     
     // 새로시작 (확인 팝업)

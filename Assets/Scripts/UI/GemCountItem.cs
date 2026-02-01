@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using Coffee.UIEffects;
 /// <summary>
 /// 보석 종류별 남은 개수를 표시하는 UI 아이템
 /// GemCountPanelManager에서 사용
@@ -16,6 +16,9 @@ public class GemCountItem : MonoBehaviour
     public GemSpriteDatabase SpriteDatabase;
     
     private GemType gemType;
+    private Color satisfiedColor = new Color(0x0A / 255f, 0xFF / 255f, 0x00 / 255f); // #0AFF00
+    private Color normalColor = Color.white; // #FFFFFF
+    
     
     /// <summary>
     /// 보석 종류와 초기 개수 설정
@@ -55,9 +58,9 @@ public class GemCountItem : MonoBehaviour
         
         CountText.text = count.ToString();
         
-        // 0개일 때 빨간색 강조
-        CountText.color = (count <= 0) ? Color.red : Color.white;
+        
     }
+
     
     public GemType GetGemType() => gemType;
 }
